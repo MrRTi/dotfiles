@@ -1,0 +1,42 @@
+# navigation
+alias cd..='cd ..'
+alias ..='cd ..'
+alias …='cd ../../../'
+alias ….='cd ../../../../'
+alias …..='cd ../../../../'
+alias .4='cd ../../../../'
+alias .5='cd ../../../../..'
+
+alias toR='cd ~/Repositories/'
+
+# shell
+alias md='mkdir'
+alias sl='ls'
+alias ll='ls -la'
+alias lc='colorls -a -1 --gs --sd'
+alias mount='mount |column -t'
+alias IOWNTHIS='sudo chown -R rti *'
+
+# apt
+alias Install='sudo apt-get install'
+alias Update='sudo apt-get update'
+alias Upgrade='sudo apt-get upgrade'
+alias Autoremove='sudo apt-get autoremove'
+alias Autoclean='sudo apt-get autoclean'
+alias Purge='sudo apt-get remove -purge'
+
+# docker-compose
+alias dc='docker-compose'
+alias dcr='docker-compose run --rm'
+alias dcrs='docker-compose run --rm --service-ports'
+alias dcrb='docker-compose run --rm web bash'
+alias dcrbc='docker-compose run --rm web bash -c'
+alias dcrrails='docker-compose run --rm web bash -c "rails c"'
+
+# git
+alias gs='git status '
+alias gc='git commit -m'
+alias gcv='git commit -v'
+alias gpt='git push && git push --tags'
+alias gfrs='git flow release start'
+alias gfrf='git flow release finish'
