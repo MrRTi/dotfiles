@@ -15,7 +15,7 @@ alias sl='ls'
 alias ll='ls -la'
 alias lc='colorls -a -1 --gs --sd'
 alias mount='mount |column -t'
-alias IOWNTHIS='sudo chown -R rti *'
+alias IOWNTHIS='sudo chown -R $USER *'
 
 # apt
 alias Install='sudo apt-get install'
