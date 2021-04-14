@@ -40,3 +40,10 @@ alias gcv='git commit -v'
 alias gpt='git push && git push --tags'
 alias gfrs='git flow release start'
 alias gfrf='git flow release finish'
+
+# yandex cloud
+alias yc-run-remote-dev='yc compute instance start --name remote-dev-server'
+alias yc-remote-ip='yc compute instance list | grep remote-dev-server | awk "{print \$10}"'
+alias yc-ssh-user='ssh rti@$(yc-remote-ip)'
+alias yc-ssh-admin='ssh yc-user@$(yc-remote-ip)'
+alias yc-stop-remote-dev='yc compute instance stop --name remote-dev-server'
