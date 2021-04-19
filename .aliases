@@ -40,6 +40,9 @@ alias gcv='git commit -v'
 alias gpt='git push && git push --tags'
 alias gfrs='git flow release start'
 alias gfrf='git flow release finish'
+alias ga='git add'
+alias gco='git checkout'
+alias grup='git remote update'
 
 # yandex cloud
 alias yc-run-remote-dev='yc compute instance start --name remote-dev-server'
