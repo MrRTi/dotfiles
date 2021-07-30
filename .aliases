@@ -43,6 +43,7 @@ alias gfrf='git flow release finish'
 alias ga='git add'
 alias gco='git checkout'
 alias grup='git remote update'
+alias glol='git log --graph --pretty='\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\'
 
 # yandex cloud
 alias yc-run-remote-dev='yc compute instance start --name remote-dev-server'
@@ -50,3 +51,7 @@ alias yc-remote-ip='yc compute instance list | grep remote-dev-server | awk "{pr
 alias -g yc-ssh-user='ssh rti@$(yc-remote-ip)'
 alias -g yc-ssh-admin='ssh yc-user@$(yc-remote-ip)'
 alias yc-stop-remote-dev='yc compute instance stop --name remote-dev-server'
+
+# remote
+alias tps='./.usr_config/.tmux-petscreening-session.sh'
+
