@@ -53,5 +53,5 @@ alias -g yc-ssh-admin='ssh yc-user@$(yc-remote-ip)'
 alias yc-stop-remote-dev='yc compute instance stop --name remote-dev-server'
 
 # remote
-alias tps='./.usr_config/.tmux-petscreening-session.sh'
+alias tps='~/.usr_config/.tmux-dev-ps-session.sh'
 
