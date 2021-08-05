@@ -1,29 +1,14 @@
 # navigation
 alias cd..='cd ..'
 alias ..='cd ..'
-alias …='cd ../../../'
-alias ….='cd ../../../../'
-alias …..='cd ../../../../'
-alias .4='cd ../../../../'
-alias .5='cd ../../../../..'
-
-alias toR='cd ~/Repositories/'
+alias ....='cd ../../'
+alias ~~ = 'cd ~/'
 
 # shell
 alias md='mkdir'
 alias sl='ls'
 alias ll='ls -la'
 alias lc='colorls -a -1 --gs --sd'
-alias mount='mount |column -t'
-alias IOWNTHIS='sudo chown -R $USER *'
-
-# apt
-alias Install='sudo apt-get install'
-alias Update='sudo apt-get update'
-alias Upgrade='sudo apt-get upgrade'
-alias Autoremove='sudo apt-get autoremove'
-alias Autoclean='sudo apt-get autoclean'
-alias Purge='sudo apt-get remove -purge'
 
 # docker-compose
 alias dc='docker-compose'
@@ -31,12 +16,14 @@ alias dcr='docker-compose run --rm'
 alias dcrs='docker-compose run --rm --service-ports'
 alias dcrb='docker-compose run --rm web bash'
 alias dcrbc='docker-compose run --rm web bash -c'
-alias dcrrails='docker-compose run --rm web bash -c "rails c"'
 
 # git
 alias gs='git status '
 alias gc='git commit -m'
 alias gcv='git commit -v'
+alias gca='git commit --ammend'
+alias gcane='git commit --amend --no-edit'
+alias guc='git reset HEAD~'
 alias gpt='git push && git push --tags'
 alias gfrs='git flow release start'
 alias gfrf='git flow release finish'
@@ -44,14 +31,4 @@ alias ga='git add'
 alias gco='git checkout'
 alias grup='git remote update'
 alias glol='git log --graph --pretty='\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\'
-
-# yandex cloud
-alias yc-run-remote-dev='yc compute instance start --name remote-dev-server'
-alias yc-remote-ip='yc compute instance list | grep remote-dev-server | awk "{print \$10}"'
-alias -g yc-ssh-user='ssh rti@$(yc-remote-ip)'
-alias -g yc-ssh-admin='ssh yc-user@$(yc-remote-ip)'
-alias yc-stop-remote-dev='yc compute instance stop --name remote-dev-server'
-
-# remote
-alias tps='~/.usr_config/.tmux-dev-ps-session.sh'
 
