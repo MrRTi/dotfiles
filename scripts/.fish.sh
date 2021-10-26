@@ -4,11 +4,12 @@ sudo apt-get install fish
 
 sh -c "$(curl -fsSL https://starship.rs/install.sh)"
 
-echo starship init fish | source >> ~/.config/fish/config.fish
+mkdir ~/.config/fish
+echo 'starship init fish | source' >> ~/.config/fish/config.fish
 mv ~/.aliases ~/.aliases.backup
 cp .aliases ~/.aliases
 echo 'source ~/.aliases' >> ~/.config/fish/config.fish
 sudo chsh -s $(which fish)
 
-mv .config/starship.toml .config/starship.toml.backup
-cp configs/starship.toml .config/starship.toml
+mv ~/.config/starship.toml .config/starship.toml.backup
+cp ../configs/starship.toml ~/.config/starship.toml
