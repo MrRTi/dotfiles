@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 # Create ssh_keys
 ssh-keygen -t ed25519 -C 'gitlab-remote' -P '' -f ~/.ssh/gitlab

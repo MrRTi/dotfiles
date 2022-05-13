@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 # Setup for ubuntu
 scripts/.unix.sh

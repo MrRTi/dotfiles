@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 sudo apt update
 sudo apt install zsh
@@ -23,17 +23,19 @@ cd ..
 [ -f ~/.aliases ] && mv ~/.aliases ~/.aliases.backup
 cp $(find . -path "*.dotfiles/.aliases" -not -path "~" -print | head -n 1) ~/.aliases
 
-
 # Copy starship
-sudo curl -sS https://starship.rs/install.sh | sh
+sudo sh -c "$(curl -fsSL https://starship.rs/install.sh)" -y -f
 
 # Move starship config
 [ -f ~/.config/starship.toml ] && mv ~/.config/starship.toml .config/starship.toml.backup
-cp ../configs/starship.toml ~/.config/starship.toml
+cp $(find . -path "*.dotfiles/configs/starship.toml" -not -path "~" -print | head -n 1) ~/.config/starship.toml
 
+# Update zshrc
+[ ! -f ${ZDOTDIR:-$HOME}/.zshrc ] && [ -f ~/.oh-my-zsh/templates/zshrc.zsh-template ] && cp ~/.oh-my-zsh/templates/zshrc.zsh-template ${ZDOTDIR:-$HOME}/.zshrc
+[ ! -f ${ZDOTDIR:-$HOME}/.zshrc ] && touch ${ZDOTDIR:-$HOME}/.zshrc
 sed -i 's/plugins=.*/plugins=(git k zsh-completions git-flow-avh tmux)/' ${ZDOTDIR:-$HOME}/.zshrc
 echo "autoload -U compinit && compinit" >> ${ZDOTDIR:-$HOME}/.zshrc
-echo "source ./zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
-echo "source ./zsh-autocomplete/zsh-autocomplete.plugin.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
+echo "source ./zsh_repos/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
+echo "source ./zsh_repos/zsh-autocomplete/zsh-autocomplete.plugin.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
 echo "if [ -f .aliases ]; then . ~/.aliases; fi" >> ${ZDOTDIR:-$HOME}/.zshrc
 echo "eval \"$(starship init zsh)\"" >> ${ZDOTDIR:-$HOME}/.zshrc
