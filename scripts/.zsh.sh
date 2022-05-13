@@ -21,11 +21,11 @@ sudo usermod -s /usr/bin/zsh $(whoami)
 cd ..
 
 [ -f ~/.aliases ] && mv ~/.aliases ~/.aliases.backup
-cp ../.aliases ~/.aliases
+cp $(find . -path "*.dotfiles/.aliases" -not -path "~" -print | head -n 1) ~/.aliases
 
 
 # Copy starship
-curl -sS https://starship.rs/install.sh | sh
+sudo curl -sS https://starship.rs/install.sh | sh
 
 # Move starship config
 [ -f ~/.config/starship.toml ] && mv ~/.config/starship.toml .config/starship.toml.backup
