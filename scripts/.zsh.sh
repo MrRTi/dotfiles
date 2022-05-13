@@ -7,11 +7,11 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 mkdir .zsh_repos
 cd .zsh_repos
 
-git clone https://github.com/clarketm/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
 git clone --depth 1 -- https://github.com/marlonrichert/zsh-autocomplete.git
+git clone https://github.com/clarketm/zsh-completions ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-completions
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+git clone https://github.com/supercrabtree/k ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/k
 
 chmod 700 ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 
@@ -39,3 +39,6 @@ echo "source ./zsh_repos/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >>
 echo "source ./zsh_repos/zsh-autocomplete/zsh-autocomplete.plugin.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
 echo "if [ -f .aliases ]; then . ~/.aliases; fi" >> ${ZDOTDIR:-$HOME}/.zshrc
 echo "eval \"$(starship init zsh)\"" >> ${ZDOTDIR:-$HOME}/.zshrc
+
+[ ! -f ~/.zshenv ] && touch ~/.zshenv
+echo "skip_global_compinit=1" >> ~/.zshenv
