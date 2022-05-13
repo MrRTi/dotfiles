@@ -2,7 +2,7 @@
 alias cd..='cd ..'
 alias ..='cd ..'
 alias ....='cd ../../'
-alias ~~ = 'cd ~/'
+alias ~~='cd ~/'
 
 # shell
 alias md='mkdir'
@@ -31,4 +31,3 @@ alias ga='git add'
 alias gco='git checkout'
 alias grup='git remote update'
 alias glol='git log --graph --pretty='\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\'
-

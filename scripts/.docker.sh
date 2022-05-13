@@ -1,3 +1,5 @@
+!/bin/bash
+
 # Install docker
 sudo apt update
 sudo apt install -y \
@@ -22,7 +24,7 @@ curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/i
 
 sudo groupadd docker
 sudo usermod -aG docker $USER
-newgrp docker 
+newgrp docker
 
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service

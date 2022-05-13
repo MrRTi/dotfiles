@@ -1,3 +1,5 @@
+!/bin/bash
+
 sudo apt update
 sudo apt install git
 
@@ -20,7 +22,6 @@ mkdir $WORK_PROJECTS_FOLDER_NAME
 cd $INIT_PWD
 
 # Set gitconfig
-
 touch ~/.gitconfig
 echo [includeIf "gitdir:$REPOSITORY_FOLDER/$PERSONAL_PROJECTS_FOLDER_NAME/**"] >> ~/.gitconfig
 echo	path=.gitconfig-personal >> ~/.gitconfig
