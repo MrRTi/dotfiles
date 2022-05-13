@@ -2,7 +2,7 @@
 
 sudo apt update
 sudo apt install zsh
-$ sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 mkdir .zsh_repos
 cd .zsh_repos
