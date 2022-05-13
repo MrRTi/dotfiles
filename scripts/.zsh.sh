@@ -35,8 +35,8 @@ cp $(find . -path "*.dotfiles/configs/starship.toml" -not -path "~" -print | hea
 [ ! -f ${ZDOTDIR:-$HOME}/.zshrc ] && touch ${ZDOTDIR:-$HOME}/.zshrc
 sed -i 's/plugins=.*/plugins=(git k zsh-completions git-flow-avh tmux)/' ${ZDOTDIR:-$HOME}/.zshrc
 echo "autoload -U compinit && compinit" >> ${ZDOTDIR:-$HOME}/.zshrc
-echo "source ./zsh_repos/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
-echo "source ./zsh_repos/zsh-autocomplete/zsh-autocomplete.plugin.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
+echo "source ./.zsh_repos/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
+echo "source ./.zsh_repos/zsh-autocomplete/zsh-autocomplete.plugin.zsh" >> ${ZDOTDIR:-$HOME}/.zshrc
 echo "if [ -f .aliases ]; then . ~/.aliases; fi" >> ${ZDOTDIR:-$HOME}/.zshrc
 echo "eval \"$(starship init zsh)\"" >> ${ZDOTDIR:-$HOME}/.zshrc
 
