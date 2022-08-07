@@ -1,8 +1,5 @@
 #!/bin/bash
 
-sudo apt update
-sudo apt install git
-
 # Setup git
 INIT_PWD = pwd
 
@@ -26,7 +23,7 @@ touch ~/.gitconfig
 echo [includeIf "gitdir:$REPOSITORY_FOLDER/$PERSONAL_PROJECTS_FOLDER_NAME/**"] >> ~/.gitconfig
 echo	path=.gitconfig-personal >> ~/.gitconfig
 echo [includeIf "gitdir:$REPOSITORY_FOLDER/$WORK_PROJECTS_FOLDER_NAME/**"] >> ~/.gitconfig
-echo    path=.gitconfig-work >> ~/.gitconfig
+echo  path=.gitconfig-work >> ~/.gitconfig
 
 # Personal git
 echo Enter name for personal git projects
