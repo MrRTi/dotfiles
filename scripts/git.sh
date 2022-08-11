@@ -20,9 +20,9 @@ cd $INIT_PWD
 
 # Set gitconfig
 touch ~/.gitconfig
-echo [includeIf "gitdir:$REPOSITORY_FOLDER/$PERSONAL_PROJECTS_FOLDER_NAME/**"] >> ~/.gitconfig
+echo "[includeIf \"gitdir:$REPOSITORY_FOLDER/$PERSONAL_PROJECTS_FOLDER_NAME/**\"]" >> ~/.gitconfig
 echo  path=.gitconfig-personal >> ~/.gitconfig
-echo [includeIf "gitdir:$REPOSITORY_FOLDER/$WORK_PROJECTS_FOLDER_NAME/**"] >> ~/.gitconfig
+echo "[includeIf \"gitdir:$REPOSITORY_FOLDER/$WORK_PROJECTS_FOLDER_NAME/**\"]" >> ~/.gitconfig
 echo  path=.gitconfig-work >> ~/.gitconfig
 
 # Personal git
