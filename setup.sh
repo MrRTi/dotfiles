@@ -12,8 +12,12 @@ brew bundle --file ./Brewfile
 ln -l ./.tmux.conf ~/.tmux.conf
 ln -l ./vim-config/.vimrc ~/.vimrc
 
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
 scripts/zsh.sh
 . ~/.zshrc
 
+git submodule update --init
 scripts/ssh-keys.sh
 scripts/git.sh
