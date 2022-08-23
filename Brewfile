@@ -13,6 +13,7 @@ brew "git"
 brew "midnight-commander"
 brew "tree"
 brew "cask"
+brew "nvm"
 
 # System helpers
 brew "ack"
@@ -25,4 +26,3 @@ brew "colordiff"
 # Security
 cask "aws-vault"
 brew "bitwarden-cli"
-
