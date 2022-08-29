@@ -8,7 +8,6 @@ alias ~~='cd ~/'
 alias md='mkdir'
 alias sl='ls'
 alias ll='ls -la'
-alias lc='colorls -a -1 --gs --sd'
 
 # docker-compose
 alias dc='docker-compose'
