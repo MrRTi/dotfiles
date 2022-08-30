@@ -10,6 +10,9 @@ COMPLETION_WAITING_DOTS="true"
 autoload -U compinit && compinit
 [[ -f $DOTFILES_PATH/zsh-config/.aliases ]] && . $DOTFILES_PATH/zsh-config/.aliases
 
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
 export STARSHIP_CONFIG=$DOTFILES_PATH/starship.toml
 eval "$(starship init zsh)"
 

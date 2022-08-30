@@ -9,15 +9,15 @@ eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 brew bundle --file ./Brewfile
 
-ln -l ./.tmux.conf ~/.tmux.conf
-ln -l ./vim-config/.vimrc ~/.vimrc
+ln ./.tmux.conf ~/.tmux.conf
+ln ./vim-config/.vimrc ~/.vimrc
 
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-scripts/zsh.sh
+./scripts/zsh.sh
+git submodule update --init
 . ~/.zshrc
 
-git submodule update --init
-scripts/ssh-keys.sh
-scripts/git.sh
+./scripts/ssh-keys.sh
+./scripts/git.sh
