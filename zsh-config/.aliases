@@ -18,7 +18,6 @@ alias dcrbc='docker-compose run --rm web bash -c'
 
 # git
 alias gs='git status '
-alias gc='git commit -m'
 alias gcv='git commit -v'
 alias gca='git commit --ammend'
 alias gcane='git commit --amend --no-edit'
@@ -30,3 +29,9 @@ alias ga='git add'
 alias gco='git checkout'
 alias grup='git remote update'
 alias glol='git log --graph --pretty='\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\'
+
+# terraform
+alias t='terraform'
+alias ti='t init'
+alias tp='t plan'
+alias ta='t apply
