@@ -34,4 +34,4 @@ alias glol='git log --graph --pretty='\''%Cred%h%Creset -%C(auto)%d%Creset %s %C
 alias t='terraform'
 alias ti='t init'
 alias tp='t plan'
-alias ta='t apply
+alias ta='t apply'
