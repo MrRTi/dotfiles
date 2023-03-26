@@ -17,11 +17,12 @@ brew "nvm"
 
 # System helpers
 brew "ack"
-brew "tldr"
 brew "jq"
 brew "fzf"
 brew "git-flow-avh"
 brew "colordiff"
+brew "tealdeer"
+brew "git-delta"
 
 # Security
 cask "aws-vault"
