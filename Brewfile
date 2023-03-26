@@ -22,6 +22,7 @@ brew "colordiff"
 brew "tealdeer"
 brew "git-delta"
 brew "lazygit"
+brew "bat"
 
 # Security
 brew "bitwarden-cli"
