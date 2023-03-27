@@ -8,8 +8,11 @@ alias ~~='cd ~/'
 alias md='mkdir'
 alias sl='ls'
 alias ll='ls -la'
-
 alias cat='bat --paging=never'
+
+# tmux
+alias tmuxn='tmux new -As ${PWD##*/}'
+
 # docker-compose
 alias dc='docker-compose'
 alias dcr='docker-compose run --rm'
