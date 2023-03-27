@@ -2,7 +2,7 @@ tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/core"
 
-# Essentials
+brew "openssh"
 brew "zsh"
 brew "tmux"
 brew "starship"
@@ -23,6 +23,6 @@ brew "tealdeer"
 brew "git-delta"
 brew "lazygit"
 brew "bat"
+cask "browserosaurus"
 
-# Security
 brew "bitwarden-cli"
