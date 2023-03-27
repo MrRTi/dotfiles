@@ -1,10 +1,14 @@
 #!/bin/bash
 
-sudo apt-get update
-sudo apt-get -y install curl build-essential gcc
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+	sudo apt-get update
+	sudo apt-get -y install curl build-essential gcc
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+	# Placeholder for Mac OS
+fi
 
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >>~/.profile
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 
 brew bundle --file ./Brewfile
@@ -13,7 +17,7 @@ ln ./.tmux.conf ~/.tmux.conf
 ln ./vim-config/.vimrc ~/.vimrc
 
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 # LazyVim
 mv ~/.config/nvim ~/.config/nvim.bak
