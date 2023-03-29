@@ -1,6 +1,7 @@
 tap "homebrew/bundle"
 tap "homebrew/cask"
 tap "homebrew/core"
+tap "homebrew/cask-fonts"
 
 brew "openssh"
 brew "zsh"
@@ -24,5 +25,6 @@ brew "git-delta"
 brew "lazygit"
 brew "bat"
 cask "browserosaurus"
+cask "font-jetbrains-mono-nerd-font"
 
 brew "bitwarden-cli"
