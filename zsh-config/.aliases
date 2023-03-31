@@ -43,7 +43,14 @@ alias ta='t apply'
 
 # complex aliases
 alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
-alias gcof='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff {1} --color=always | delta " --pointer="" | xargs git checkout'
+alias gcof='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff --color=always {1}"  | xargs git checkout'
+alias gcofd='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff --color=always {1} | delta" --pointer="" | xargs git checkout'
 alias kubefp='kubectl get pods | fzf | awk '\''{print $1}'\'''
 alias kubelogs='kubefp | xargs kubectl logs'
 alias kubebash='kubefp | xargs -I@ kubectl exec --stdin --tty @ -- /bin/bash'
+
+# yandex cloud
+alias ycls='yc compute instance list --format json | jq --raw-output '\''.[] | "\(.name) \(.status)"'\''' 
+alias ycfn='ycls | fzf | awk '\''{print $1}'\'''
+alias ycup=' ycfn | xargs yc compute instance start --name'
+alias ycstop=' ycfn | xargs yc compute instance stop --name'
