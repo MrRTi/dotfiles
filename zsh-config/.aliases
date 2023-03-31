@@ -45,6 +45,8 @@ alias ta='t apply'
 alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
 alias gcof='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff --color=always {1}"  | xargs git checkout'
 alias gcofd='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff --color=always {1} | delta" --pointer="" | xargs git checkout'
+
+# Kubernetes
 alias kubefp='kubectl get pods | fzf | awk '\''{print $1}'\'''
 alias kubelogs='kubefp | xargs kubectl logs'
 alias kubebash='kubefp | xargs -I@ kubectl exec --stdin --tty @ -- /bin/bash'
