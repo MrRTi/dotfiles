@@ -47,9 +47,11 @@ alias gcof='git branch --sort=-committerdate | fzf --header "Checkout Recent Bra
 alias gcofd='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff --color=always {1} | delta" --pointer="" | xargs git checkout'
 
 # Kubernetes
-alias kubefp='kubectl get pods | fzf | awk '\''{print $1}'\'''
+alias kubefp='export KUBE_NAMESPACE=$(kubefn) && kubectl get pods --field-selector=status.phase=Running -n ${KUBE_NAMESPACE:-default} | fzf | awk '\''{print $1}'\'''
 alias kubelogs='kubefp | xargs kubectl logs'
-alias kubebash='kubefp | xargs -I@ kubectl exec --stdin --tty @ -- /bin/bash'
+alias kubebash='kubeexec /bin/bash'
+alias kubefn='kubectl get namespace | fzf | awk '\''{print $1}'\'''
+alias kubeexec='kubefp | xargs -o -I@ kubectl exec -ti @ -c netology-rails -n ${KUBE_NAMESPACE:-default} -- '
 
 # yandex cloud
 alias ycls='yc compute instance list --format json | jq --raw-output '\''.[] | "\(.name) \(.status)"'\''' 
