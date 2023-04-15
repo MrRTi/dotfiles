@@ -15,7 +15,7 @@ alias catr='bat --paging=never'
 alias tmuxn='tmux new -As ${PWD##*/}'
 
 # docker-compose
-alias d='docker
+alias d='docker'
 alias dc='d compose'
 alias dcr='dc run --rm --use-aliases'
 alias dcrs='dcr --service-ports --use-aliases'
