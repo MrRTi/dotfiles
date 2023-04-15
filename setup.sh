@@ -4,7 +4,7 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 	sudo apt-get update
 	sudo apt-get -y install curl build-essential gcc
 elif [[ "$OSTYPE" == "darwin"* ]]; then
-	# Placeholder for Mac OS
+	echo 'Placeholder for Mac OS'
 fi
 
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
