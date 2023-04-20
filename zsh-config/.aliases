@@ -8,8 +8,9 @@ alias ~~='cd ~/'
 alias md='mkdir'
 alias sl='ls'
 alias ll='ls -la'
-alias cat='bat --style=plain --paging=never'
-alias catr='bat --paging=never'
+alias batp='bat --style=plain --paging=never'
+alias batn='bat --paging=never'
+alias zshr='source ~/.zshrc'
 
 # tmux
 alias tmuxn='tmux new -As ${PWD##*/}'
@@ -54,7 +55,7 @@ alias kubefn='kubectl get namespace | fzf | awk '\''{print $1}'\'''
 alias kubeexec='kubefp | xargs -o -I@ kubectl exec -ti @ -c netology-rails -n ${KUBE_NAMESPACE:-default} -- '
 
 # yandex cloud
-alias ycls='yc compute instance list --format json | jq --raw-output '\''.[] | "\(.name) \(.status)"'\''' 
+alias ycls='yc compute instance list --format json | jq --raw-output '\''.[] | "\(.name) \(.status)"'\'''
 alias ycfn='ycls | fzf | awk '\''{print $1}'\'''
 alias ycup=' ycfn | xargs yc compute instance start --name'
 alias ycstop=' ycfn | xargs yc compute instance stop --name'
