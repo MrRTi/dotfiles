@@ -10,15 +10,13 @@ COMPLETION_WAITING_DOTS="true"
 autoload -U compinit && compinit
 [[ -f $DOTFILES_PATH/zsh-config/.aliases ]] && . $DOTFILES_PATH/zsh-config/.aliases
 
-if [ -d "/home/linuxbrew/.linuxbrew/" ]; then
-  echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
-
 export STARSHIP_CONFIG=$DOTFILES_PATH/starship.toml
 eval "$(starship init zsh)"
 
 source $DOTFILES_PATH/antigen/antigen.zsh
 antigen init $DOTFILES_PATH/zsh-config/.antigenrc
+
+[ -f ~/yandex-cloud/path.bash.inc ] && source ~/yandex-cloud/path.bash.inc
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export DOCKER_DEFAULT_PLATFORM=linux/amd64

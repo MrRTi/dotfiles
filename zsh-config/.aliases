@@ -7,11 +7,13 @@ alias ~~='cd ~/'
 # shell
 alias md='mkdir'
 alias sl='ls'
-alias ll='ls -la'
+alias ll='lsd -la || ls -la'
 alias batp='bat --style=plain --paging=never'
 alias batn='bat --paging=never'
 alias zshr='source ~/.zshrc'
-
+function sshmux() {
+  ssh "$1" -t -- /bin/zsh -c 'tmux new -As ${PWD##*/}'
+}
 # tmux
 alias tmuxn='tmux new -As ${PWD##*/}'
 
