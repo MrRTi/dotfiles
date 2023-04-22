@@ -10,7 +10,6 @@ COMPLETION_WAITING_DOTS="true"
 autoload -U compinit && compinit
 [[ -f $DOTFILES_PATH/zsh-config/.aliases ]] && . $DOTFILES_PATH/zsh-config/.aliases
 
-export STARSHIP_CONFIG=$DOTFILES_PATH/starship.toml
 eval "$(starship init zsh)"
 
 source $DOTFILES_PATH/antigen/antigen.zsh
