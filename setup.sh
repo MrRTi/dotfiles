@@ -18,8 +18,11 @@ fi
 
 brew bundle --file ./Brewfile
 
+mv ~/.tmux.conf ~/.tmux.conf.bak
 ln -sf $(pwd)/.tmux.conf ~/.tmux.conf
+mv ~/.vimrc ~/.vimrc.bak
 ln -sf $(pwd)/vim-config/.vimrc ~/.vimrc
+mv ~/.config/alacritty ~/.config/alacritty-bak
 ln -sf $(pwd)/alacritty/ ~/.config/alacritty
 
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
