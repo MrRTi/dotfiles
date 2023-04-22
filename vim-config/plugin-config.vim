@@ -1,7 +1,7 @@
 " set termguicolors
 let g:gruvbox_italic=1
 colorscheme gruvbox
-set background=dark
+set background=light
 hi Normal guibg=NONE ctermbg=NONE
 let g:terminal_ansi_colors = [
     \ '#282828', '#cc241d', '#98971a', '#d79921',
