@@ -24,6 +24,8 @@ brew "tealdeer"
 brew "git-delta"
 brew "lazygit"
 brew "bat"
+brew "lsd"
+
 cask "browserosaurus"
 cask "font-jetbrains-mono-nerd-font"
 

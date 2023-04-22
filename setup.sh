@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p ~/.config
+
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 	sudo apt-get update
 	sudo apt-get -y install curl build-essential gcc
@@ -16,8 +18,9 @@ fi
 
 brew bundle --file ./Brewfile
 
-ln -sf ./.tmux.conf ~/.tmux.conf
-ln -sf ./vim-config/.vimrc ~/.vimrc
+ln -sf $(pwd)/.tmux.conf ~/.tmux.conf
+ln -sf $(pwd)/vim-config/.vimrc ~/.vimrc
+ln -sf $(pwd)/alacritty/ ~/.config/alacritty
 
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
