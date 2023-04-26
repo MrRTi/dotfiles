@@ -12,7 +12,7 @@ autoload -U compinit && compinit
 
 eval "$(starship init zsh)"
 
-source $DOTFILES_PATH/antigen/antigen.zsh
+source $HOMEBREW_PREFIX/share/antigen/antigen.zsh
 antigen init $DOTFILES_PATH/zsh-config/.antigenrc
 
 [ -f ~/yandex-cloud/path.bash.inc ] && source ~/yandex-cloud/path.bash.inc
