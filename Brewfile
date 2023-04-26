@@ -28,7 +28,7 @@ brew "lsd"
 brew "neovim"
 brew "fd"
 brew "bottom"
-brew "antigen"
+brew "antidote"
 
 cask "browserosaurus"
 cask "font-jetbrains-mono-nerd-font"
