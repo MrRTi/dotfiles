@@ -18,4 +18,6 @@ antigen init $DOTFILES_PATH/zsh-config/.antigenrc
 [ -f ~/yandex-cloud/path.bash.inc ] && source ~/yandex-cloud/path.bash.inc
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+export ZSH_TMUX_CONFIG=~/.config/tmux/tmux.conf
+export EDITOR=nvim
 export DOCKER_DEFAULT_PLATFORM=linux/amd64

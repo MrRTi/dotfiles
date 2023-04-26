@@ -18,8 +18,10 @@ fi
 
 brew bundle --file ./Brewfile
 
-mv ~/.config/tmux ~/.config/tmux.bak
-ln -sf $(pwd)/.config/tmux ~/.config/tmux
+mv ~/.config/tmux/tmux.conf ~/.config/tmux/tmux.conf.bak
+mkdip -p ~/.config/tmux
+ln -sf $(pwd)/.config/tmux/tmux.conf ~/.config/tmux/tmux.conf
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 mv ~/.vimrc ~/.vimrc.bak
 ln -sf $(pwd)/vim-config/.vimrc ~/.vimrc
@@ -30,16 +32,19 @@ ln -sf $(pwd)/.config/alacritty/ ~/.config/alacritty
 mv ~/.config/lsd ~/.config/lsd.bak
 ln -sf $(pwd)/.config/lsd ~/.config/lsd
 
-
-git clone https://github.com/MrRTi/astronvim-config.git ~/astronvim-config
-mv ~/.config/astronvim ~/.config/astronvim.bak
-mkdir -p ~/.config/astronvim/lua/user
-ln -sf ~/astronvim-config ~/.config/astronvim/lua/user
+mv ~/.config/starship.toml ~/.config/starship.toml.bak
+ln -sf $(pwd)/.config/starship.toml ~/.config/starship.toml
 
 mv ~/.config/nvim ~/.config/nvim.bak
 mv ~/.local/share/nvim ~/.local/share/nvim.bak
 mv ~/.local/state/nvim ~/.local/state/nvim.bak
 mv ~/.cache/nvim ~/.cache/nvim.bak
+
+git clone --depth 1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
+git clone https://github.com/MrRTi/astronvim-config.git ~/astronvim-config
+mv ~/.config/astronvim ~/.config/astronvim.bak
+mkdir -p ~/.config/astronvim/lua
+ln -sf ~/astronvim-config ~/.config/astronvim/lua/user
 
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
