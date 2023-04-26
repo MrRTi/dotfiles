@@ -4,7 +4,6 @@ CASE_SENSITIVE="true"
 ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 
-autoload -U compinit && compinit
 [[ -f $DOTFILES_PATH/zsh-config/.aliases ]] && . $DOTFILES_PATH/zsh-config/.aliases
 
 eval "$(starship init zsh)"
@@ -23,6 +22,22 @@ if [[ ! $zsh_plugins -nt ${zsh_plugins:r}.txt ]]; then
   (antidote bundle <${zsh_plugins:r}.txt >|$zsh_plugins)
 fi
 source $zsh_plugins
+
+autoload -Uz compinit
+ZSH_COMPDUMP=${ZSH_COMPDUMP:-${ZDOTDIR:-~}/.zcompdump}
+
+# cache .zcompdump for about a day
+if [[ $ZSH_COMPDUMP(#qNmh-20) ]]; then
+  compinit -C -d "$ZSH_COMPDUMP"
+else
+  compinit -i -d "$ZSH_COMPDUMP"; touch "$ZSH_COMPDUMP"
+fi
+{
+  # compile .zcompdump
+  if [[ -s "$ZSH_COMPDUMP" && (! -s "${ZSH_COMPDUMP}.zwc" || "$ZSH_COMPDUMP" -nt "${ZSH_COMPDUMP}.zwc") ]]; then
+    zcompile "$ZSH_COMPDUMP"
+  fi
+} &!
 
 export ZSH_TMUX_CONFIG=~/.config/tmux/tmux.conf
 export EDITOR=nvim
