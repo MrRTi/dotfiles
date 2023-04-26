@@ -6,7 +6,7 @@ COMPLETION_WAITING_DOTS="true"
 
 [[ -f $DOTFILES_PATH/zsh-config/.aliases ]] && . $DOTFILES_PATH/zsh-config/.aliases
 
-eval "$(starship init zsh)"
+# eval "$(starship init zsh)"
 
 [ -f ~/yandex-cloud/path.bash.inc ] && source ~/yandex-cloud/path.bash.inc
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -38,6 +38,10 @@ fi
     zcompile "$ZSH_COMPDUMP"
   fi
 } &!
+
+fpath+=("$(brew --prefix)/share/zsh/site-functions")
+autoload -U promptinit; promptinit
+prompt pure
 
 export ZSH_TMUX_CONFIG=~/.config/tmux/tmux.conf
 export EDITOR=nvim
