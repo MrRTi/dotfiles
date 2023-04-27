@@ -3,6 +3,7 @@
 mkdir -p ~/.config
 mkdir -p ~/.config/tmux
 mkdir -p ~/.config/astronvim/lua
+mkdir -p ~/.config/alacritty
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 	sudo apt-get update
@@ -27,6 +28,7 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 git clone --depth 1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
 git clone https://github.com/MrRTi/astronvim-config.git ~/astronvim-config
+git clone https://github.com/catppuccin/alacritty.git ~/.config/alacritty/catppuccin
 
 ./scripts/link-files.sh
 

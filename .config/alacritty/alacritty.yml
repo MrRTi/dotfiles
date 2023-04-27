@@ -9,7 +9,11 @@
 # All imports must either be absolute paths starting with `/`, or paths relative
 # to the user's home directory starting with `~/`.
 import:
-  - ~/.config/alacritty/themes/themes/night_owlish_light.yaml
+#  - ~/.config/alacritty/catppuccin/catppuccin-mocha.yml
+#  - ~/.config/alacritty/catppuccin/catppuccin-macchiato.yml
+#  - ~/.config/alacritty/catppuccin/catppuccin-frappe.yml
+  - ~/.config/alacritty/catppuccin/catppuccin-latte.yml 
+#  - ~/.config/alacritty/themes/themes/night_owlish_light.yaml
 
 # Any items in the `env` entry below will be added as
 # environment variables. Some entries may override variables
