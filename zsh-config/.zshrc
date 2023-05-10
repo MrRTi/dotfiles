@@ -11,6 +11,10 @@ COMPLETION_WAITING_DOTS="true"
 [ -f ~/yandex-cloud/path.bash.inc ] && source ~/yandex-cloud/path.bash.inc
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+if [ -d "/home/linuxbrew/.linuxbrew/" ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
 antidote load
 
