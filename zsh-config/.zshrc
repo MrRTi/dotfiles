@@ -15,6 +15,7 @@ if [ -d "/home/linuxbrew/.linuxbrew/" ]; then
 fi
 
 source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
+source $(brew --prefix)/opt/gitstatus/gitstatus.prompt.zsh
 antidote load
 
 zsh_plugins=${ZDOTDIR:-~}/.zsh_plugins.zsh
@@ -59,5 +60,5 @@ setopt appendhistory
 
 NEWLINE=$'\n'
 RPROMPT="%?"
-PROMPT="%F{cyan}%n@%m %F{yellow}%~ %F{blue}$(current_git_branch_name) ${NEWLINE}%F{green}>%f %"
+PROMPT="%F{cyan}%n@%m %F{yellow}%~ %F{blue}$GITSTATUS_PROMPT ${NEWLINE}%F{green}>%f %"
 
