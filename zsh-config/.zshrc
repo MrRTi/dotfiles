@@ -5,7 +5,6 @@ ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 
 [[ -f $DOTFILES_PATH/zsh-config/.aliases ]] && . $DOTFILES_PATH/zsh-config/.aliases
-[[ -f $DOTFILES_PATH/zsh-config/git_helper ]] && . $DOTFILES_PATH/zsh-config/git_helper
 
 [ -f ~/yandex-cloud/path.bash.inc ] && source ~/yandex-cloud/path.bash.inc
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
