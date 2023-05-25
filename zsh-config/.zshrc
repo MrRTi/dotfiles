@@ -5,8 +5,7 @@ ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 
 [[ -f $DOTFILES_PATH/zsh-config/.aliases ]] && . $DOTFILES_PATH/zsh-config/.aliases
-
-# eval "$(starship init zsh)"
+[[ -f $DOTFILES_PATH/zsh-config/git_helper ]] && . $DOTFILES_PATH/zsh-config/git_helper
 
 [ -f ~/yandex-cloud/path.bash.inc ] && source ~/yandex-cloud/path.bash.inc
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -45,7 +44,6 @@ fi
 
 fpath+=("$(brew --prefix)/share/zsh/site-functions")
 autoload -U promptinit; promptinit
-prompt pure
 
 export ZSH_TMUX_CONFIG=~/.config/tmux/tmux.conf
 export EDITOR=nvim
@@ -58,3 +56,8 @@ HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 setopt appendhistory
+
+NEWLINE=$'\n'
+RPROMPT="%?"
+PROMPT="%F{cyan}%n@%m %F{yellow}%~ %F{blue}$(current_git_branch_name) ${NEWLINE}%F{green}>%f %"
+
