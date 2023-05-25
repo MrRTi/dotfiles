@@ -61,9 +61,9 @@ NEWLINE=$'\n'
 
 function my_set_prompt() {
   RPROMPT="%?"
+  PROMPT="%F{cyan}%n@%m %F{yellow}%~ %F{blue}"
 
   if gitstatus_query MY && [[ $VCS_STATUS_RESULT == ok-sync ]]; then
-    PROMPT="%F{cyan}%n@%m %F{yellow}%~ %F{blue}"
     PROMPT+="%F{green}${${VCS_STATUS_LOCAL_BRANCH:-@${VCS_STATUS_COMMIT}}//\%/%%}"  # escape %
 
     local      clean='%76F'   # green foreground
@@ -94,13 +94,12 @@ function my_set_prompt() {
     # ?42 if have untracked files. It's really a question mark, your font isn't broken.
     (( VCS_STATUS_NUM_UNTRACKED  )) && PROMPT+=" ${untracked}?${VCS_STATUS_NUM_UNTRACKED}"
 
-    PROMPT+="${NEWLINE}%F{green}>%f %"
   fi
 
+  PROMPT+="${NEWLINE}%F{green}>%f %"
   setopt no_prompt_{bang,subst} prompt_percent  # enable/disable correct prompt expansions
 }
 
 gitstatus_stop 'MY' && gitstatus_start -s -1 -u -1 -c -1 -d -1 'MY'
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd my_set_prompt
-
