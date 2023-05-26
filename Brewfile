@@ -30,6 +30,7 @@ brew "fd"
 brew "bottom"
 brew "antidote"
 brew "romkatv/gitstatus/gitstatus"
+brew "ripgrep"
 
 cask "browserosaurus"
 cask "font-jetbrains-mono-nerd-font"
