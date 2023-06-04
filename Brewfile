@@ -31,8 +31,6 @@ brew "bottom"
 brew "antidote"
 brew "romkatv/gitstatus/gitstatus"
 brew "ripgrep"
-brew "rbenv" 
-brew "ruby-build"
 
 cask "browserosaurus"
 cask "font-jetbrains-mono-nerd-font"
