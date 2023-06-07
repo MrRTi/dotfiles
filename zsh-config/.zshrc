@@ -58,7 +58,7 @@ HISTSIZE=10000
 SAVEHIST=10000
 setopt appendhistory
 
-[[ -f $DOTFILES_PATH/zsh-config/.zsh_promt ]] && . $DOTFILES_PATH/zsh-config/.zsh_promt
+[[ -f $DOTFILES_PATH/zsh-config/.zsh_prompt ]] && . $DOTFILES_PATH/zsh-config/.zsh_prompt
 
 direnv version && eval "$(direnv hook zsh)"
 
