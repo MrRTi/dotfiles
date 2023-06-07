@@ -60,7 +60,9 @@ setopt appendhistory
 
 [[ -f $DOTFILES_PATH/zsh-config/.zsh_prompt ]] && . $DOTFILES_PATH/zsh-config/.zsh_prompt
 
-direnv version && eval "$(direnv hook zsh)"
+if command -v direnv &> /dev/null; then
+  eval "$(direnv hook zsh)"
+; fi 
 
 if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then 
   . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
