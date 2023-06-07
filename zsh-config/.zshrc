@@ -62,3 +62,6 @@ setopt appendhistory
 
 direnv version && eval "$(direnv hook zsh)"
 
+if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then 
+  . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+; fi
