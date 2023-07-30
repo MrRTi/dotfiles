@@ -60,10 +60,6 @@ setopt appendhistory
 
 [[ -f $DOTFILES_PATH/zsh-config/.zsh_prompt ]] && . $DOTFILES_PATH/zsh-config/.zsh_prompt
 
-if command -v direnv &> /dev/null; then
-  eval "$(direnv hook zsh)"
-; fi
-
 function my_set_prompt() {
   RPROMPT="%?"
   PROMPT="%F{cyan}%n@%m %F{yellow}%~ %F{blue}"
