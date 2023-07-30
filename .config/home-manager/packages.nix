@@ -19,50 +19,46 @@ pkgs: with pkgs; [
   #   echo "Hello, ${config.home.username}!"
   # '')
   (nerdfonts.override { fonts = ["JetBrainsMono"]; })
-  git
-  tmux
-  curl
-  #
-  # Shell prompt tools
-  gitstatus
-  #
-  # Home manager dir related shells
-  lorri
-  direnv
-  #
-  # Neovim essentials
-  ripgrep
-  lazygit
-  tree
-  tree-sitter
-  #
-  neovim
-  #
-  # CLI tools 
-  tealdeer
-  fzf
-  broot
-  htop
-  bottom
   bat
-  jq
-  lsd
-  # Containerization
-  # docker
-  # docker-compose
-  podman
-  podman-compose
-  kubectl
-  k9s
-  packer
-  # Terminal
-  kitty
-  # Programming tools
-  just
-  #
-  # Plaintext banking
+  bottom
+  broot
+  curl
+  # direnv
+  # docker #
+  # docker-compose #
+  fontconfig
+  fzf
+  git
+  gitstatus
   hledger
   hledger-ui
   hledger-web
+  htop
+  jq
+  just
+  k9s
+  # kitty #
+  kubectl
+  lazygit
+  # lorri
+  lsd
+  neovim
+  nixfmt
+  nodejs_20
+  nodePackages.neovim
+  packer
+  pandoc
+  # podman #
+  # podman-compose #
+  python310
+  python311Packages.pip
+  python310Packages.pynvim
+  ripgrep
+  ruby # gem install neovim
+  shellcheck
+  tealdeer
+  terraform
+  tmux
+  tree
+  tree-sitter
 ]
-
