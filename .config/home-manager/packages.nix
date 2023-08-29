@@ -19,17 +19,20 @@ pkgs: with pkgs; [
   #   echo "Hello, ${config.home.username}!"
   # '')
   (nerdfonts.override { fonts = ["JetBrainsMono"]; })
+  ack
+  autojump
   bat
   bottom
   broot
+  colordiff
   curl
   # direnv
   # docker #
   # docker-compose #
+  fd
   fontconfig
   fzf
   git
-  gitstatus
   hledger
   hledger-ui
   hledger-web
@@ -42,10 +45,12 @@ pkgs: with pkgs; [
   lazygit
   # lorri
   lsd
+  mc
   neovim
   nixfmt
   nodejs_20
   nodePackages.neovim
+  openssh
   packer
   pandoc
   # podman #
@@ -53,9 +58,11 @@ pkgs: with pkgs; [
   python310
   python311Packages.pip
   python310Packages.pynvim
+  qemu
   ripgrep
-  ruby # gem install neovim
+  ruby
   shellcheck
+  snappy
   tealdeer
   terraform
   tmux
