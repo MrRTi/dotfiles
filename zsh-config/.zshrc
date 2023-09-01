@@ -15,7 +15,14 @@ if [ -d "/home/linuxbrew/.linuxbrew/" ]; then
 fi
 
 source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
-source $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh
+
+if [[ -f $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh ]]; then
+  source $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh
+fi
+if [[ -f ~/gitstatus/gitstatus.plugin.zsh ]]; then 
+  source ~/gitstatus/gitstatus.plugin.zsh 
+fi
+
 antidote load
 
 zsh_plugins=${ZDOTDIR:-~}/.zsh_plugins.zsh
