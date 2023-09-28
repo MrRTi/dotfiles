@@ -1,7 +1,7 @@
 NEWLINE=$'\n'
 
 function my_set_prompt() {
-  RPROMPT="%?"
+  #RPROMPT="%?"
   PROMPT="%F{cyan}%n@%m %F{yellow}%~ %F{blue}"
 
   if gitstatus_query MY && [[ $VCS_STATUS_RESULT == ok-sync ]]; then
@@ -37,7 +37,7 @@ function my_set_prompt() {
 
   fi
 
-  PROMPT+="${NEWLINE}%F{green}>%f %"
+  PROMPT+="${NEWLINE}%(?..%B(%?%)%b)%F{green}>%f %"
   setopt no_prompt_{bang,subst} prompt_percent  # enable/disable correct prompt expansions
 }
 
