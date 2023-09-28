@@ -13,11 +13,8 @@
   #   org.gradle.daemon.idletimeout=3600000
   # '';
   ".config/tmux/tmux.conf".source = ~/.dotfiles/.config/tmux/tmux.conf;
-  ".config/kitty".source = ~/.dotfiles/.config/kitty;
-  ".vimrc".source = ~/.dotfiles/vim-config/.vimrc;
   ".config/alacritty/alacritty.yml".source = ~/.dotfiles/.config/alacritty/alacritty.yml; 
   ".config/lsd".source = ~/.dotfiles/.config/lsd;
   ".zsh_plugins.txt".source = ~/.dotfiles/zsh-config/.zsh_plugins.txt;
-  ".config/astronvim/lua/user".source = ~/astronvim-config;
 }
 

@@ -26,9 +26,6 @@ pkgs: with pkgs; [
   broot
   colordiff
   curl
-  # direnv
-  # docker #
-  # docker-compose #
   fd
   fontconfig
   fzf
@@ -40,10 +37,8 @@ pkgs: with pkgs; [
   jq
   just
   k9s
-  # kitty #
   kubectl
   lazygit
-  # lorri
   lsd
   mc
   neovim
@@ -53,11 +48,6 @@ pkgs: with pkgs; [
   openssh
   packer
   pandoc
-  # podman #
-  # podman-compose #
-  python310
-  python311Packages.pip
-  python310Packages.pynvim
   qemu
   ripgrep
   ruby
