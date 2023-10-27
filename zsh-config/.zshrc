@@ -69,3 +69,5 @@ setopt appendhistory
 if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then 
   . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 ; fi
+
+[ -f /opt/homebrew/etc/profile.d/autojump.sh ] && . /opt/homebrew/etc/profile.d/autojump.sh
