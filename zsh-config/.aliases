@@ -38,6 +38,7 @@ function tmuxswitch() {
 alias tswitch='tmuxswitch'
 alias ta='tswitch $(ts)'
 alias tn='tswitch $(pwds) || tnd && tswitch $(pwds)' 
+alias tk='t kill-session -t $(pwds)'
 
 # docker-compose
 alias d='docker'
