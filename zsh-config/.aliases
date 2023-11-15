@@ -92,5 +92,9 @@ alias ycfn='ycls | fzf | awk '\''{print $1}'\'''
 alias ycup=' ycfn | xargs yc compute instance start --name'
 alias ycstop=' ycfn | xargs yc compute instance stop --name'
 
-#brew
+# brew
 alias rebrew='brew bundle --file ${DOTFILES_PATH}/Brewfile'
+
+# home-mamager
+alias hm='home-manager'
+alias hms='hm switch'

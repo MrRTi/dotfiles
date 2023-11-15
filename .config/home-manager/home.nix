@@ -20,7 +20,6 @@
   home.packages = import ./packages.nix pkgs; 
   home.file = import ./files.nix;
   home.sessionVariables = import ./env_vars.nix; 
-  home.shellAliases = import ./aliases.nix;
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
