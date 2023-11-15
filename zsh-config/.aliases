@@ -105,4 +105,5 @@ alias rebrew='brew bundle --file ${DOTFILES_PATH}/Brewfile'
 
 # home-mamager
 alias hm='home-manager'
+alias hmb='hm build'
 alias hms='hm switch'
