@@ -11,6 +11,7 @@ alias ll='lsd -la || ls -la'
 alias batp='bat --style=plain --paging=never'
 alias batn='bat --paging=never'
 alias zshr='source ~/.zshrc'
+alias pwds='echo ${PWD##*/} | sed "s/^./_/g"' 
 
 function sshmux() {
   ssh "$1" -t -- /bin/zsh -c 'tmux new -As ${PWD##*/}'
@@ -18,15 +19,14 @@ function sshmux() {
 
 alias vim='nvim'
 alias v='vim'
-alias vimf='vim .'
+alias vf='v .'
 
 alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
 
 # tmux
 alias t='tmux'
-alias tns='t new -As ${PWD##*/}'
+alias tns='t new -As $(pwds)'
 alias tnd='TMUX= tns -d'
-alias ta='tmuxa'
 alias ts='t ls -F "#{session_name}" | fzf'
 function tmuxswitch() {
   if [[ ! -z "${TMUX}" ]] then; 
@@ -37,7 +37,7 @@ function tmuxswitch() {
 }
 alias tswitch='tmuxswitch'
 alias ta='tswitch $(ts)'
-alias tn='tnd && tswitch ${PWD##*/}' 
+alias tn='tswitch $(pwds) || tnd && tswitch $(pwds)' 
 
 # docker-compose
 alias d='docker'
