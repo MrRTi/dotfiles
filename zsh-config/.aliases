@@ -11,11 +11,26 @@ alias ll='lsd -la || ls -la'
 alias batp='bat --style=plain --paging=never'
 alias batn='bat --paging=never'
 alias zshr='source ~/.zshrc'
+
 function sshmux() {
   ssh "$1" -t -- /bin/zsh -c 'tmux new -As ${PWD##*/}'
 }
+
+alias vim='nvim'
+alias vimf='vim .'
+
+alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
+
 # tmux
 alias tmuxn='tmux new -As ${PWD##*/}'
+
+function tmuxa() {
+  if [[ ! -z "${TMUX}" ]] then; 
+    tmux switch -t "$(tmux ls -F '#{session_name}' | fzf)"
+  else
+    tmux attach -t "$(tmux ls -F '#{session_name}' | fzf)"
+  fi
+}
 
 # docker-compose
 alias d='docker'
@@ -47,17 +62,22 @@ alias gpt='gp && gp --tags'
 alias gpuo='gp -u origin'
 alias gpfo='gp -f origin'
 alias glol='g log --graph --pretty='\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\'
+alias gcof='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff --color=always {1}"  | xargs git checkout'
+alias gcofd='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff --color=always {1} | delta" --pointer="" | xargs git checkout'
+
+# git worktree
+alias gw='g worktree'
+alias gwl='gw list'
+alias gwroot='gwl | grep bare | awk '\''{print $1}'\'''
+alias gwa='gb | fzf | xargs -I@ gw add @  ${gwroot}\@'
+alias gwd='gb | fzf | xargs -I@ gw remove @'
+alias gws='cd $(gwl | awk '\''{print ($3 == "" ? "(root)" : $3), $1}'\'' | fzf | awk '\''{print $2}'\'')' 
 
 # terraform
 alias t='terraform'
 alias ti='t init'
 alias tp='t plan'
 alias ta='t apply'
-
-# complex aliases
-alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
-alias gcof='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff --color=always {1}"  | xargs git checkout'
-alias gcofd='git branch --sort=-committerdate | fzf --header "Checkout Recent Branch" --preview "git diff --color=always {1} | delta" --pointer="" | xargs git checkout'
 
 # Kubernetes
 alias kubefp='export KUBE_NAMESPACE=$(kubefn) && kubectl get pods --field-selector=status.phase=Running -n ${KUBE_NAMESPACE:-default} | fzf | awk '\''{print $1}'\'''
