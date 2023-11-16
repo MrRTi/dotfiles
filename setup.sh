@@ -2,7 +2,6 @@
 
 mkdir -p ~/.config
 mkdir -p ~/.config/tmux
-mkdir -p ~/.config/astronvim/lua
 mkdir -p ~/.config/alacritty
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
@@ -24,10 +23,6 @@ brew bundle --file ./Brewfile
 ./scripts/back-up-configs.sh
 
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-	https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-git clone --depth 1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim
-git clone https://github.com/MrRTi/astronvim-config.git ~/astronvim-config
 git clone https://github.com/catppuccin/alacritty.git ~/.config/alacritty/catppuccin
 
 ./scripts/link-files.sh
@@ -36,7 +31,7 @@ git clone https://github.com/catppuccin/alacritty.git ~/.config/alacritty/catppu
 . ~/.zshrc
 
 
-echo Setup ssh keys? (Y/N)
+echo "Setup ssh keys? (Y/N)"
 read SETUP_SSH_KEYS_ENABLED 
 if [[ $SETUP_SSH_KEYS_ENABLED == 'Y' ]]; then
   ./scripts/ssh-keys.sh
@@ -45,7 +40,7 @@ else
 fi
 
 
-echo Setup git config? (Y/N)
+echo "Setup git config? (Y/N)"
 read SETUP_GIT_CONFIG_ENABLED 
 if [[ $SETUP_GIT_CONFIG_ENABLED == 'Y' ]]; then
 	./scripts/git.sh

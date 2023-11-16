@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Setup git
-INIT_PWD = pwd
+INIT_PWD=pwd
 
 touch ~/.gitconfig
 
@@ -43,4 +43,4 @@ do
   echo  email = $GIT_EMAIL >> $GIT_CONFIG_FILE_PATH
 done
 
-cd $INIT_PWD
+cd $INIT_PWD || exit
