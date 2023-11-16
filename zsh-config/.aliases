@@ -7,7 +7,7 @@ alias ~~='cd ~/'
 # shell
 alias md='mkdir'
 alias sl='ls'
-alias ll='lsd -la || ls -la'
+alias ll='lsd -la $1 || ls -la $1'
 alias batp='bat --style=plain --paging=never'
 alias batn='bat --paging=never'
 alias zshr='source ~/.zshrc'
@@ -35,7 +35,7 @@ alias t='tmux'
 function tmux_new_session() {
   local SESSION_PATH=${1:-$(pwds)}
   local SESSION_NAME=$(rfdwu ${SESSION_PATH##*/})
-  TMUX= t new -c ${SESSION_PATH} -s ${SESSION_NAME} -d && tswitch ${SESSION_NAME}
+  TMUX= t new -c ${SESSION_PATH} -As ${SESSION_NAME} -d && tswitch ${SESSION_NAME}
 }
 alias tns='tmux_new_session' 
 # tmux session name
