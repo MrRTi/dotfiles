@@ -11,7 +11,7 @@ alias ll='lsd -la || ls -la'
 alias batp='bat --style=plain --paging=never'
 alias batn='bat --paging=never'
 alias zshr='source ~/.zshrc'
-alias pwds='echo ${PWD##*/} | sed "s/^./_/g"' 
+alias pwds='echo ${PWD##*/} | sed "s/^\./_/g"' 
 
 function sshmux() {
   ssh "$1" -t -- /bin/zsh -c 'tmux new -As ${PWD##*/}'
