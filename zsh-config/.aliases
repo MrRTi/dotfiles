@@ -11,7 +11,11 @@ alias ll='lsd -la || ls -la'
 alias batp='bat --style=plain --paging=never'
 alias batn='bat --paging=never'
 alias zshr='source ~/.zshrc'
-alias pwds='echo ${PWD##*/} | sed "s/^\./_/g"' 
+function replace_first_dot_with_underscore() {
+  echo $1 | sed "s/^\./_/g"
+}
+alias rfdwu='replace_first_dot_with_underscore'
+alias pwds='rfdwu ${PWD##*/}' 
 
 function sshmux() {
   ssh "$1" -t -- /bin/zsh -c 'tmux new -As ${PWD##*/}'
@@ -25,20 +29,33 @@ alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-win
 
 # tmux
 alias t='tmux'
-alias tns='t new -As $(pwds)'
-alias tnd='TMUX= tns -d'
-alias ts='t ls -F "#{session_name}" | fzf'
-function tmuxswitch() {
+# tmux new session in specified or current folder
+function tmux_new_session() {
+  local SESSION_PATH=${1:-$(pwds)}
+  local SESSION_NAME=$(rfdwu ${SESSION_PATH##*/})
+  TMUX= t new -c ${SESSION_PATH} -s ${SESSION_NAME} -d && tswitch ${SESSION_NAME}
+}
+alias tns='tmux_new_session' 
+# tmux session name
+alias tsn='t ls -F "#{session_name}" | fzf'
+# tmux attach on switch if already in tmux
+function tmux_switch() {
   if [[ ! -z "${TMUX}" ]] then; 
     tmux switch -t "$1"
   else
     tmux attach -t "$1"
   fi
 }
-alias tswitch='tmuxswitch'
-alias ta='tswitch $(ts)'
-alias tn='tswitch $(pwds) || tnd && tswitch $(pwds)' 
-alias tk='t kill-session -t $(pwds)'
+alias tswitch='tmux_switch'
+# tmux attach (or switch) with fuzy searching of session name
+alias ta='tswitch $(tsn)'
+# attach OR create new session in specified or current folder
+function tmux_attach_or_create() {
+  tswitch ${1:-$(pwds)} || tns
+}
+alias tn='tmux_attach_or_create' 
+# kill session
+alias tk='t kill-session -t $(tsn)'
 
 # docker-compose
 alias d='docker'
