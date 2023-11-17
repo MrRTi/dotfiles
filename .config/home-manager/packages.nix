@@ -22,7 +22,7 @@ pkgs: with pkgs; [
   ack
   autojump
   bat
-  bottom
+  btop
   broot
   colordiff
   curl
@@ -45,7 +45,6 @@ pkgs: with pkgs; [
   nodejs_20
   nodePackages.neovim
   openssh
-  packer
   pandoc
   qemu
   ripgrep
