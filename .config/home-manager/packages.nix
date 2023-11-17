@@ -40,7 +40,6 @@ pkgs: with pkgs; [
   kubectl
   lazygit
   lsd
-  mc
   neovim
   nixfmt
   nodejs_20
