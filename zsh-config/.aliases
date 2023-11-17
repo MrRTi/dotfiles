@@ -7,7 +7,10 @@ alias ~~='cd ~/'
 # shell
 alias md='mkdir'
 alias sl='ls'
-alias ll='lsd -la $1 || ls -la $1'
+function lsla() {
+  lsd -la $1 || ls -la $1
+}
+alias ll='lsla'
 alias batp='bat --style=plain --paging=never'
 alias batn='bat --paging=never'
 alias zshr='source ~/.zshrc'
@@ -16,6 +19,10 @@ function replace_first_dot_with_underscore() {
 }
 alias rfdwu='replace_first_dot_with_underscore'
 alias pwds='rfdwu ${PWD##*/}' 
+
+# brew
+alias brew="arch -arm64e /opt/homebrew/bin/brew" # arm64e homebrew path (m1)
+alias ibrew="arch -x86_64 /usr/local/bin/brew"    # x86_64 homebrew path (intel)
 
 function sshmux() {
   ssh "$1" -t -- /bin/zsh -c 'tmux new -As ${PWD##*/}'
