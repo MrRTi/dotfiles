@@ -40,11 +40,7 @@ alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-win
 alias t='tmux'
 # tmux new session in specified or current folder
 function tmux_new_session() {
-  echo $1
-  echo $(pwd)
-  echo $(pwds)
   local SESSION_PATH=${1:-$(pwd)}
-  echo $SESSION_PATH
   local SESSION_NAME=$(rfdwu ${SESSION_PATH##*/})
   TMUX= t new -c ${SESSION_PATH} -s ${SESSION_NAME} -d ; tmux_switch ${SESSION_NAME}
 }
@@ -132,6 +128,7 @@ alias ycstop=' ycfn | xargs yc compute instance stop --name'
 
 # brew
 alias rebrew='brew bundle --file ${DOTFILES_PATH}/Brewfile'
+alias brewdump='brew bundle dump --force --file=${DOTFILES_PATH}/Brewfile'
 
 # home-mamager
 alias hm='home-manager'
