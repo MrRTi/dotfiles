@@ -42,7 +42,7 @@ alias t='tmux'
 function tmux_new_session() {
   local SESSION_PATH=${1:-$(pwds)}
   local SESSION_NAME=$(rfdwu ${SESSION_PATH##*/})
-  TMUX= t new -c ${SESSION_PATH} -As ${SESSION_NAME} -d && tswitch ${SESSION_NAME}
+  TMUX= t new -c ${SESSION_PATH} -As ${SESSION_NAME} -d && tmux_switch ${SESSION_NAME}
 }
 alias tns='tmux_new_session' 
 # tmux session name
@@ -55,12 +55,11 @@ function tmux_switch() {
     tmux attach -t "$1"
   fi
 }
-alias tswitch='tmux_switch'
 # tmux attach (or switch) with fuzy searching of session name
-alias ta='tswitch $(tsn)'
+alias ta='tmux_switch $(tsn)'
 # attach OR create new session in specified or current folder
 function tmux_attach_or_create() {
-  tswitch ${1:-$(pwds)} || tns
+  tmux_switch ${1:-$(pwds)} || tns
 }
 alias tn='tmux_attach_or_create' 
 # kill session
