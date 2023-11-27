@@ -40,9 +40,13 @@ alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-win
 alias t='tmux'
 # tmux new session in specified or current folder
 function tmux_new_session() {
-  local SESSION_PATH=${1:-$(pwds)}
+  echo $1
+  echo $(pwd)
+  echo $(pwds)
+  local SESSION_PATH=${1:-$(pwd)}
+  echo $SESSION_PATH
   local SESSION_NAME=$(rfdwu ${SESSION_PATH##*/})
-  TMUX= t new -c ${SESSION_PATH} -As ${SESSION_NAME} -d && tmux_switch ${SESSION_NAME}
+  TMUX= t new -c ${SESSION_PATH} -s ${SESSION_NAME} -d ; tmux_switch ${SESSION_NAME}
 }
 alias tns='tmux_new_session' 
 # tmux session name
@@ -59,7 +63,7 @@ function tmux_switch() {
 alias ta='tmux_switch $(tsn)'
 # attach OR create new session in specified or current folder
 function tmux_attach_or_create() {
-  tmux_switch ${1:-$(pwds)} || tns
+  tmux_switch ${1:-$(pwds)} || tmux_new_session ${1:-$(pwd)}
 }
 alias tn='tmux_attach_or_create' 
 # kill session
