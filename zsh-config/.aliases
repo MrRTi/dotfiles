@@ -102,7 +102,7 @@ alias gcofd='git branch --sort=-committerdate | fzf --header "Checkout Recent Br
 alias gw='g worktree'
 alias gwl='gw list'
 alias gwroot='gwl | grep bare | awk '\''{print $1}'\'''
-alias gwa='gb | fzf | xargs -I@ git worktree add @  ${gwroot}\@'
+alias gwa='gb | fzf --print-query | head -n 1 | xargs -I@ git worktree add -b @ $(gwroot)/@'
 alias gwd='gwl | fzf | awk '\''{print $1}'\'' | xargs git worktree remove'
 alias gwdf='gwl | fzf | awk '\''{print $1}'\'' | xargs git worktree remove --force'
 alias gws='cd $(gwl | awk '\''{print ($3 == "" ? "(root)" : $3), $1}'\'' | fzf | awk '\''{print $2}'\'')' 
