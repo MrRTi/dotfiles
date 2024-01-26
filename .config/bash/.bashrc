@@ -19,5 +19,5 @@ shopt -s autocd
 # NOTE: Add gems executables to path
 gembin=`(gem env | sed -n "s/.*EXECUTABLE DIRECTORY: \(.*\)/\1/p")`
 export PATH=$gembin:$PATH
-
-
+export PATH="/opt/homebrew/bin:$PATH"
+export PATH="/opt/homebrew/sbin:$PATH"
