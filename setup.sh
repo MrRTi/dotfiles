@@ -27,8 +27,10 @@ git clone https://github.com/catppuccin/alacritty.git ~/.config/alacritty/catppu
 
 ./scripts/link-files.sh
 
-./scripts/zsh.sh
-. ~/.zshrc
+./scripts/bash.sh
+. ~/.bashrc
+# ./scripts/zsh.sh
+# . ~/.zshrc
 
 
 echo "Setup ssh keys? (Y/N)"

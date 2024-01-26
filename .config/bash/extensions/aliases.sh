@@ -1,32 +1,21 @@
+#! bin/bash
+
 # navigation
-alias cd..='cd ..'
 alias ..='cd ..'
-alias ....='cd ../../'
 alias ~~='cd ~/'
 
-# shell
+alias bashr='. ~/.bashrc'
+
 alias md='mkdir'
-alias sl='ls'
-function lsla() {
-  lsd -la $1 || ls -la $1
-}
+
 alias ll='lsla'
+
 alias batp='bat --style=plain --paging=never'
 alias batn='bat --paging=never'
-alias zshr='source ~/.zshrc'
-function replace_first_dot_with_underscore() {
-  echo $1 | sed "s/^\./_/g"
-}
-alias rfdwu='replace_first_dot_with_underscore'
-alias pwds='rfdwu ${PWD##*/}' 
 
 # brew
 alias brew="arch -arm64e /opt/homebrew/bin/brew" # arm64e homebrew path (m1)
 alias ibrew="arch -x86_64 /usr/local/bin/brew"    # x86_64 homebrew path (intel)
-
-function sshmux() {
-  ssh "$1" -t -- /bin/zsh -c 'tmux new -As ${PWD##*/}'
-}
 
 alias vim='nvim'
 alias v='vim'
@@ -35,35 +24,6 @@ alias vf='v .'
 alias c='clear'
 
 alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
-
-# tmux
-alias t='tmux'
-# tmux new session in specified or current folder
-function tmux_new_session() {
-  local SESSION_PATH=${1:-$(pwd)}
-  local SESSION_NAME=$(rfdwu ${SESSION_PATH##*/})
-  TMUX= t new -c ${SESSION_PATH} -s ${SESSION_NAME} -d ; tmux_switch ${SESSION_NAME}
-}
-alias tns='tmux_new_session' 
-# tmux session name
-alias tsn='t ls -F "#{session_name}" | fzf'
-# tmux attach on switch if already in tmux
-function tmux_switch() {
-  if [[ ! -z "${TMUX}" ]] then; 
-    tmux switch -t "$1"
-  else
-    tmux attach -t "$1"
-  fi
-}
-# tmux attach (or switch) with fuzy searching of session name
-alias ta='tmux_switch $(tsn)'
-# attach OR create new session in specified or current folder
-function tmux_attach_or_create() {
-  tmux_switch ${1:-$(pwds)} || tmux_new_session ${1:-$(pwd)}
-}
-alias tn='tmux_attach_or_create' 
-# kill session
-alias tk='t kill-session -t $(tsn)'
 
 # docker-compose
 alias d='docker'

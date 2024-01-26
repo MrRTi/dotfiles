@@ -4,23 +4,13 @@ CASE_SENSITIVE="true"
 ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 
-[[ -f $DOTFILES_PATH/zsh-config/.aliases ]] && . $DOTFILES_PATH/zsh-config/.aliases
+for f in $DOTFILES_PATH/.config/bash/extensions/*.sh; do source $f; done
+for f in $DOTFILES_PATH/.config/zsh/extensions/*.sh; do source $f; done
 
 [ -f ~/yandex-cloud/path.bash.inc ] && source ~/yandex-cloud/path.bash.inc
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-if [ -d "/home/linuxbrew/.linuxbrew/" ]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
-
 source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
-
-if [[ -f $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh ]]; then
-  source $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh
-fi
-if [[ -f ~/gitstatus/gitstatus.plugin.zsh ]]; then 
-  source ~/gitstatus/gitstatus.plugin.zsh 
-fi
 
 antidote load
 
@@ -63,8 +53,6 @@ HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 setopt appendhistory
-
-[[ -f $DOTFILES_PATH/zsh-config/.zsh_prompt ]] && . $DOTFILES_PATH/zsh-config/.zsh_prompt
 
 if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then 
   . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"

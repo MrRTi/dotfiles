@@ -1,3 +1,13 @@
+#! bin/zsh
+
+if [[ -f $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh ]]; then
+  source $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh
+fi
+if [[ -f ~/gitstatus/gitstatus.plugin.zsh ]]; then 
+  source ~/gitstatus/gitstatus.plugin.zsh 
+fi
+
+
 NEWLINE=$'\n'
 
 function my_set_prompt() {
