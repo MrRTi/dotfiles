@@ -19,6 +19,7 @@ COLOR_LIGHT_CYAN='\e[1;36m'
 COLOR_LIGHT_GRAY='\e[0;37m'
 COLOR_WHITE='\e[1;37m'
 
+[ -f ~/.git-prompt.sh ] || curl -L https://raw.github.com/git/git/master/contrib/completion/git-prompt.sh > ~/.git-prompt.sh
 [ -f ~/.git-prompt.sh ] && . ~/.git-prompt.sh
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWSTASHSTATE=1
@@ -27,4 +28,4 @@ export GIT_PS1_SHOWUPSTREAM="auto"
 export GIT_PS1_SHOWCONFLICTSTATE="yes"
 export GIT_PS1_SHOWCOLORHINTS=1
 
-export PROMPT_COMMAND='__git_ps1 "[\[$COLOR_CYAN\]\u@\h:\[$COLOR_YELLOW\]\W\[$COLOR_NC\]]" "\\\$ "'
+export PROMPT_COMMAND='__git_ps1 "[\[$COLOR_CYAN\]\u@\h:\[$COLOR_YELLOW\]\W\[$COLOR_NC\]" "\\\$ "'
