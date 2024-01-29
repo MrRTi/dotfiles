@@ -18,21 +18,23 @@ function tmux_switch() {
 
 # NOTE: Tmux new session in specified or current folder
 function tmux_new_session() {
-  local SESSION_PATH=${1:-$(pwd)}
-  local SESSION_NAME=$(replace_first_dot_with_underscore ${SESSION_PATH##*/})
+  SESSION_PATH=${1:-$(pwd)}
+  SESSION_NAME=$(replace_first_dot_with_underscore ${SESSION_PATH##*/})
+  echo $SESSION_PATH
+  echo $SESSION_NAME
   TMUX= tmux new -c ${SESSION_PATH} -s ${SESSION_NAME} -d 
   tmux_switch ${SESSION_NAME}
 }
 
 # NOTE: Attach to existing tmux session. Using fzf to select session
 function tmux_attach() {
-  local TMUX_SESSION=$(tmux ls -F "#{session_name}" | fzf)
+  TMUX_SESSION=$(tmux ls -F "#{session_name}" | fzf)
   tmux_switch $TMUX_SESSION 
 }
 
 # NOTE: Attach OR create new session in specified or current folder
 function tmux_attach_or_create() {
-  local PWD_FOR_SESSION_NAME=replace_first_dot_with_underscore ${PWD##*/}
+  PWD_FOR_SESSION_NAME=replace_first_dot_with_underscore ${PWD##*/}
   tmux_switch ${1:-$PWD_FOR_SESSION_NAME} || tmux_new_session ${1:-$(pwd)}
 }
 
