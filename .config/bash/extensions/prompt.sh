@@ -27,7 +27,7 @@ export GIT_PS1_SHOWUPSTREAM="auto"
 export GIT_PS1_SHOWCONFLICTSTATE="yes"
 export GIT_PS1_SHOWCOLORHINTS=1
 
-export PROMPT_COMMAND='__git_ps1 "[\u@\h:\W]" "\\\$ "'
+export PROMPT_COMMAND='__git_ps1 "[$COLOR_CYAN\u@\h:$COLOR_YELLOW\W$COLOR_NC]" "\\\$ "'
 
 # function prepare_prompt() {
 #   local PREV_EXIT_CODE=$1
