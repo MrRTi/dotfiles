@@ -28,24 +28,7 @@ export GIT_PS1_SHOWCONFLICTSTATE="yes"
 export GIT_PS1_SHOWCOLORHINTS=1
 
 export PROMPT_COMMAND='__git_ps1 "[\u@\h:\W]" "\\\$ "'
-# export PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$'
-#
-# function parse_git_dirty {
-#   STATUS="$(git status 2> /dev/null)"
-#   if [[ $? -ne 0 ]]; then printf ""; return; else printf "["; fi
-#   if echo ${STATUS} | grep -c "renamed:"         &> /dev/null; then printf " >"; else printf ""; fi
-#   if echo ${STATUS} | grep -c "branch is ahead:" &> /dev/null; then printf " !"; else printf ""; fi
-#   if echo ${STATUS} | grep -c "new file::"       &> /dev/null; then printf " +"; else printf ""; fi
-#   if echo ${STATUS} | grep -c "Untracked files:" &> /dev/null; then printf " ?"; else printf ""; fi
-#   if echo ${STATUS} | grep -c "modified:"        &> /dev/null; then printf " *"; else printf ""; fi
-#   if echo ${STATUS} | grep -c "deleted:"         &> /dev/null; then printf " -"; else printf ""; fi
-#   printf " ]"
-# }
-#
-# parse_git_branch() {
-   git rev-parse --abbrev-ref HEAD 2> /dev/null
-# }
-#
+
 # function prepare_prompt() {
 #   local PREV_EXIT_CODE=$1
 #   local ERR_MESSAGE=""
@@ -58,8 +41,3 @@ export PROMPT_COMMAND='__git_ps1 "[\u@\h:\W]" "\\\$ "'
 #   echo "$COLOR_CYAN\u@\h $COLOR_YELLOW\w $COLOR_GREEN$GIT_BRANCH $COLOR_RED$GIT_STATUS\n$ERR_MESSAGE$COLOR_LIGHT_GREEN\$$COLOR_NC"
 # }
 
-#
-# function prompt_command {
-#   local RET=$?
-#   export PS1=$(prepare_prompt $RET)
-# }
