@@ -28,16 +28,3 @@ export GIT_PS1_SHOWCONFLICTSTATE="yes"
 export GIT_PS1_SHOWCOLORHINTS=1
 
 export PROMPT_COMMAND='__git_ps1 "[$COLOR_CYAN\u@\h:$COLOR_YELLOW\W$COLOR_NC]" "\\\$ "'
-
-# function prepare_prompt() {
-#   local PREV_EXIT_CODE=$1
-#   local ERR_MESSAGE=""
-#   if [[ $PREV_EXIT_CODE != 0 ]]; then
-#     ERR_MESSAGE="$COLOR_RED[$PREV_EXIT_CODE]"
-#   fi
-#
-#   local GIT_BRANCH=$(parse_git_branch)
-#   local GIT_STATUS=$(parse_git_dirty)
-#   echo "$COLOR_CYAN\u@\h $COLOR_YELLOW\w $COLOR_GREEN$GIT_BRANCH $COLOR_RED$GIT_STATUS\n$ERR_MESSAGE$COLOR_LIGHT_GREEN\$$COLOR_NC"
-# }
-
