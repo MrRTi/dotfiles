@@ -1,4 +1,4 @@
-#! bin/zsh
+#! /bin/zsh
 
 if [[ -f $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh ]]; then
   source $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh

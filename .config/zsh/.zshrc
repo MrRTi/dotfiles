@@ -4,7 +4,7 @@ CASE_SENSITIVE="true"
 ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 
-for f in $DOTFILES_PATH/.config/bash/extensions/*.sh; do source $f; done
+for f in $DOTFILES_PATH/.config/shell/extensions/*.sh; do source $f; done
 for f in $DOTFILES_PATH/.config/zsh/extensions/*.sh; do source $f; done
 
 [ -f ~/yandex-cloud/path.bash.inc ] && source ~/yandex-cloud/path.bash.inc

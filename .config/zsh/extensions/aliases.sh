@@ -1,3 +1,3 @@
-#! bin/zsh
+#! /bin/zsh
 
 alias zshr='source ~/.zshrc'
