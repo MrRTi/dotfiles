@@ -1,7 +1,8 @@
 #! /bin/sh
 
 lsla() {
-  lsd -la "$1" || ls -la "$1"
+  FOLDER=${1:-$(pwd)}
+  lsd -la "$FOLDER" || ls -la "$FOLDER"
 }
 
 alias ll='lsla'

@@ -17,5 +17,4 @@ export PATH="$gembin":"$PATH"
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/sbin:$PATH"
 
-# shellcheck source=/dev/null
-[ -f "/opt/homebrew/etc/profile.d/autojump.sh" ] && . "/opt/homebrew/etc/profile.d/autojump.sh"
+add_file "/opt/homebrew/etc/profile.d/autojump.sh"

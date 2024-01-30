@@ -30,4 +30,6 @@ export GIT_PS1_SHOWUPSTREAM="auto"
 export GIT_PS1_SHOWCONFLICTSTATE="yes"
 export GIT_PS1_SHOWCOLORHINTS=1
 
-export PROMPT_COMMAND='__git_ps1 "[\[$COLOR_CYAN\]\u@\h:\[$COLOR_YELLOW\]\W\[$COLOR_NC\]]" "\\\$ "'
+USER_HOST="\[$COLOR_CYAN\]\u@\h:"
+[ -n "$TMUX" ] && USER_HOST=""
+export PROMPT_COMMAND='__git_ps1 "[$USER_HOST\[$COLOR_YELLOW\]\W\[$COLOR_NC\]]" "\\\$ "'
