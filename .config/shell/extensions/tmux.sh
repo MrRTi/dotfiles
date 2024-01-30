@@ -24,10 +24,13 @@ tmux_new_session() {
   tmux_switch "${SESSION_NAME}"
 }
 
+tmux_session_select() {
+  tmux ls -F "#{session_name}" | fzf
+}
+
 # NOTE: Attach to existing tmux session. Using fzf to select session
 tmux_attach() {
-  TMUX_SESSION=$(tmux ls -F "#{session_name}" | fzf)
-  tmux_switch "${TMUX_SESSION}" 
+  tmux_switch "$(tmux_session_select)" 
 }
 
 # NOTE: Attach OR create new session in specified or current folder
@@ -40,5 +43,5 @@ alias t='tmux'
 alias tns='tmux_new_session' 
 alias ta='tmux_attach'
 alias tn='tmux_attach_or_create' 
-alias tk='t kill-session -t $(tsn)' # kill session
+alias tk='t kill-session -t $(tmux_session_select)' # kill session
 
