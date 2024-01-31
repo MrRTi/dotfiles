@@ -10,8 +10,6 @@ COMPLETION_WAITING_DOTS="true"
 
 for f in $DOTFILES_PATH/.config/zsh/extensions/*.sh; do source $f; done || return
 add_file ~/.fzf.zsh
-add_file "$DOTFILES_PATH/.config/zsh/antidote.sh"
-add_file "$DOTFILES_PATH/.config/zsh/comp.sh"
 
 bindkey -e
 
