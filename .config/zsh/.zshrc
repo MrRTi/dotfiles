@@ -11,7 +11,10 @@ COMPLETION_WAITING_DOTS="true"
 for f in $DOTFILES_PATH/.config/zsh/extensions/*.sh; do source $f; done || return
 add_file ~/.fzf.zsh
 
-bindkey -e
+# NOTE: vim mode
+bindkey -v
+
+setopt auto_cd
 
 # History settings
 HISTFILE=~/.zsh_history
