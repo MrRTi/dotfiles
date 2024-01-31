@@ -8,7 +8,7 @@
 ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 
-for f in $DOTFILES_PATH/.config/zsh/extensions/*.sh; do source $f; done || return
+for f in $DOTFILES_PATH/.config/zsh/extensions/*.zsh; do source $f; done || return
 add_file ~/.fzf.zsh
 
 # NOTE: vim mode
