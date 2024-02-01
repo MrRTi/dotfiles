@@ -1,0 +1,19 @@
+#! /bin/bash
+
+# NOTE: Add same configs for all shells
+[ -f "$HOME/.config/shell/shell.sh" ] && . "$HOME/.config/shell/shell.sh" 
+
+add_all "$HOME"/.config/bash/extensions/*.sh
+
+# NOTE: Shell opts
+shopt -s autocd
+
+# NOTE: Load extensions
+add_file "/opt/homebrew/etc/profile.d/bash_completion.sh"
+add_file "$HOME/.fzf.bash"
+add_file "$HOME/yandex-cloud/completion.bash.inc"
+add_file "$HOME/.config/bash/bashrc-after" 
+
+eval "$(zoxide init bash)"
+
+run_tmux_on_shell_start

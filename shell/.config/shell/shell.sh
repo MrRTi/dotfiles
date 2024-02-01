@@ -1,10 +1,14 @@
 #! /bin/sh
 
-[ -n "${DOTFILES_PATH}" ] || export DOTFILES_PATH=~/.dotfiles
+add_file() {
+  [ -f "$1" ] && . "$1"
+}
 
-# NOTE: Source all functions
-# shellcheck source=/dev/null
-for f in "$DOTFILES_PATH"/.config/shell/extensions/*.sh; do . "$f"; done
+add_all() {
+  for file in "$@"; do add_file "$file"; done || return 
+}
+
+add_all "$HOME"/.config/shell/extensions/*.sh
 
 # NOTE: Exports
 export LANG='C.UTF-8'

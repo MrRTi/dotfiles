@@ -1,11 +1,15 @@
 #! /bin/zsh
 
-if [[ -f $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh ]]; then
-  source $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh
-fi
-if [[ -f ~/gitstatus/gitstatus.plugin.zsh ]]; then 
-  source ~/gitstatus/gitstatus.plugin.zsh 
-fi
+source_gitstatus () {
+  if [[ -f $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh ]]; then
+    source $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh
+  fi
+  if [[ -f ~/gitstatus/gitstatus.plugin.zsh ]]; then 
+    source ~/gitstatus/gitstatus.plugin.zsh 
+  fi
+}
+
+source_gitstatus
 
 
 NEWLINE=$'\n'
@@ -17,6 +21,8 @@ function render_counter() {
 }
 
 function my_set_prompt() {
+  type gitstatus_query &>/dev/null || source_git_status
+
   #RPROMPT="%?"
   PROMPT=""
   [ -z $TMUX ] && PROMPT+="%F{cyan}%n@%m " 

@@ -1,7 +1,14 @@
 #! /bin/zsh
+fpath+=("$(brew --prefix)/share/zsh/site-functions")
+autoload -Uz compinit && compinit
+autoload -U promptinit; promptinit
 
-autoload -Uz compinit
-ZSH_COMPDUMP=${ZSH_COMPDUMP:-${ZDOTDIR:-~}/.zcompdump}
+ENABLE_CORRECTION="true"
+COMPLETION_WAITING_DOTS="true"
+
+ZSH_COMPDUMP_DIR="$HOME/.cache/zsh/zcomp"
+[[ -z "$ZSH_COMPDUMP" ]] && [[ -d "$ZSH_COMPDUMP_DIR" ]] || mkdir -p "$ZSH_COMPDUMP_DIR"
+ZSH_COMPDUMP="${ZSH_COMPDUMP:-$ZSH_COMPDUMP_DIR/.zcompdump}"
 
 # cache .zcompdump for about a day
 if [[ $ZSH_COMPDUMP(#qNmh-20) ]]; then
@@ -16,11 +23,16 @@ fi
   fi
 } &!
 
-fpath+=("$(brew --prefix)/share/zsh/site-functions")
-autoload -U promptinit; promptinit
+setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
+setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
+setopt AUTO_MENU           # Show completion menu on a successive tab press.
+setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
+setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a trailing slash.
+setopt EXTENDED_GLOB       # Needed for file modification glob modifiers with compinit
+unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
+unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
 
 zstyle ':completion:*' menu select
-autoload -Uz compinit && compinit
 zstyle ':completion:*' special-dirs true
 # case insensitive
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'

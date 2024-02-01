@@ -19,9 +19,10 @@ COLOR_CYAN='\e[0;36m'
 # COLOR_LIGHT_GRAY='\e[0;37m'
 # COLOR_WHITE='\e[1;37m'
 
-[ -f ~/.git-prompt.sh ] || curl -L https://raw.github.com/git/git/master/contrib/completion/git-prompt.sh > ~/.git-prompt.sh
+GIT_PROMPT_SH="$HOME/.config/bash-dowloadable/git-prompt.sh"
+[ -f "$GIT_PROMPT_SH" ] || curl -L https://raw.github.com/git/git/master/contrib/completion/git-prompt.sh > "$GIT_PROMPT_SH"
 # shellcheck source=/dev/null
-[ -f ~/.git-prompt.sh ] && . "$HOME/.git-prompt.sh"
+[ -f "$GIT_PROMPT_SH" ] && . "$GIT_PROMPT_SH"
 
 export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWSTASHSTATE=1

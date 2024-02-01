@@ -2,16 +2,7 @@
 
 alias ..='cd ..'
 alias md='mkdir -pv'
-
-alias batp='bat --style=plain --paging=never'
-alias batn='bat --paging=never'
-
-# NOTE: brew
-alias rebrew='brew bundle --file ${DOTFILES_PATH}/Brewfile'
-alias brewdump='brew bundle dump --force --file=${DOTFILES_PATH}/Brewfile'
-# NOTE: multi arch aliases for apple silicon
-alias brew="arch -arm64e /opt/homebrew/bin/brew" # arm64e homebrew path (m1)
-alias ibrew="arch -x86_64 /usr/local/bin/brew"    # x86_64 homebrew path (intel)
+alias ll='ls -la'
 
 alias vim='nvim'
 alias v='vim'

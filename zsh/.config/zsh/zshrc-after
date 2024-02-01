@@ -1,0 +1,8 @@
+#! /bin/zsh
+
+add_file "$HOME/.config/shell/shell-after.sh" 
+
+setopt nullglob
+add_all "$HOME"/.config/zsh/extensions-after/*.zsh 
+unsetopt nullglob
+

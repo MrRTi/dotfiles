@@ -1,0 +1,19 @@
+#! /bin/zsh
+
+# NOTE: Add same configs for all shells
+[ -f "$HOME/.config/shell/shell.sh" ] && . "$HOME/.config/shell/shell.sh"
+
+add_all "$HOME"/.config/zsh/extensions/*.zsh
+add_file ~/.fzf.zsh
+
+# NOTE: vim mode
+bindkey -v
+
+setopt auto_cd
+
+add_file "$HOME/.config/zsh/zshrc-after" 
+
+eval "$(zoxide init zsh)"
+
+run_tmux_on_shell_start
+
