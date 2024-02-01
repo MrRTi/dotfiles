@@ -32,7 +32,7 @@ do
   touch GIT_CONFIG_FILE_PATH
   
   echo "[includeIf \"gitdir:$REPOSITORY_FOLDER/$PROJECT_GROUP_FOLDER_NAME/**\"]" >> ~/.gitconfig
-  echo  path=$GIT_CONFIG_FILE_PATH >> ~/.gitconfig
+  echo path=$GIT_CONFIG_FILE_PATH >> ~/.gitconfig
   
   echo Enter git name for this folder
   read GIT_NAME

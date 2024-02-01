@@ -1,4 +1,5 @@
 #! /bin/zsh
+export skip_global_compinit=1
 
 # NOTE: Add same configs for all shells
 [ -f "$HOME/.config/shell/shell.sh" ] && . "$HOME/.config/shell/shell.sh"
