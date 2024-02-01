@@ -1,6 +1,9 @@
 #! /bin/zsh
 export skip_global_compinit=1
 
+LC_CTYPE=en_US.UTF-8
+LC_ALL=en_US.UTF-8
+
 # NOTE: Add same configs for all shells
 [ -f "$HOME/.config/shell/shell.sh" ] && . "$HOME/.config/shell/shell.sh"
 
