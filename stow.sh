@@ -11,6 +11,6 @@ PACKAGES=$(
 for package in $PACKAGES; do
   echo "Link $package configs y/[n]?"
   read answer 
-  [ "$answer" = 'y' ] && stow -v --dir ./stowed-configs -t $HOME $package
+  [ "$answer" = 'y' ] && stow -v -R --dir ./stowed-configs -t $HOME $package
 done
 
