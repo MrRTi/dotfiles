@@ -9,12 +9,15 @@ return {
     config = function()
       -- vim.cmd.set("background=light")
       -- vim.cmd.colorscheme("rose-pine")
+      require("rose-pine").setup({
+        dark_variant = "moon",
+      })
     end,
   },
   {
-    'cormacrelf/dark-notify',
+    "cormacrelf/dark-notify",
     config = function()
-      require('dark_notify').run({
+      require("dark_notify").run({
         schemes = {
           dark = {
             colorscheme = "rose-pine",
@@ -23,9 +26,9 @@ return {
           light = {
             colorscheme = "rose-pine",
             background = "light",
-          }
-        }
+          },
+        },
       })
     end,
-  }
+  },
 }
