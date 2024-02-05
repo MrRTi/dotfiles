@@ -78,7 +78,7 @@ function my_set_prompt() {
     [ -n "$GIT_PROMPT" ] && PROMPT+="%F{blue}[$GIT_PROMPT%F{blue}]"
   else
     IS_BARE=$(git rev-parse --is-bare-repository 2>/dev/null)
-    [ -n "$IS_BARE" ] && PROMPT+=" %F{blue}󰐅:BARE"
+    [ -n "$IS_BARE" ] && PROMPT+=" %F{blue} 󰐅 :BARE"
   fi
 
   PROMPT+=" %F{red}%(?..%B(%?%)%b)%F{green}>%f %"
