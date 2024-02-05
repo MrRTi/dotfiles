@@ -29,7 +29,7 @@ end
 
 function scheme_for_appearance(appearance)
   if appearance:find 'Dark' then
-    return 'rose-pine-moon'
+    return 'rose-pine'
   else
     return 'rose-pine-dawn'
   end
