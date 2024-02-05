@@ -21,6 +21,7 @@ tmux_new_session() {
   SESSION_PATH=${1:-$(pwd)}
   SESSION_NAME=$(replace_first_dot_with_underscore "${SESSION_PATH}")
   TMUX='' tmux new -c "${SESSION_PATH}" -s "${SESSION_NAME}" -d 
+  tmux_double_status_bar
   tmux_switch "${SESSION_NAME}"
 }
 
@@ -43,6 +44,21 @@ run_tmux_on_shell_start() {
   if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
     tmux_attach_or_create $HOME
   fi
+}
+
+tmux_double_status_bar() {
+  [ -z "$(tmux show-option -gqv "status-format[6]")" ] && tmux set -g "status-format[6]" "$(tmux show-option -gqv "status-format[0]")"
+
+  TMUX_STATUS_FORMAT="${TMUX_STATUS_FORMAT:-$(tmux show-option -gqv "status-format[6]")}"
+  # NOTE: get left and right status bar setup
+  STATUS_BAR_INFO="$(echo "${TMUX_STATUS_FORMAT}" | sed 's/:window-status-current-format//g' | sed 's/:window-status-format//g')"
+
+  # NOTE: get windows info
+  STATUS_BAR_WINDOWS="$(echo "${TMUX_STATUS_FORMAT}" | sed 's/#{T;=\/#{status-left-length}:status-left}//g' | sed 's/#{T;=\/#{status-right-length}:status-right}//g')"
+
+  tmux set -g "status-format[0]" "${STATUS_BAR_INFO}"
+  tmux set -g "status-format[1]" "${STATUS_BAR_WINDOWS}"
+  tmux set -g status 2
 }
 
 alias t='tmux'
