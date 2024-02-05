@@ -1,4 +1,9 @@
 return {
+  -- Git related plugins
+  {
+    "tpope/vim-fugitive",
+  },
+  { "tpope/vim-rhubarb" },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     "lewis6991/gitsigns.nvim",
@@ -25,7 +30,6 @@ return {
           { buffer = bufnr, desc = "[g]it [b]lame" }
         )
 
-
         -- don't override the built-in and fugitive keymaps
         local gs = package.loaded.gitsigns
         vim.keymap.set({ "n", "v" }, "]c", function()
@@ -47,6 +51,25 @@ return {
           return "<Ignore>"
         end, { expr = true, buffer = bufnr, desc = "Jump to previous hunk" })
       end,
+    },
+  },
+  -- Working with git worktrees in nvim
+  {
+    "ThePrimeagen/git-worktree.nvim",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+    },
+    keys = {
+      {
+        "<leader>gwa",
+        "<cmd>lua require('telescope').extensions.git_worktree.create_git_worktree()<CR>",
+        desc = "[g]it [w]orktree [a]dd",
+      },
+      {
+        "<leader>gws",
+        "<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<CR>",
+        desc = "[g]it [w]orktree [s]how",
+      },
     },
   },
 }
