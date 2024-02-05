@@ -40,11 +40,11 @@ function my_set_prompt() {
 
   IS_GIT_FOLDER=$(git rev-parse --is-inside-repository &>/dev/null && echo "true" || echo "false")
 
-  if [ "$IS_GIT_FOLDER" = "true" ]; then
-    GIT_PART=""
-    BRANCH_PART=""
-    GIT_DIRTY_PART=""
+  GIT_PART=""
+  BRANCH_PART=""
+  GIT_DIRTY_PART=""
 
+  if [ "$IS_GIT_FOLDER" = "true" ]; then
     GIT_PART+="  "
 
     IS_BARE_REPO=$(git rev-parse --is-bare-repository 2>/dev/null)
