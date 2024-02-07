@@ -20,5 +20,6 @@ set_fzf_theme() {
 "
 }
 
-alias fzf='set_fzf_theme && fzf'
+# FIXME: Not working in worktree functions
+# alias fzf='set_fzf_theme && fzf'
 
