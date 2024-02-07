@@ -42,6 +42,11 @@ tmux_attach_or_create() {
   tmux_switch "${1:-$PWD_FOR_SESSION_NAME}" 2>/dev/null || tmux_new_session "${1:-$(pwd)}"
 }
 
+tmux_fuzzy() {
+  TMUX_SESSION=$(zoxide query --list --score | fzf | awk '{print $2}')
+  tmux_attach_or_create $TMUX_SESSION
+}
+
 run_tmux_on_shell_start() {
   if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
     tmux_attach_or_create $HOME
@@ -73,5 +78,6 @@ alias t='tmux'
 alias tns='tmux_new_session' 
 alias ta='tmux_attach'
 alias tn='tmux_attach_or_create' 
+alias tf='tmux_fuzzy'
 alias tk='t kill-session -t $(tmux_session_select)' # kill session
 
