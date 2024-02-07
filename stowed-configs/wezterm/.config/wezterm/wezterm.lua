@@ -44,13 +44,13 @@ config.initial_cols = 80
 config.initial_rows = 24
 
 config.window_padding = {
-  left = '1cell',
-  right = '1cell',
-  top = '0.5cell',
-  bottom = '0.5cell',
+  left = '10px',
+  right = '10px',
+  top = '10px',
+  bottom = '10px',
 }
 
-config.font_size = 16.0
+config.font_size = 13.0
 config.font = wezterm.font('JetBrains Mono')
 -- config.font = wezterm.font('JetBrains Mono', { weight = 'Bold', italic = true })
 
