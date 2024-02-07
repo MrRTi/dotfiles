@@ -8,9 +8,9 @@ return {
     name = "rose-pine",
     config = function()
       -- vim.cmd.set("background=light")
-      -- vim.cmd.colorscheme("rose-pine")
+      vim.cmd.colorscheme("rose-pine")
       require("rose-pine").setup({
-        -- dark_variant = "moon",
+        dark_variant = "moon",
       })
     end,
   },
