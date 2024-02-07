@@ -1,5 +1,7 @@
 #! /bin/sh
 
+export TMUX_DOUBLE_BAR=false
+
 # NOTE: Tmux automaticaly replacing . to _ if session name starts with .
 # It prevents to find session for folder using folder name if folder have . as first symbol
 # We will use this conversion to have consistent session names on attach and create
@@ -21,7 +23,7 @@ tmux_new_session() {
   SESSION_PATH=${1:-$(pwd)}
   SESSION_NAME=$(replace_first_dot_with_underscore "${SESSION_PATH}")
   TMUX='' tmux new -c "${SESSION_PATH}" -s "${SESSION_NAME}" -d 
-  tmux_double_status_bar
+  [ "$TMUX_DOUBLE_BAR" = "true" ] &&  tmux_double_status_bar
   tmux_switch "${SESSION_NAME}"
 }
 
@@ -58,7 +60,13 @@ tmux_double_status_bar() {
 
   tmux set -g "status-format[0]" "${STATUS_BAR_INFO}"
   tmux set -g "status-format[1]" "${STATUS_BAR_WINDOWS}"
+  tmux set -g status-justify centre
+  tmux set -g status-position top 
   tmux set -g status 2
+
+  # NOTE: Add borders even for one pane
+  tmux set-window-option -g pane-border-status
+  tmux set-window-option -g pane-border-format '' # Could add some data for each pane
 }
 
 alias t='tmux'
