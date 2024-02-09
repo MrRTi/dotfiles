@@ -44,10 +44,10 @@ config.initial_cols = 80
 config.initial_rows = 24
 
 config.window_padding = {
-  left = '10px',
-  right = '10px',
-  top = '10px',
-  bottom = '10px',
+  left    = '20px',
+  right   = '20px',
+  top     = '20px',
+  bottom  = '10px',
 }
 
 config.font_size = 13.0
