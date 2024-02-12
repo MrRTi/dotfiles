@@ -6,3 +6,6 @@ setopt nullglob
 add_all "$HOME"/.config/zsh/extensions-after/*.zsh 
 unsetopt nullglob
 
+# NOTE: Add binding for vi mode. After plugin is setup
+bindkey -M viins -s '^F' "tmux_sessionizer\n"
+

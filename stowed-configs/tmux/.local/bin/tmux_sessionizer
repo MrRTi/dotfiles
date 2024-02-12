@@ -1,0 +1,21 @@
+#! /bin/sh
+
+SESSION_FOLDERS=${SESSION_FOLDERSL:-'~ ~/repo/*'}
+
+# NOTE: zsh do not expand wildcards in variables so line below won't work in zsh
+SESSION_PATH=${1:-$(sh -c "find $SESSION_FOLDERS -mindepth 0 -maxdepth 1 -type d" | fzf)}
+
+# NOTE: Tmux automaticaly replacing . to _ if session name starts with .
+# It prevents to find session for folder using folder name if folder have . as first symbol
+# We will use this conversion to have consistent session names on attach and create
+SESSION_NAME=$(basename "${SESSION_PATH}" | tr . _)
+
+if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+  TMUX='' tmux new -c "${SESSION_PATH}" -s "${SESSION_NAME}" -d 
+fi 
+
+if [ -n "${TMUX}" ]; then 
+  tmux switch -t "$SESSION_NAME"
+else
+  tmux attach -t "$SESSION_NAME"
+fi

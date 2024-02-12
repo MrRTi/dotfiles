@@ -87,3 +87,6 @@ vim.keymap.set("n", "d[", vim.diagnostic.goto_prev, { desc = 'Go to [d]iagnostic
 vim.keymap.set("n", "d]", vim.diagnostic.goto_next, { desc = 'Go to [d]iagnostic message ["]"] next' })
 vim.keymap.set("n", "<leader>dm", vim.diagnostic.open_float, { desc = "Open floating [d]iagnostic [m]essage" })
 vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Open [d]iagnostics [l]ist" })
+
+-- Tmux
+vim.keymap.set("n", "<C-f>", '<cmd>silent !tmux neww tmux_sessionizer<CR>', { desc = "Select tmux session" })
