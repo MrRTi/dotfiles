@@ -2,7 +2,7 @@
 
 ./.scripts/stow.sh
 
-brew -v || bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+brew -v || bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 if [ -d "/home/linuxbrew/.linuxbrew/" ]; then
   echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile
@@ -10,7 +10,6 @@ if [ -d "/home/linuxbrew/.linuxbrew/" ]; then
 fi
 
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-git clone https://github.com/catppuccin/alacritty.git ~/.config/alacritty/catppuccin
 
 #. ~/.bashrc
 . ~/.zshrc
