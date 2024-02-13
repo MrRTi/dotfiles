@@ -10,8 +10,6 @@ if wezterm.config_builder then
   config = wezterm.config_builder()
 end
 
--- This is where you actually apply your config choices
-
 function get_appearance()
   if wezterm.gui then
     return wezterm.gui.get_appearance()
