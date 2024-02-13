@@ -41,7 +41,10 @@ config.window_padding = {
 }
 
 config.font_size = 13.0
-config.font = wezterm.font('JetBrains Mono')
+config.font = wezterm.font {
+  family = 'JetBrains Mono',
+  harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' },
+}
 -- config.font = wezterm.font('JetBrains Mono', { weight = 'Bold', italic = true })
 
 -- and finally, return the configuration to wezterm
