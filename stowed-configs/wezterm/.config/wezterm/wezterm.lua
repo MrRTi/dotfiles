@@ -12,14 +12,6 @@ end
 
 -- This is where you actually apply your config choices
 
--- For example, changing the color scheme:
-config.color_scheme = 'rose-pine-dawn'
--- config.color_scheme = 'rose-pine-moon'
--- config.color_scheme = 'Catppuccin Frappe'
--- config.color_scheme = 'Catppuccin Latte'
--- config.color_scheme = 'Catppuccin Macchiato'
--- config.color_scheme = 'Catppuccin Mocha'
-
 function get_appearance()
   if wezterm.gui then
     return wezterm.gui.get_appearance()
@@ -29,7 +21,7 @@ end
 
 function scheme_for_appearance(appearance)
   if appearance:find 'Dark' then
-    return 'rose-pine-moon'
+    return 'rose-pine'
   else
     return 'rose-pine-dawn'
   end
