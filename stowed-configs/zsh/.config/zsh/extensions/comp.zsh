@@ -1,4 +1,5 @@
-#! /bin/zsh
+#!/usr/bin/env zsh
+
 fpath+=("$(brew --prefix)/share/zsh/site-functions")
 autoload -Uz compinit && compinit
 autoload -U promptinit; promptinit
