@@ -73,4 +73,7 @@ return {
       end, 0)
     end,
   },
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+  },
 }
