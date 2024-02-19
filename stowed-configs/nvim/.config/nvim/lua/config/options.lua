@@ -46,13 +46,14 @@ vim.o.completeopt = "menuone,noselect"
 vim.o.termguicolors = true
 
 -- Vertical ruler at 80 and 120 symbols
-vim.opt.colorcolumn = "80,120"
+vim.o.colorcolumn = "80,120"
+vim.o.scrolloff = 15
 
 -- Hide command line
 -- vim.opt.cmdheight = 0
 
 -- Add russian keymaps support
-vim.opt.langmap =
+vim.o.langmap =
 "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz"
 
 -- [[ Highlight on yank ]]
@@ -67,4 +68,10 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 vim.opt.cursorline = true
+vim.o.list = true
+-- NOTE: To show tabs and spaces use "tab: ,space:·"
+-- Tabs symbols conflicting with indent-blankline plugin.
+-- If used in files with tab indentation - rainbow  will fill indentation
+vim.o.showbreak="↪"
+vim.o.listchars="tab:┊ ,space:·,eol:↲,nbsp:␣,trail:•,extends:»,precedes:«"
 

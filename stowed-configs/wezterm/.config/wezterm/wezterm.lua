@@ -19,9 +19,9 @@ end
 
 function scheme_for_appearance(appearance)
   if appearance:find 'Dark' then
-    return 'rose-pine'
+    return 'Catppuccin Mocha'
   else
-    return 'rose-pine-dawn'
+    return 'Catppuccin Latte'
   end
 end
 config.color_scheme = scheme_for_appearance(get_appearance())

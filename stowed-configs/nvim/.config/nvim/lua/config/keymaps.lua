@@ -69,7 +69,6 @@ vim.keymap.set("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left>
 -- Remap for dealing with word wrap
 vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-
 -- Close buffer
 vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "[b]uffer [d]elete" })
 
@@ -87,6 +86,3 @@ vim.keymap.set("n", "d[", vim.diagnostic.goto_prev, { desc = 'Go to [d]iagnostic
 vim.keymap.set("n", "d]", vim.diagnostic.goto_next, { desc = 'Go to [d]iagnostic message ["]"] next' })
 vim.keymap.set("n", "<leader>dm", vim.diagnostic.open_float, { desc = "Open floating [d]iagnostic [m]essage" })
 vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, { desc = "Open [d]iagnostics [l]ist" })
-
--- Tmux
-vim.keymap.set("n", "<C-f>", '<cmd>silent !tmux neww tmux_sessionizer<CR>', { desc = "Select tmux session" })
