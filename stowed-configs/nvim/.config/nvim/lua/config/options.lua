@@ -54,17 +54,17 @@ vim.o.scrolloff = 15
 
 -- Add russian keymaps support
 vim.o.langmap =
-"ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz"
+	"ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz"
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup("YankHighlight", { clear = true })
 vim.api.nvim_create_autocmd("TextYankPost", {
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-  group = highlight_group,
-  pattern = "*",
+	callback = function()
+		vim.highlight.on_yank()
+	end,
+	group = highlight_group,
+	pattern = "*",
 })
 
 vim.opt.cursorline = true
@@ -72,6 +72,5 @@ vim.o.list = true
 -- NOTE: To show tabs and spaces use "tab: ,space:·"
 -- Tabs symbols conflicting with indent-blankline plugin.
 -- If used in files with tab indentation - rainbow  will fill indentation
-vim.o.showbreak="↪"
-vim.o.listchars="tab:┊ ,space:·,eol:↲,nbsp:␣,trail:•,extends:»,precedes:«"
-
+vim.o.showbreak = "↪"
+vim.o.listchars = "tab:┊ ,space:·,eol:↲,nbsp:␣,trail:•,extends:»,precedes:«"
