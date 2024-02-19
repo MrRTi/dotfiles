@@ -14,7 +14,7 @@ add_all "$HOME"/.config/shell/extensions/*.sh
 export LANG='C.UTF-8'
 export DOCKER_DEFAULT_PLATFORM=linux/amd64
 export EDITOR=nvim
-export XDG_CONFIG_HOME=$HOME/.config
+export K9S_CONFIG_DIR="$HOME/.config/k9s"
 
 # NOTE: Add gems executables to path
 gembin=$(gem env | sed -n "s/.*EXECUTABLE DIRECTORY: \(.*\)/\1/p")
