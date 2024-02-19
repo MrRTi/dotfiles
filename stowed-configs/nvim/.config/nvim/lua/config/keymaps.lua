@@ -9,7 +9,8 @@ vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 -- See `:help vim.keymap.set()`
 
 -- Open netrw
-vim.keymap.set("n", "<leader>pf", vim.cmd.Ex, { desc = "[p]roject [f]iles" })
+-- Using oil instead
+-- vim.keymap.set("n", "<leader>pf", vim.cmd.Ex, { desc = "[p]roject [f]iles" })
 
 -- Move highlighted text
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "[J] Move highlighted text up" })
