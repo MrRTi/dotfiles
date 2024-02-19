@@ -2,14 +2,25 @@
 
 mkdir -p ~/.config
 
-PACKAGES=$(
-  find ./stowed-configs -mindepth 1 -maxdepth 1 -type d  \( ! -iname ".*" \) | 
-  sed 's|stowed-configs\/||g' | 
-  sed 's|^\./||g'
-)
+unstow_package() {
+  stow -Dv --dir ./stowed-configs -t $HOME $1
+}
 
-for package in $PACKAGES; do
-  echo "Unlink $package configs y/[n]?"
-  read answer 
-  [ "$answer" = 'y' ] && stow -Dv --dir ./stowed-configs -t $HOME $package
-done
+if [ -n "$1" ]; then
+  unstow_package $1
+else
+  packages=$(
+    find ./stowed-configs -mindepth 1 -maxdepth 1 -type d  \( ! -iname ".*" \) | 
+    sed 's|stowed-configs\/||g' | 
+    sed 's|^\./||g' |
+    sort
+  )
+
+  echo "Could be unstowed: $(echo "$packages" | tr '\n' ' ')"
+
+  for package in $packages; do
+    echo "Unlink $package configs y/[n]?"
+    read answer 
+    [ "$answer" = 'y' ] && unstow_package $package
+  done
+fi
