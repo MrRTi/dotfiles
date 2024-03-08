@@ -40,6 +40,8 @@ config.window_padding = {
   bottom  = '10px',
 }
 
+config.window_background_opacity = 0.95
+
 config.font_size = 13.0
 config.font = wezterm.font {
   family = 'JetBrains Mono',

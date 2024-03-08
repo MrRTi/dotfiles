@@ -9,6 +9,7 @@ return {
 					light = "latte",
 					dark = "mocha",
 				},
+				transparent_background = true, -- disables setting the background color.
 				integrations = {
 					gitsigns = true,
 					harpoon = true,
@@ -42,6 +43,9 @@ return {
 				},
 			})
 			vim.cmd.colorscheme("catppuccin")
+
+			vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+			vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 		end,
 	},
 	{
