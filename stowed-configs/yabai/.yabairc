@@ -43,7 +43,25 @@ yabai -m config                                 \
 
 yabai -m rule --add app="^System Settings$" manage=off
 yabai -m rule --add app="^Calculator$" manage=off
+yabai -m rule --add app="^1Password$" manage=off
+yabai -m rule --add app="^Finder$" manage=off
+yabai -m rule --add app="^Notes$" manage=off
 
-yabai -m config external_bar all:36:0
+yabai -m space 1 --label terminal
+yabai -m space 2 --label browser
+yabai -m space 3 --label work_communication
+yabai -m space 4 --label mail
+yabai -m space 5 --label calendar
+yabai -m space 6 --label personal_communication
+
+yabai -m rule --add label="Terminal" app="^WezTerm$" space=terminal
+yabai -m rule --add label="Arc" app="^Arc$" space=browser
+yabai -m rule --add label="Slack" app="^Slack$" space=work_communication
+yabai -m rule --add label="Mail" app="^Mail$" space=mail
+yabai -m rule --add label="Calendar" app="^Calendar$" space=calendar
+yabai -m rule --add label="Telegram" app="^Telegram$" space=personal_communication
+yabai -m rule --add label="Messages" app="^Messages$" space=personal_communication
+
+yabai -m config external_Arcbar all:36:0
 
 echo "yabai configuration loaded.."
