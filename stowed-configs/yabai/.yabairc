@@ -62,6 +62,6 @@ yabai -m rule --add label="Calendar" app="^Calendar$" space=calendar
 yabai -m rule --add label="Telegram" app="^Telegram$" space=personal_communication
 yabai -m rule --add label="Messages" app="^Messages$" space=personal_communication
 
-yabai -m config external_Arcbar all:36:0
+yabai -m config external_bar all:36:0
 
 echo "yabai configuration loaded.."
