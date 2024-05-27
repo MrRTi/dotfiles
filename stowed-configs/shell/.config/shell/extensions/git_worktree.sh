@@ -7,8 +7,16 @@ gwroot() {
   git worktree list | grep 'bare' | awk '{print $1}'
 }
 
+git_branch_query() {
+  gb | fzf --print-query | head -n 1
+}
+
 # NOTE: add worktree
-alias gwa='gb | fzf --print-query | head -n 1 | xargs -I@ git worktree add -b @ $(gwroot)/@'
+gwa() {
+  BRANCH=$(git_branch_query)
+  echo "Creating worktree at ${BRANCH}"
+  git worktree add -b "${BRANCH}" "$(gwroot)/${BRANCH}"
+}
 
 gwselect() {
   git worktree list | fzf | awk '{print $1}'
@@ -16,12 +24,12 @@ gwselect() {
 
 # NOTE: remove worktree
 gwd() {
-  gwselect | xargs git worktree remove
+  gwselect | xargs -0 git worktree remove
 }
 
 # NOTE: remove worktree
 gwdf() {
-  gwselect | xargs git worktree remove --force
+  gwselect | xargs -0 git worktree remove --force
 }
 
 # NOTE: switch to worktree

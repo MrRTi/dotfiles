@@ -5,4 +5,4 @@ fzf_with_theme() {
   fzf
 }
 
-alias fzf="fzf_with_theme"
+# alias fzf="fzf_with_theme"
