@@ -30,10 +30,6 @@ config.color_scheme = scheme_for_appearance(get_appearance())
 config.enable_tab_bar = false
 config.window_decorations = "RESIZE"
 
--- Initial window size
-config.initial_cols = 80
-config.initial_rows = 24
-
 config.window_padding = {
   left = "20px",
   right = "20px",
