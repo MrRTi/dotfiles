@@ -9,7 +9,10 @@ vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 -- See `:help vim.keymap.set()`
 
 -- Open netrw
-vim.keymap.set("n", "<leader>pf", vim.cmd.Ex, { desc = "[p]roject [f]iles" })
+vim.keymap.set("n", "<leader>ff", vim.cmd.Ex, { desc = "[f]iles" })
+vim.keymap.set("n", "<leader>fx", "<cmd>! chmod +x %", { desc = "make [f]ile executable" })
+-- Place current file path in clipboard
+vim.keymap.set("n", "<leader>fp", '<cmd>let @+ = expand("%")<CR>', { desc = "copy [f]ile [p]ath" })
 
 -- Move highlighted text
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { desc = "[J] Move highlighted text up" })
@@ -78,8 +81,6 @@ vim.keymap.set("n", "<leader>b[", "<cmd>bprevious<CR>", { desc = '[b]uffer ["["]
 vim.keymap.set("n", "<leader>bl", "<cmd>bnext<CR>", { desc = "[b]uffer [l] next" })
 vim.keymap.set("n", "<leader>bh", "<cmd>bprevious<CR>", { desc = "[b]uffer [h] previous" })
 
--- Place current file path in clipboard
-vim.keymap.set("n", "<leader>fp", '<cmd>let @+ = expand("%")<CR>', { desc = "[f]ile [p]ath" })
 
 -- Diagnostic keymaps
 vim.keymap.set("n", "d[", vim.diagnostic.goto_prev, { desc = 'Go to [d]iagnostic message ["["] previous' })

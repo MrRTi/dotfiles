@@ -16,7 +16,6 @@ return {
 				["<leader>r"] = { name = "[r]ename", _ = "which_key_ignore" },
 				["<leader>s"] = { name = "[s]earch", _ = "which_key_ignore" },
 				["<leader>w"] = { name = "[w]orkspace", _ = "which_key_ignore" },
-				["<leader>p"] = { name = "[p]roject", _ = "which_key_ignore" },
 			})
 		end,
 	},
