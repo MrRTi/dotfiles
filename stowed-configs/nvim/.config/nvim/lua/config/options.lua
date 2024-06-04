@@ -74,3 +74,5 @@ vim.o.list = true
 -- If used in files with tab indentation - rainbow  will fill indentation
 vim.o.showbreak = "↪"
 vim.o.listchars = "tab:┊ ,space:·,eol:↲,nbsp:␣,trail:•,extends:»,precedes:«"
+
+vim.o.conceallevel = 2
