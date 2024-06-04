@@ -2,7 +2,8 @@
 
 keyboard=(
     icon.drawing=off
-    label.padding_left=10
+    label.padding_left=7
+    label.padding_right=8
     script="$PLUGIN_DIR/keyboard.sh"
 )
 

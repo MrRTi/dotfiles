@@ -1,11 +1,17 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
-sketchybar --add       item         front_app left                    \
-           --set       front_app    script="$PLUGIN_DIR/front_app.sh" \
-                                    icon.padding_left=15              \
-                                    icon.font="sketchybar-app-font:Regular:13.0" \
-                                    icon.color=$YELLOW                \
-                                    background.padding_left=0         \
-                                    label.color=$YELLOW               \
-           --subscribe front_app    front_app_switched
+title=(
+  script="$PLUGIN_DIR/window_title.sh"
+  icon.padding_left=15
+  icon.font="sketchybar-app-font:regular:13.0" 
+  icon.color="$YELLOW"
+  background.padding_left=0
+  padding_left=0
+  label.padding_left=12
+  label.padding_right=12
+)
+
+sketchybar      --add item title center \
+                --set title "${title[@]}" \
+                --subscribe title window_focus front_app front_app_switched space_change title_change
 

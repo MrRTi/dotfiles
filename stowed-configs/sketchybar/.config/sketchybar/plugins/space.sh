@@ -6,10 +6,8 @@
 
 source "$CONFIG_DIR/colors.sh" # Loads all defined colors
 
-if [ $SELECTED = true ]; then
-  sketchybar --set $NAME background.drawing=on \
-                         icon.color=$RED
+if [ "$SELECTED" = "true" ]; then
+    sketchybar --animate sin 15 --set "$NAME" background.color=$YELLOW icon.color=$BLACK
 else
-  sketchybar --set $NAME background.drawing=off \
-                         icon.color=$ICON_COLOR
+    sketchybar --animate sin 15 --set "$NAME" background.color=$BAR_COLOR icon.color=$ICON_COLOR
 fi

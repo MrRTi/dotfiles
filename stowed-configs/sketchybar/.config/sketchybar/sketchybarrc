@@ -1,5 +1,6 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
+# PLUGIN_DIR used in items
 PLUGIN_DIR="$CONFIG_DIR/plugins"
 ITEM_DIR="$CONFIG_DIR/items"
 
@@ -7,64 +8,53 @@ source "$CONFIG_DIR/colors.sh" # Loads all defined colors
 source "$CONFIG_DIR/icons.sh" # Loads all defined colors
 
 FONT="SF Pro" # Needs to have Regular, Bold, Semibold, Heavy and Black variants
-SPACE_CLICK_SCRIPT="yabai -m space --focus \$SID 2>/dev/null" # The script that is run for clicking on space components
-
-PADDINGS=3 # All paddings use this value (icon, label, background and bar paddings)
-
-POPUP_BORDER_WIDTH=2
-POPUP_CORNER_RADIUS=11
-
-SHADOW=on
 
 # Setting up the general bar appearance and default values
-sketchybar --bar     height=24                                           \
-                     corner_radius=5                                     \
-                     border_width=0                                      \
-                     margin=12                                           \
-                     blur_radius=50                                      \
-                     position=top                                        \
-                     padding_left=10                                     \
-                     padding_right=10                                    \
-                     color=$BAR_COLOR                                    \
-                     topmost=off                                         \
-                     sticky=on                                           \
-                     font_smoothing=off                                  \
-                     y_offset=12                                         \
-                     shadow=$SHADOW                                      \
-                     notch_width=0                                       \
-                                                                         \
-           --default drawing=on                                          \
-                     updates=when_shown                                  \
-                     label.font="$FONT:Semibold:13.0"                    \
-                     icon.font="$FONT:Bold:14.0"                         \
-                     icon.color=$ICON_COLOR                              \
-                     label.color=$LABEL_COLOR                            \
-                     icon.padding_left=$PADDINGS                         \
-                     icon.padding_right=$PADDINGS                        \
-                     label.padding_left=$PADDINGS                        \
-                     label.padding_right=$PADDINGS                       \
-                     background.padding_right=$PADDINGS                  \
-                     background.padding_left=$PADDINGS                   \
-                     popup.background.border_width=$POPUP_BORDER_WIDTH   \
-                     popup.background.corner_radius=$POPUP_CORNER_RADIUS \
-                     popup.background.border_color=$POPUP_BORDER_COLOR   \
-                     popup.background.color=$POPUP_BACKGROUND_COLOR      \
-                     popup.background.shadow.drawing=$SHADOW
+bar=(
+  height=24
+  color=0x00000000
+  position=top
+  y_offset=12
+)
+
+sketchybar --bar "${bar[@]}"
+
+default=(
+  updates=when_shown
+  label.font="$FONT:Semibold:13.0"
+  icon.font="$FONT:Bold:14.0" 
+
+  icon.color="$ICON_COLOR"
+  label.color="$LABEL_COLOR"
+
+  icon.padding_left=8
+  icon.padding_right=4
+
+  label.padding_left=4
+  label.padding_right=8 
+
+  background.padding_right=4
+  background.padding_left=4
+
+  background.color="$BAR_COLOR"
+  background.corner_radius=5
+)
+
+sketchybar --default "${default[@]}"
+
+sketchybar --add event window_focus --add event title_change
 
 # Left side
-source $ITEM_DIR/yabai.sh
-source $ITEM_DIR/spaces.sh
-source $ITEM_DIR/front_app.sh
+source "$ITEM_DIR/spaces.sh"
 
 # Center
-source $ITEM_DIR/media.sh
-source $ITEM_DIR/flow.sh
+source "$ITEM_DIR/front_app.sh"
 
 # Right side
-source $ITEM_DIR/calendar.sh
-source $ITEM_DIR/battery.sh
-source $ITEM_DIR/volume.sh
-source $ITEM_DIR/keyboard.sh
+source "$ITEM_DIR/calendar.sh"
+source "$ITEM_DIR/battery.sh"
+source "$ITEM_DIR/volume.sh"
+source "$ITEM_DIR/keyboard.sh"
 
 
 ##### Force all scripts to run the first time (never do this in a script) #####
