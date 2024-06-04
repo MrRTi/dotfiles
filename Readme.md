@@ -43,3 +43,6 @@
 
 - wezterm
 
+### sketchybar
+
+- https://felixkratz.github.io/SketchyBar/setup
