@@ -10,7 +10,7 @@ vim.keymap.set({ "n", "v" }, "<Space>", "<Nop>", { silent = true })
 
 -- Open netrw
 vim.keymap.set("n", "<leader>ff", vim.cmd.Ex, { desc = "[f]iles" })
-vim.keymap.set("n", "<leader>fx", "<cmd>! chmod +x %", { desc = "make [f]ile executable" })
+vim.keymap.set("n", "<leader>fx", "<cmd>! chmod +x %<CR>", { desc = "make [f]ile executable" })
 -- Place current file path in clipboard
 vim.keymap.set("n", "<leader>fp", '<cmd>let @+ = expand("%")<CR>', { desc = "copy [f]ile [p]ath" })
 
