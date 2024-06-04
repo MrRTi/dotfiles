@@ -196,6 +196,16 @@ shift + alt - 7 : yabai -m window --space 7;
 shift + alt - 8 : yabai -m window --space 8;
 shift + alt - 9 : yabai -m window --space 9;
 
+shift + alt - a : yabai -m window --space 1;
+shift + alt - s : yabai -m window --space 2;
+shift + alt - d : yabai -m window --space 3;
+shift + alt - f : yabai -m window --space 4;
+shift + alt - g : yabai -m window --space 5;
+shift + alt - h : yabai -m window --space 6;
+shift + alt - j : yabai -m window --space 7;
+shift + alt - k : yabai -m window --space 8;
+shift + alt - l : yabai -m window --space 9;
+
 # System Integrity Protection: Filesystem Protections and Debugging Restrictions must be disabled!
 # Focus next space by mission-control index if one exists, otherwise focus the first space
 ctrl + alt - n : yabai -m space --focus next || yabai -m space --focus first

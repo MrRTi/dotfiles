@@ -49,15 +49,11 @@ yabai -m space 5 --label calendar
 yabai -m space 6 --label personal_communication
 yabai -m space 7 --label other
 
-
 yabai -m rule --add app="^System Settings$" manage=off
 yabai -m rule --add app="^Calculator$" manage=off
 yabai -m rule --add app="^1Password$" manage=off
 yabai -m rule --add app="^Finder$" manage=off
 yabai -m rule --add app="^Notes$" manage=off
-
-# Move all other apps to space 7
-yabai -m rule --add app="(?!^(System Settings|Calculator|1Password|Finder|Notes)$)(^.+$)" space=other
 
 # Move specific apps to specific place
 yabai -m rule --add label="Terminal" app="^WezTerm$" space=terminal
