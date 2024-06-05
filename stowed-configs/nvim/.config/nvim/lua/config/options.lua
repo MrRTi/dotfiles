@@ -76,3 +76,18 @@ vim.o.showbreak = "↪"
 vim.o.listchars = "tab:┊ ,space:·,eol:↲,nbsp:␣,trail:•,extends:»,precedes:«"
 
 vim.o.conceallevel = 2
+
+-- Netrw banner
+-- 0 : Disable banner
+-- 1 : Enable banner
+vim.g.netrw_banner = 0
+
+-- Netrw list style
+-- 0 : thin listing (one file per line)
+-- 1 : long listing (one file per line with timestamp information and file size)
+-- 2 : wide listing (multiple files in columns)
+-- 3 : tree style listing
+vim.g.netrw_liststyle = 1
+
+-- Human-readable files sizes
+vim.g.netrw_sizestyle = "H"
