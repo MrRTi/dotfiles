@@ -3,13 +3,7 @@ return {
 		"ThePrimeagen/harpoon",
 		branch = "harpoon2",
 		dependencies = { "nvim-lua/plenary.nvim" },
-		-- opts = function()
-		-- 	return {
-		-- 		menu = {
-		-- 			width = vim.api.nvim_win_get_width(0) - 10,
-		-- 		},
-		-- 	}
-		-- end,
+
 		config = function()
 			local harpoon = require("harpoon")
 
@@ -51,7 +45,6 @@ return {
 				border = "rounded",
 				title_pos = "center",
 				ui_width_ratio = 0.80,
-				ui_height_ratio = 0.40,
 			}
 
 			vim.keymap.set("n", "<leader>hm", function()
