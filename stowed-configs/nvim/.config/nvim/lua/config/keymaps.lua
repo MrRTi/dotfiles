@@ -72,6 +72,7 @@ vim.keymap.set("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left>
 -- Remap for dealing with word wrap
 vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
 -- Close buffer
 vim.keymap.set("n", "<leader>bd", "<cmd>bd<CR>", { desc = "[b]uffer [d]elete" })
 

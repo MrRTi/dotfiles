@@ -68,7 +68,7 @@ return {
 			{
 				"<leader>gws",
 				"<cmd>lua require('telescope').extensions.git_worktree.git_worktrees()<CR>",
-				desc = "[g]it [w]orktree [s]how",
+				desc = "[g]it [w]orktree [s]witch",
 			},
 		},
 	},
