@@ -78,7 +78,7 @@ return {
 		{
 			"<leader>od",
 			"<cmd>:ObsidianDailies<CR>",
-			desc = "[o]bsidian [d]aily",
+			desc = "[o]bsidian [d]ailies",
 		},
 		{
 			"<leader>ot",
