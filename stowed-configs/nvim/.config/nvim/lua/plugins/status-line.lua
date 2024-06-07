@@ -2,9 +2,8 @@ return {
 	{
 		-- Set lualine as statusline
 		"nvim-lualine/lualine.nvim",
-		-- See `:help lualine.txt`
 		dependencies = {
-			"folke/noice.nvim",
+			"nvim-tree/nvim-web-devicons",
 		},
 		config = function()
 			require("lualine").setup({
