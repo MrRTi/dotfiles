@@ -21,7 +21,8 @@ local function scheme_for_appearance(appearance)
 	if appearance:find("Dark") then
 		return "Catppuccin Mocha"
 	else
-		return "Catppuccin Latte"
+		-- return "Catppuccin Latte"
+		return "Alabaster"
 	end
 end
 
@@ -37,12 +38,13 @@ config.window_padding = {
 	bottom = "10px",
 }
 
-config.window_background_opacity = 0.95
+config.window_background_opacity = 0.9
 
-config.font_size = 13.0
+config.font_size = 16.0
 config.font = wezterm.font({
 	family = "JetBrains Mono",
 	harfbuzz_features = { "calt=0", "clig=0", "liga=0" },
+	weight = "DemiBold"
 })
 -- config.font = wezterm.font('JetBrains Mono', { weight = 'Bold', italic = true })
 
