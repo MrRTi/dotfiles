@@ -28,6 +28,8 @@ alias gco='g checkout'
 alias gb='g branch'
 alias grup='g remote update'
 alias glol='g log --graph --pretty='\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\'
+alias gcb='g rev-parse --abbrev-ref HEAD'
+alias gpu="g push -u origin \$(gcb)"
 
 # NOTE: terraform
 alias tf='terraform'
