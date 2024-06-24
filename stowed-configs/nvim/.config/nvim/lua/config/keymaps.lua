@@ -21,10 +21,6 @@ add_keymap_with_desc("n", "<leader>fx", "<cmd>! chmod +x %<CR>", "make [f]ile ex
 -- Place current file path in clipboard
 add_keymap_with_desc("n", "<leader>fp", '<cmd>let @+ = expand("%")<CR>', "copy [f]ile [p]ath")
 
--- Move highlighted text
-add_keymap_with_desc("v", "J", ":m '>+1<CR>gv=gv", "[J] Move highlighted text up")
-add_keymap_with_desc("v", "K", ":m '<-2<CR>gv=gv", "[K] Move highlighted text down")
-
 -- Keep cursor in the middle when half-page jump
 add_keymap("n", "<C-d>", "<C-d>zz")
 add_keymap("n", "<C-u>", "<C-u>zz")
@@ -68,8 +64,6 @@ add_keymap("i", "<C-c>", "<Esc>")
 -- No ex mode
 add_keymap("n", "Q", "<nop>")
 
-add_keymap("n", "<C-k>", "<cmd>cnext<CR>zz")
-add_keymap("n", "<C-j>", "<cmd>cprevious<CR>zz")
 add_keymap_with_desc("n", "<leader>k", "<cmd>lnext<CR>zz", "next location")
 add_keymap_with_desc("n", "<leader>j", "<cmd>lprevious<CR>zz", "prev location")
 
@@ -77,14 +71,12 @@ add_keymap_with_desc("n", "<leader>j", "<cmd>lprevious<CR>zz", "prev location")
 add_keymap("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 add_keymap("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
--- Close buffer
-add_keymap_with_desc("n", "<leader>bd", "<cmd>bd<CR>", "[b]uffer [d]elete")
-
--- Buffer navigation
+-- Buffer
+add_keymap_with_desc("n", "<leader>bd", "<cmd>bd<CR>", "[b]uffer [d]elete (close)")
 add_keymap_with_desc("n", "<leader>b]", "<cmd>bnext<CR>", '[b]uffer ["]"] next')
 add_keymap_with_desc("n", "<leader>b[", "<cmd>bprevious<CR>", '[b]uffer ["["] previous')
-add_keymap_with_desc("n", "<leader>bl", "<cmd>bnext<CR>", "[b]uffer [l] next")
-add_keymap_with_desc("n", "<leader>bh", "<cmd>bprevious<CR>", "[b]uffer [h] previous")
+add_keymap_with_desc("n", "<leader>bn", "<cmd>bnext<CR>", "[b]uffer [n]ext")
+add_keymap_with_desc("n", "<leader>bp", "<cmd>bprevious<CR>", "[b]uffer [p]revious")
 
 -- Diagnostic keymaps
 add_keymap_with_desc("n", "d[", vim.diagnostic.goto_prev, 'Go to [d]iagnostic message ["["] previous')
@@ -98,5 +90,20 @@ add_keymap_with_desc("n", "<leader>rw", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left>
 -- Visual Maps
 add_keymap_with_desc("v", "<leader>rw", '"hy:%s/<C-r>h//gc<left><left>', "Replace all instances of highlighted words")
 add_keymap_with_desc("v", "<leader>s", ":sort<CR>", "Sort highlighted text in visual mode with Control+S")
-add_keymap_with_desc("v", "J", ":m '>+1<CR>gv=gv", "Move current line down")
-add_keymap_with_desc("v", "K", ":m '>-2<CR>gv=gv", "Move current line up")
+-- Move highlighted text
+add_keymap_with_desc("v", "J", ":m '>+1<CR>gv=gv", "[J] Move highlighted text up")
+add_keymap_with_desc("v", "K", ":m '<-2<CR>gv=gv", "[K] Move highlighted text down")
+
+-- Quickfix
+add_keymap_with_desc("n", "<leader>ql", ":copen<CR>", "[q]uickfix [l]ist")
+add_keymap_with_desc("n", "<leader>qc", ":cclose<CR>", "[q]uickfix [c]lose")
+add_keymap_with_desc("n", "<leader>qd", ":cdo ", "[q]uickfix [d]o (input query)")
+add_keymap_with_desc("n", "<leader>qn", ":cnext<CR>zz", "[q]uickfix [n]ext")
+add_keymap_with_desc("n", "<leader>q]", ":cnext<CR>zz", '[q]uickfix ["]"] next')
+add_keymap_with_desc("n", "<leader>qp", ":cprevious<CR>zz", "[q]uickfix [p]rev")
+add_keymap_with_desc("n", "<leader>q[", ":cprevious<CR>zz", '[q]uickfix ["["] prev')
+-- <leader>qs for search in telescope
+-- <leader>qh for history in telescope
+add_keymap("n", "<C-k>", "<cmd>cnext<CR>zz")
+add_keymap("n", "<C-j>", "<cmd>cprevious<CR>zz")
+
