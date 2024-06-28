@@ -17,7 +17,5 @@ setopt auto_cd
 
 add_file "$HOME/.config/zsh/zshrc-after" 
 
-eval "$(zoxide init zsh)"
-
 run_tmux_on_shell_start
 
