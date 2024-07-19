@@ -26,7 +26,8 @@ return {
 					vim.lsp.buf.format()
 				end, { desc = "Format current buffer with LSP" })
 
-				nmap("gd", require("telescope.builtin").lsp_definitions, "[g]oto [d]efinition")
+				-- nmap("gd", require("telescope.builtin").lsp_definitions, "[g]oto [d]efinition")
+				nmap("gd", vim.lsp.buf.definition, "[g]oto [d]efinition")
 				nmap("gr", require("telescope.builtin").lsp_references, "[g]oto [r]eferences")
 				nmap("gI", require("telescope.builtin").lsp_implementations, "[g]oto [I]mplementation")
 				nmap("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")

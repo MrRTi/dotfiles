@@ -9,6 +9,12 @@ return {
 		end,
 	},
 	{
+		"yorik1984/lualine-theme.nvim",
+		dependencies = {
+			"nvim-lualine/lualine.nvim",
+		},
+	},
+	{
 		"cormacrelf/dark-notify",
 		config = function()
 			require("dark_notify").run({
