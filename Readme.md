@@ -19,30 +19,32 @@
 ### bash
 
 - bash
-...
 
 ### zsh
 
 - zsh
-...
 
 ### nvim
 
 - neovim
 - ripgrep
 - fzf
-...
+- etc
 
 ### tmux
 
 - tmux
 - tpm - Tmux Plugin Manager
-- dark-notify - For theme swithing on MacOS `brew install dark-notify`
+- [dark-notify](https://github.com/cormacrelf/dark-notify) - For theme swithing on MacOS `brew install dark-notify`
 
 ### wezterm
 
-- wezterm
+- [wezterm](https://wezfurlong.org/wezterm/index.html)
 
-### sketchybar
+### aerospace
 
-- https://felixkratz.github.io/SketchyBar/setup
+- [aerospace](https://github.com/nikitabobko/AeroSpace)
+
+### borders
+
+- [janky borders](https://github.com/FelixKratz/JankyBorders)
