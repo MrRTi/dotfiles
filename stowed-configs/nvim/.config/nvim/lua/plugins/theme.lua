@@ -54,7 +54,22 @@ return {
 				end,
 			})
 
-			vim.keymap.set("n", "<leader>tc", require("dark_notify").toggle, { desc = "[T]heme [c]hange" })
+			vim.keymap.set(
+				"n",
+				"<leader>td",
+				function()
+					require("dark_notify").set_mode("dark")
+				end,
+				{ desc = "[T]heme [d]ark" }
+			)
+			vim.keymap.set(
+				"n",
+				"<leader>tl",
+				function()
+					require("dark_notify").set_mode("light")
+				end,
+				{ desc = "[T]heme [l]ight" }
+			)
 		end,
 	},
 	{

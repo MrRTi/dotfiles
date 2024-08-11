@@ -18,6 +18,7 @@ return {
 				["<leader>q"] = { name = "[q]uickfix list", _ = "which_key_ignore" },
 				["<leader>r"] = { name = "[r]ename", _ = "which_key_ignore" },
 				["<leader>s"] = { name = "[s]earch", _ = "which_key_ignore" },
+				["<leader>t"] = { name = "[t]heme", _ = "which_key_ignore" },
 				["<leader>w"] = { name = "[w]orkspace", _ = "which_key_ignore" },
 			})
 		end,
