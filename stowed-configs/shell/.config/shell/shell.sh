@@ -15,6 +15,7 @@ export LANG='C.UTF-8'
 export DOCKER_DEFAULT_PLATFORM=linux/amd64
 export EDITOR=nvim
 export K9S_CONFIG_DIR="$HOME/.config/k9s"
+export BAT_THEME="ansi"
 
 # NOTE: Add gems executables to path
 if command -v gem >/dev/null 2>&1
@@ -27,6 +28,8 @@ if command -v brew >/dev/null 2>&1
 then
   export PATH="/opt/homebrew/bin:$PATH"
   export PATH="/opt/homebrew/sbin:$PATH"
+
+  add_file "/opt/homebrew/etc/profile.d/autojump.sh"
 fi
 
 if [ -d "$HOME/.local/bin" ]
@@ -39,4 +42,3 @@ then
   export PATH="$HOME/go/bin":"$PATH"
 fi
 
-add_file "/opt/homebrew/etc/profile.d/autojump.sh"
