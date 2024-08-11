@@ -14,4 +14,3 @@ add_file "$HOME/.fzf.bash"
 add_file "$HOME/yandex-cloud/completion.bash.inc"
 add_file "$HOME/.config/bash/bashrc-after" 
 
-run_tmux_on_shell_start
