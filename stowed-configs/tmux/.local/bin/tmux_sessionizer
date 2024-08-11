@@ -1,7 +1,13 @@
 #! /bin/sh
 
-# NOTE: zsh do not expand wildcards in variables so line below won't work in zsh
-SESSION_PATH=$(select_dir_name "$1")
+SESSION_FOLDERS=${SESSION_FOLDERS:-'~ ~/repo/*'}
+
+select_dir() {
+  # NOTE: zsh do not expand wildcards in variables so line below won't work in zsh
+  echo ${1:-$(sh -c "find $SESSION_FOLDERS -mindepth 0 -maxdepth 1 -type d" | fzf)}
+}
+
+SESSION_PATH=$(select_dir "$1")
 
 # NOTE: Tmux automaticaly replacing . to _ if session name starts with .
 # It prevents to find session for folder using folder name if folder have . as first symbol

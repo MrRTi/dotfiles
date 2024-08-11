@@ -1,3 +1,0 @@
-#! /bin/sh
-
-pmset -g batt | awk 'NR==2 { print $3 }' | tr -d ";"

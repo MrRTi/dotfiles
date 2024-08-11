@@ -1,6 +1,10 @@
 #!/usr/bin/env zsh
 
-fpath+=("$(brew --prefix)/share/zsh/site-functions")
+if command -v brew >/dev/null 2>&1
+then
+  fpath+=("$(brew --prefix)/share/zsh/site-functions")
+fi
+
 autoload -Uz compinit && compinit
 autoload -U promptinit; promptinit
 

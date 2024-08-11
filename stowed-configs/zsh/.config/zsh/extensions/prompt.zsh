@@ -1,16 +1,17 @@
 #!/usr/bin/env zsh
 
 source_gitstatus () {
-  if [[ -f $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh ]]; then
+  if [ command -v brew >/dev/null 2>&1 ] && [ -f $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh ]; then
     source $(brew --prefix)/opt/gitstatus/gitstatus.plugin.zsh
-  fi
-  if [[ -f ~/gitstatus/gitstatus.plugin.zsh ]]; then 
+  elif [ -f ~/gitstatus/gitstatus.plugin.zsh ]; then 
+    source ~/gitstatus/gitstatus.plugin.zsh 
+  else
+    git clone --depth=1 https://github.com/romkatv/gitstatus.git ${HOME}/gitstatus
     source ~/gitstatus/gitstatus.plugin.zsh 
   fi
 }
 
 source_gitstatus
-
 
 NEWLINE=$'\n'
 GIT_PROMPT_COUNTERS=${GIT_PROMPT_COUNTERS:=false}
@@ -33,10 +34,10 @@ function my_set_prompt() {
     USER_HOST_PART="%F{cyan}  "
   fi
   
-  PROMPT+=$USER_HOST_PART
+  PROMPT+="$USER_HOST_PART"
 
   FOLDER_PART="%F{yellow}%(5~|%-1~/…/%2~|%3~)"
-  PROMPT+=$FOLDER_PART
+  PROMPT+="$FOLDER_PART"
 
   IS_GIT_FOLDER=$(git rev-parse --is-inside-repository &>/dev/null && echo "true" || echo "false")
 

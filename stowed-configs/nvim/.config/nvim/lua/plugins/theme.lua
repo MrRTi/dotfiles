@@ -53,6 +53,8 @@ return {
 					vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "none" })
 				end,
 			})
+
+			vim.keymap.set("n", "<leader>tc", require("dark_notify").toggle, { desc = "[T]heme [c]hange" })
 		end,
 	},
 	{

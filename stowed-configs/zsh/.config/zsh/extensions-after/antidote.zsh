@@ -1,6 +1,17 @@
 #! /bin/zsh
 
-source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
+source_antidote () {
+  if [ command -v brew >/dev/null 2>&1 ] && [ -f $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh ]; then
+    source $(brew --prefix)/opt/antidote/share/antidote/antidote.zsh
+  elif [ -f ${ZDOTDIR:-~}/.antidote/antidote.zsh ]; then 
+    source ${ZDOTDIR:-~}/.antidote/antidote.zsh
+  else
+    git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+    source ${ZDOTDIR:-~}/.antidote/antidote.zshw
+  fi
+}
+
+source_antidote
 
 antidote load
 
