@@ -2,10 +2,11 @@
 
 options=(
 	style=round
+	blur_radius=2.0
 	width=6.0
 	hidpi=off
-	active_color="glow(0xFFFF8080)"
-	inactive_color=0xFF494D64
+	active_color="glow(0xFF00B7FF)"
+	inactive_color="glow(0xFF494D64)"
 )
 
 borders "${options[@]}"
