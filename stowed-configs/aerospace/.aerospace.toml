@@ -197,6 +197,10 @@ alt-shift-l = ['join-with right', 'mode main']
 # Force apps to workspace
 
 [[on-window-detected]]
+if.app-id = 'com.1password.1password'
+run = 'layout floating'
+
+[[on-window-detected]]
 if.app-id = 'com.github.wez.wezterm'
 run = 'move-node-to-workspace T' # mnemonics T - Terminal
 
@@ -255,7 +259,4 @@ run = 'move-node-to-workspace W' # mnemonics W - Work
 [[on-window-detected]]
 if.app-id = 'ru.loop.app'
 run = 'move-node-to-workspace W' # mnemonics W - Work
-
-[[on-window-detected]]
-run = 'move-node-to-workspace Z'
 
