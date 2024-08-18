@@ -116,6 +116,19 @@ Set by using [Stow](#stow)
 
 Will be auto-sourced into zsh if zsh configuration applied
 
+## TLDR
+
+### Requirements
+
+- [tldr](https://github.com/tldr-pages/tldr)
+
+### Configuration
+
+Set by using [Stow](#stow)
+
+Will be auto-sourced into zsh if zsh configuration applied
+
+
 
 
 
