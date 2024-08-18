@@ -1,4 +1,0 @@
-#! /bin/sh
-
-read -p "Ask your question: " query
-cht.sh $query | less -r
