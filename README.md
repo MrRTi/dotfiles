@@ -66,14 +66,27 @@ To see all possible options
 
 ### Configuration
 
-Set by [Stow](#stow)
+Set by using [Stow](#stow)
+
+## Tmux
+
+### Requirements
+
+- [Tmux](https://github.com/tmux/tmux/wiki)
+
+For tmux sessionizer
+- [fzf](https://github.com/junegunn/fzf) 
+- [fd](https://github.com/sharkdp/fd) (Optional, find will be used if fd not found)
+
+### Configuration
+
+Set by using [Stow](#stow)
 
 
 ## TODO:
 
 ### All systems
 - Add zsh config
-- Add tmux config
 - Add nvim config (as submodule)
 - Add direnv
 - Add gitconfig
