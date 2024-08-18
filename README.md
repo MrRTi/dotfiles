@@ -92,6 +92,19 @@ Set by using [Stow](#stow)
 
 Set by using [Stow](#stow)
 
+## Fzf
+
+### Requirements
+
+- [fzf](https://github.com/junegunn/fzf) 
+
+### Configuration
+
+Set by using [Stow](#stow)
+
+Will be auto-sourced into zsh if zsh configuration applied
+
+
 
 
 ## TODO:
