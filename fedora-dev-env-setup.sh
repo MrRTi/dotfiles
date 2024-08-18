@@ -98,6 +98,7 @@ then
 		curl -L -R --output "${LUA_ARCHIVE_PATH}" "https://www.lua.org/ftp/${LUA_ARCHIVE_NAME}"
 	fi
 
+	cd "${SOURCE_FOLDER}"
 	tar zxf "${LUA_ARCHIVE_PATH}"
 	cd "${LUA_VERSION}"
 	echo "Installing lua..."
@@ -125,6 +126,7 @@ then
 		curl -L -R --output "${LUAROCKS_ARCHIVE_PATH}" "https://luarocks.org/releases/${LUAROCKS_ARCHIVE_NAME}"
 	fi
 
+	cd "${SOURCE_FOLDER}"
 	tar zxpf "${LUAROCKS_ARCHIVE_PATH}"
 	cd "${LUAROCKS_VERSION}"
 	./configure && make && sudo make install
@@ -188,7 +190,8 @@ then
 		echo "Downloading go tarball..."
 		curl -L --output "${GO_ARCHIVE_PATH}" "https://go.dev/dl/${GO_ARCHIVE_NAME}"
 	fi
-
+	
+	cd "${SOURCE_FOLDER}"
 	echo "Set up go executable..."
 	rm -rf "${LOCAL_FOLDER}/go" && tar -C "${LOCAL_FOLDER}" -xzf "${GO_ARCHIVE_PATH}"
 
