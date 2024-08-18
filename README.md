@@ -4,11 +4,13 @@
 
 ```sh
 git clone --recurse-submodules https://github.com/MrRTi/dotfiles.git
+cd dotfiles
 git checkout dotfiles-v2
 ```
 
 ```sh
 git clone --recurse-submodules git@github.com:MrRTi/dotfiles.git
+cd dotfiles
 git checkout dotfiles-v2
 ```
 
