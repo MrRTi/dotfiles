@@ -138,6 +138,19 @@ Set by using [Stow](#stow)
 
 Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
+## Git
+
+### Requirements
+
+- [git](https://git-scm.com/)
+- [delta](https://github.com/dandavison/delta)
+
+### Configuration
+
+Set by using [Stow](#stow)
+
+Zsh configurations will be auto-sourced into zsh if zsh configuration applied
+
 ## WIP: Neovim (nvim)
 
 ### Requirements
