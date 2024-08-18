@@ -48,6 +48,7 @@ packages=(
 	fd-find
 	fzf
 	git
+	git-delta
 	jq
 	libyaml
 	kubernetes-client
