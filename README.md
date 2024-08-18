@@ -82,6 +82,16 @@ For tmux sessionizer
 
 Set by using [Stow](#stow)
 
+## Shell
+
+Set of shell agnostic aliases
+
+### Configuration
+
+Set by using [Stow](#stow)
+
+Will be auto-sourced into zsh if zsh configuration applied
+
 ## Zsh
 
 ### Requirements

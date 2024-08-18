@@ -1,0 +1,6 @@
+#! /bin/sh
+
+alias ..="cd .."
+alias md="mkdir -pv"
+alias ll="ls -la"
+alias c='clear'
