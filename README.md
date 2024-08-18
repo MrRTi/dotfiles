@@ -1,10 +1,64 @@
 # Dotfiles
 
+## How to clone
+
+```sh
+git clone --recurse-submodules https://github.com/MrRTi/dotfiles.git
+git checkout dotfiles-v2
+```
+
+```sh
+git clone --recurse-submodules git@github.com:MrRTi/dotfiles.git
+git checkout dotfiles-v2
+```
+
+## Stow
+
+### Requirements
+- [GNU Stow](https://www.gnu.org/software/stow/)
+
+### Usage
+
+#### Add
+
+For specific package
+
+```sh
+./stow.sh -a -p nvim
+```
+
+For all configs
+
+```sh
+./stow.sh -a 
+```
+
+#### Delete
+
+For specific package
+
+```sh
+./stow.sh -d -p nvim
+```
+
+For all configs
+
+```sh
+./stow.sh -d 
+```
+
+#### Help
+
+To see all possible options
+
+```sh
+./stow.sh -h
+```
+
 ## TODO:
 
 ### All systems
 - Add wezterm config
-- Add stow
 - Add zsh config
 - Add tmux config
 - Add nvim config (as submodule)
