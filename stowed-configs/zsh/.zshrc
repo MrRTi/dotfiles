@@ -19,4 +19,4 @@ fi
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 
-type frum &>/dev/null 2&>1 && eval "$(frum init | sed "s/quiet local/quiet local | true/")"
+type frum >/dev/null 2>&1 && eval "$(frum init | sed "s/quiet local/quiet local | true/")"

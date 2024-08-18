@@ -98,24 +98,10 @@ return {
 			"folke/neodev.nvim",
 			"hrsh7th/cmp-nvim-lsp",
 		},
-	},
-	{
-		"nvimtools/none-ls.nvim",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-		},
 		config = function()
-			local null_ls = require("null-ls")
-
-			null_ls.setup({
-				sources = {
-					null_ls.builtins.formatting.stylua,
-					null_ls.builtins.formatting.prettier,
-					null_ls.builtins.diagnostics.eslint,
-					null_ls.builtins.diagnostics.rubocop,
-					null_ls.builtins.formatting.rubocop,
-				},
-			})
+			require("lspconfig").marksman.setup({})
+			require("lspconfig").solargraph.setup({})
+			require("lspconfig").rubocop.setup({})
 		end,
 	},
 }

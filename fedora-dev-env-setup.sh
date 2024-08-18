@@ -45,6 +45,7 @@ sudo dnf groupinstall -y "Development Tools" "Development Libraries"
 packages=(
 	bat
 	btop
+	fd-find
 	fzf
 	git
 	jq
