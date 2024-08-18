@@ -82,11 +82,21 @@ For tmux sessionizer
 
 Set by using [Stow](#stow)
 
+## Zsh
+
+### Requirements
+
+- [Zsh](https://www.zsh.org/)
+
+### Configuration
+
+Set by using [Stow](#stow)
+
+
 
 ## TODO:
 
 ### All systems
-- Add zsh config
 - Add nvim config (as submodule)
 - Add direnv
 - Add gitconfig
