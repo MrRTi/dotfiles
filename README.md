@@ -90,7 +90,7 @@ Set of shell agnostic aliases
 
 Set by using [Stow](#stow)
 
-Will be auto-sourced into zsh if zsh configuration applied
+Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
 ## Zsh
 
@@ -112,7 +112,7 @@ Set by using [Stow](#stow)
 
 Set by using [Stow](#stow)
 
-Will be auto-sourced into zsh if zsh configuration applied
+Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
 ## Bat
 
@@ -124,7 +124,7 @@ Will be auto-sourced into zsh if zsh configuration applied
 
 Set by using [Stow](#stow)
 
-Will be auto-sourced into zsh if zsh configuration applied
+Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
 ## TLDR
 
@@ -136,7 +136,38 @@ Will be auto-sourced into zsh if zsh configuration applied
 
 Set by using [Stow](#stow)
 
-Will be auto-sourced into zsh if zsh configuration applied
+Zsh configurations will be auto-sourced into zsh if zsh configuration applied
+
+## WIP: Neovim (nvim)
+
+### Requirements
+
+- [neovim](https://github.com/neovim/neovim)
+- TBD
+
+### Configuration
+
+Neovim configuration - WIP
+
+Set by using [Stow](#stow)
+
+Zsh configurations will be auto-sourced into zsh if zsh configuration applied
+
+
+## WIP: K9S
+
+### Requirements
+
+- [k9s](https://github.com/derailed/k9s)
+
+### Configuration
+
+k9s configuration - WIP
+
+Set by using [Stow](#stow)
+
+Shell updates will be auto-sourced into zsh if zsh configuration applied
+
 
 
 
@@ -148,6 +179,7 @@ Will be auto-sourced into zsh if zsh configuration applied
 - Add nvim config (as submodule)
 - Add direnv
 - Add gitconfig
+- Add k9s config
 
 ### Mac only
 - Add Brewfile
