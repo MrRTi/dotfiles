@@ -57,10 +57,21 @@ To see all possible options
 ./stow.sh -h
 ```
 
+## WezTerm
+
+### Requirements
+
+- [WezTerm](https://wezfurlong.org/wezterm/index.html)
+- Font "JetBrains Mono"
+
+### Configuration
+
+Set by [Stow](#stow)
+
+
 ## TODO:
 
 ### All systems
-- Add wezterm config
 - Add zsh config
 - Add tmux config
 - Add nvim config (as submodule)
