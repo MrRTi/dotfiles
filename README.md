@@ -104,6 +104,18 @@ Set by using [Stow](#stow)
 
 Will be auto-sourced into zsh if zsh configuration applied
 
+## Bat
+
+### Requirements
+
+- [bat](https://github.com/sharkdp/bat) 
+
+### Configuration
+
+Set by using [Stow](#stow)
+
+Will be auto-sourced into zsh if zsh configuration applied
+
 
 
 

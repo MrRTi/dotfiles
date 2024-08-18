@@ -13,7 +13,6 @@ source_folder() {
 export EDITOR="nvim"
 export VISUAL="nvim"
 export K9S_CONFIG_DIR="$HOME/.config/k9s"
-export BAT_THEME="ansi"
 
 source_folder $HOME/.aliases
 source_folder $HOME/.config/zsh

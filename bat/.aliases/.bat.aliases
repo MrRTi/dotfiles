@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if type bat > /dev/null 2>&1; then
+	alias cat='bat -pp'
+	alias less='bat -p'
+	alias lessl='bat -pl'
+fi
