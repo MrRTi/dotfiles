@@ -257,19 +257,9 @@ then
 fi
 
 cd "${DOT_FILES_FOLDER}"
-
-packages=(
-	shell
-	zsh
-	tmux
-	nvim
-)
-
-for package in "${packages[@]}"; do
-	echo "Applying dotfiles for $package"
-	./stow.sh "$package"
-done
-
+git checkout dotfiles-v2
+echo "Applying dotfiles..."
+./stow.sh -ay
 go_home
 
 ###### AFTER
