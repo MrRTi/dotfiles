@@ -17,6 +17,7 @@ git checkout dotfiles-v2
 ## Stow
 
 ### Requirements
+
 - [GNU Stow](https://www.gnu.org/software/stow/)
 
 ### Usage
@@ -32,7 +33,7 @@ For specific package
 For all configs
 
 ```sh
-./stow.sh -a 
+./stow.sh -a
 ```
 
 #### Delete
@@ -46,7 +47,7 @@ For specific package
 For all configs
 
 ```sh
-./stow.sh -d 
+./stow.sh -d
 ```
 
 #### Help
@@ -75,7 +76,8 @@ Set by using [Stow](#stow)
 - [Tmux](https://github.com/tmux/tmux/wiki)
 
 For tmux sessionizer
-- [fzf](https://github.com/junegunn/fzf) 
+
+- [fzf](https://github.com/junegunn/fzf)
 - [fd](https://github.com/sharkdp/fd) (Optional, find will be used if fd not found)
 
 ### Configuration
@@ -106,7 +108,7 @@ Set by using [Stow](#stow)
 
 ### Requirements
 
-- [fzf](https://github.com/junegunn/fzf) 
+- [fzf](https://github.com/junegunn/fzf)
 
 ### Configuration
 
@@ -118,7 +120,7 @@ Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
 ### Requirements
 
-- [bat](https://github.com/sharkdp/bat) 
+- [bat](https://github.com/sharkdp/bat)
 
 ### Configuration
 
@@ -166,7 +168,6 @@ Set by using [Stow](#stow)
 
 Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
-
 ## WIP: K9S
 
 ### Requirements
@@ -181,17 +182,11 @@ Set by using [Stow](#stow)
 
 Shell updates will be auto-sourced into zsh if zsh configuration applied
 
-
-
-
-
-
-## TODO:
+## TODO
 
 ### All systems
 - Add nvim config (as submodule)
 - Add direnv
-- Add gitconfig
 - Add k9s config
 
 ### Mac only
