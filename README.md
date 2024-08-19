@@ -153,6 +153,18 @@ Set by using [Stow](#stow)
 
 Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
+## Exa
+
+### Requirements
+
+- [exa](https://github.com/ogham/exa)
+
+### Configuration
+
+Set by using [Stow](#stow)
+
+Zsh configurations will be auto-sourced into zsh if zsh configuration applied
+
 ## WIP: Neovim (nvim)
 
 ### Requirements
