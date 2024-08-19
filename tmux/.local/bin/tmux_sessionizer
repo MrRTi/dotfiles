@@ -6,9 +6,16 @@ select_dir() {
   if [ -n "$1" ]; then
     echo "$1"
   elif type fd >/dev/null 2>&1; then
-    sh -c "fd --type d --min-depth=0 --max-depth=1 --follow . $SESSION_FOLDERS 2>/dev/null | { echo $HOME; cat; } | fzf --preview \"ls -la {}\""
+    sh -c "\
+      fd --type d --min-depth=0 --max-depth=1 --follow . $SESSION_FOLDERS 2>/dev/null | \
+      { echo $HOME; cat; } | \
+      fzf --preview \"ls -la {}\"\
+    "
   else
-    sh -c "find $SESSION_FOLDERS -mindepth 0 -maxdepth 1 -type d | fzf --preview \"ls -la {}\""
+    sh -c "\
+      find $SESSION_FOLDERS -mindepth 0 -maxdepth 1 -type d | \
+      fzf --preview \"ls -la {}\"\
+    "
   fi
 }
 
