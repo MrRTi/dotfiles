@@ -42,21 +42,4 @@
 	ui = true
 
 [alias]
-	c = commit
-	s = status
-	d = diff
-	a = add
-	b = branch
-	co = checkout
-	rup = remote update
-	lol = log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
-	cb = rev-parse --abbrev-ref HEAD
-	pu = "!git push -u origin $(git cb)"
 	cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop\\|main' | xargs -n 1 -r git branch -d"
-
-	w = worktree
-	wl = worktree list
-	wa = worktree add
-	wr = worktree remove
-	wrf = worktree remove --force
-	wp = worktree prune
