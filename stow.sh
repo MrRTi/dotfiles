@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 help() {
   echo "This script help stow and unstow configs from this repository"
@@ -45,7 +45,7 @@ stow_one_config() {
 
 stow_all_configs() {
   configs=$(
-    find ./* -mindepth 0 -maxdepth 0 -type d  \( ! -iname ".*" \) | 
+    find ./* -mindepth 0 -maxdepth 0 -type d  \( ! -iname ".*" \) |
     sort
   )
 
@@ -59,7 +59,7 @@ stow_all_configs() {
       answer='y'
     else
       echo "$VERB \"${config##*/}\" config?: y/[n]"
-      read answer 
+      read answer
     fi
     [ "$answer" = 'y' ] && stow_one_config $config
   done
@@ -98,6 +98,6 @@ fi
 if [ -n "$PACKAGE" ]; then
   stow_one_config $PACKAGE
 else
-  stow_all_configs  
+  stow_all_configs
 fi
 
