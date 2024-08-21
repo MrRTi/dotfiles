@@ -165,6 +165,32 @@ Set by using [Stow](#stow)
 
 Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
+## Aerospace (macos only)
+
+### Requirements
+
+- [aerospace](https://nikitabobko.github.io/AeroSpace/guide#installation)
+
+### Configuration
+
+Set by using [Stow](#stow)
+
+Zsh configurations will be auto-sourced into zsh if zsh configuration applied
+
+## JunkyBorders (macos only)
+
+### Requirements
+
+- [JankyBorders](https://github.com/FelixKratz/JankyBorders)
+
+### Configuration
+
+Set by using [Stow](#stow)
+
+Zsh configurations will be auto-sourced into zsh if zsh configuration applied
+
+
+
 ## WIP: Neovim (nvim)
 
 ### Requirements
@@ -203,8 +229,6 @@ Shell updates will be auto-sourced into zsh if zsh configuration applied
 
 ### Mac only
 - Add Brewfile
-- Add aerospace config
-- Add borders config
 
 ### Fedora only
 - TBD
