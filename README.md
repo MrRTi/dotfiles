@@ -153,11 +153,11 @@ Set by using [Stow](#stow)
 
 Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
-## Exa
+## Eza
 
 ### Requirements
 
-- [exa](https://github.com/ogham/exa)
+- [eza](https://github.com/eza-community/eza)
 
 ### Configuration
 

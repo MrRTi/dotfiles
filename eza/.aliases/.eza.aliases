@@ -1,0 +1,5 @@
+#!/user/bin/env zsh
+
+if type eza >/dev/null 2>&1; then
+	alias ls=eza
+fi
