@@ -57,7 +57,7 @@ function my_set_prompt() {
     if gitstatus_query MY && [[ $VCS_STATUS_RESULT == ok-sync ]]; then
       BRANCH="${${VCS_STATUS_LOCAL_BRANCH:-@${VCS_STATUS_COMMIT}}//\%/%%}"  # escape % 
 
-      if [ ${BRANCH##*/} = ${PWD##*/} ]; then
+      if [ ${BRANCH##*/} = ${${PWD%/}##*/} ]; then
         BRANCH_PART="󰐅 "
       else
         BRANCH_PART=" $BRANCH"

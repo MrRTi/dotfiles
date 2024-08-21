@@ -7,7 +7,7 @@ set -e
 CURR_PWD=$(pwd)
 
 touch "${HOME}/.profile"
-touch "${HOME}/.zprofile"
+touch "${HOME}/.zshenv"
 
 ###### VERSIONS
 
@@ -24,11 +24,12 @@ LUAROCKS_VERSION="luarocks-3.11.1"
 
 add_to_path() {
 	grep -q "export PATH=$1:\${PATH}" "${HOME}/.profile" || echo "export PATH=$1:\${PATH}" >> "${HOME}/.profile"
-	grep -q "export PATH=$1:\${PATH}" "${HOME}/.zprofile" || echo "export PATH=$1:\${PATH}" >> "${HOME}/.zprofile"
+	grep -q "export PATH=$1:\${PATH}" "${HOME}/.zshenv" || echo "export PATH=$1:\${PATH}" >> "${HOME}/.zshenv"
 }
 
-reload_profile() {
+reload_env() {
 	source "${HOME}/.profile"
+	source "${HOME}/.zshenv"
 }
 
 go_home() {
@@ -47,6 +48,7 @@ packages=(
 	btop
 	fd-find
 	fzf
+	exa
 	git
 	git-delta
 	jq
@@ -78,7 +80,7 @@ LOCAL_BIN="${LOCAL_FOLDER}/bin"
 mkdir -p "${LOCAL_BIN}"
 
 add_to_path "${LOCAL_BIN}"
-reload_profile
+reload_env
 
 ###### Set up folder for sources
 
@@ -196,7 +198,7 @@ then
 	rm -rf "${LOCAL_FOLDER}/go" && tar -C "${LOCAL_FOLDER}" -xzf "${GO_ARCHIVE_PATH}"
 
 	add_to_path "${LOCAL_FOLDER}/go/bin"
-	reload_profile
+	reload_env
 
 	echo "Clean up..."
 	rm "${GO_ARCHIVE_PATH}"
