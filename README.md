@@ -84,61 +84,22 @@ For tmux sessionizer
 
 Set by using [Stow](#stow)
 
-## Shell
-
-Set of shell agnostic aliases
-
-### Configuration
-
-Set by using [Stow](#stow)
-
-Zsh configurations will be auto-sourced into zsh if zsh configuration applied
-
 ## Zsh
 
 ### Requirements
 
 - [Zsh](https://www.zsh.org/)
 
-### Configuration
-
-Set by using [Stow](#stow)
-
-## Fzf
-
-### Requirements
-
-- [fzf](https://github.com/junegunn/fzf)
-
-### Configuration
-
-Set by using [Stow](#stow)
-
-Zsh configurations will be auto-sourced into zsh if zsh configuration applied
-
-## Bat
-
-### Requirements
+#### Optional
 
 - [bat](https://github.com/sharkdp/bat)
-
-### Configuration
-
-Set by using [Stow](#stow)
-
-Zsh configurations will be auto-sourced into zsh if zsh configuration applied
-
-## TLDR
-
-### Requirements
-
+- [fzf](https://github.com/junegunn/fzf)
+- [eza](https://github.com/eza-community/eza)
 - [tldr](https://github.com/tldr-pages/tldr)
 
 ### Configuration
 
 Set by using [Stow](#stow)
-
-Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
 ## Git
 
@@ -146,18 +107,6 @@ Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
 - [git](https://git-scm.com/)
 - [delta](https://github.com/dandavison/delta)
-
-### Configuration
-
-Set by using [Stow](#stow)
-
-Zsh configurations will be auto-sourced into zsh if zsh configuration applied
-
-## Eza
-
-### Requirements
-
-- [eza](https://github.com/eza-community/eza)
 
 ### Configuration
 
@@ -189,8 +138,6 @@ Set by using [Stow](#stow)
 
 Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 
-
-
 ## WIP: Neovim (nvim)
 
 ### Requirements
@@ -205,20 +152,6 @@ Neovim configuration - WIP
 Set by using [Stow](#stow)
 
 Zsh configurations will be auto-sourced into zsh if zsh configuration applied
-
-## WIP: K9S
-
-### Requirements
-
-- [k9s](https://github.com/derailed/k9s)
-
-### Configuration
-
-k9s configuration - WIP
-
-Set by using [Stow](#stow)
-
-Shell updates will be auto-sourced into zsh if zsh configuration applied
 
 ## TODO
 

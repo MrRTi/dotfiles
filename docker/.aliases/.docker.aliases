@@ -1,6 +1,0 @@
-#!/user/bin/env zsh
-
-alias d="docker"
-alias dc="docker compose"
-alias dcr='dc run --rm --use-aliases'
-alias dcrs='dcr --service-ports'
