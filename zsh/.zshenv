@@ -10,3 +10,5 @@ source_folder() {
 }
 
 source_folder $HOME/.aliases
+
+export PATH="$HOME"/.local/bin:"$PATH"
