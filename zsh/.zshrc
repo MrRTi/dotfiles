@@ -136,6 +136,12 @@ if __command_available fzf; then
   export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
 fi
 
+# ---- direnv ----
+
+if __command_available direnv; then
+  eval "$(direnv hook zsh)"
+fi
+
 
 # ---- git ----
 
