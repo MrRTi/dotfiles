@@ -9,8 +9,12 @@ __command_available() {
   command -v "$1" >/dev/null 2>&1
 }
 
-__move_prompt_to_bottom() {
-  tput cup 9999 0
+__fzf_preview_tool() {
+  if command -v eza > /dev/null 2>&1; then
+    echo 'eza'
+  else
+    echo 'ls'
+  fi
 }
 
 # ==== ALIASES ====
@@ -20,7 +24,7 @@ __move_prompt_to_bottom() {
 alias ..='cd ..'
 alias md='mkdir -pv'
 alias ll='ls -la'
-alias c='clear && __move_prompt_to_bottom'
+alias c='clear'
 alias :q='exit'
 
 alias clean_desktop="rm ~/Desktop/*.png"
@@ -196,28 +200,28 @@ bindkey -v
 export KEYTIMEOUT=1
 
 # Update cursor when in insert mode
-__render_block() {
+__render-block() {
   echo -ne '\e[2 q'
 }
 
-__render_beam() {
+__render-beam() {
   echo -ne '\e[6 q'
 }
 
-__zle-keymap-select() {
+zle-keymap-select() {
   if [[ ${KEYMAP} == vicmd ]] || [[ $1 = 'block' ]]; then
-    __render_block
+    __render-block
   elif [[ ${KEYMAP} == main ]] || [[ ${KEYMAP} == viins ]] || [[ ${KEYMAP} = '' ]] || [[ $1 = 'beam' ]]; then
-    __render_beam
+    __render-beam
   fi
 }
 
-__zle-line-init() {
-  __render_beam
+zle-line-init() {
+  __render-beam
 }
 
-zle -N __zle-keymap-select
-zle -N __zle-line-init
+zle -N zle-keymap-select
+zle -N zle-line-init
 
 # edit command in visual mode
 autoload -Uz edit-command-line
@@ -406,17 +410,6 @@ bindkey -M menuselect 'l' vi-forward-char
 ZSH_EXT_FOLDER="$HOME"/.config/zsh-completion
 mkdir -p "$ZSH_EXT_FOLDER"
 
-# Clone and compile to wordcode missing plugins.
-if [[ ! -e "$ZSH_EXT_FOLDER"/zsh-syntax-highlighting ]]; then
-  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git  "$ZSH_EXT_FOLDER/zsh-syntax-highlighting"
-  __zcompile-many "$ZSH_EXT_FOLDER"/zsh-syntax-highlighting/{zsh-syntax-highlighting,highlighters/*/*.zsh}
-fi
-if [[ ! -e "$ZSH_EXT_FOLDER"/zsh-autosuggestions ]]; then
-  git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git "$ZSH_EXT_FOLDER/zsh-autosuggestions"
-  __zcompile-many "$ZSH_EXT_FOLDER"/zsh-autosuggestions/{zsh-autosuggestions,src/**/*.zsh}
-fi
-
-
 # Load the Zsh completion system
 
 if [[ ! -e "$ZSH_EXT_FOLDER"/zsh-completions ]]; then
@@ -425,9 +418,26 @@ if [[ ! -e "$ZSH_EXT_FOLDER"/zsh-completions ]]; then
   rm -f ~/.zcompdump
 fi
 
-autoload -Uz compinit && compinit
+autoload -Uz compinit
+compinit
 
-unfunction __zcompile-many
+if [[ ! -e "$ZSH_EXT_FOLDER"/fzf-tab ]]; then
+  git clone --depth=1 https://github.com/Aloxaf/fzf-tab.git "$ZSH_EXT_FOLDER/fzf-tab"
+fi
+
+source "$ZSH_EXT_FOLDER"/fzf-tab/fzf-tab.plugin.zsh
+
+
+# Clone and compile to wordcode missing plugins.
+if [[ ! -e "$ZSH_EXT_FOLDER"/zsh-syntax-highlighting ]]; then
+  git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git  "$ZSH_EXT_FOLDER/zsh-syntax-highlighting"
+  __zcompile-many "$ZSH_EXT_FOLDER"/zsh-syntax-highlighting/{zsh-syntax-highlighting,highlighters/*/*.zsh}
+fi
+
+if [[ ! -e "$ZSH_EXT_FOLDER"/zsh-autosuggestions ]]; then
+  git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions.git "$ZSH_EXT_FOLDER/zsh-autosuggestions"
+  __zcompile-many "$ZSH_EXT_FOLDER"/zsh-autosuggestions/{zsh-autosuggestions,src/**/*.zsh}
+fi
 
 ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 
@@ -437,39 +447,22 @@ setopt ALWAYS_TO_END
 # When a directory is completed, add a trailing slash instead of a space.
 setopt AUTO_PARAM_SLASH
 
-# Use the completion system's default options
-zstyle ':completion:*' completer _expand _complete _correct _approximate
+# disable sort when completing `git checkout`
+zstyle ':completion:*:git-checkout:*' sort false
+# set descriptions format to enable group support
+# NOTE: don't use escape sequences here, fzf-tab will ignore them
+zstyle ':completion:*:descriptions' format '[%d]'
+# set list-colors to enable filename colorizing
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+# force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+zstyle ':completion:*' menu no
+# preview directory's content with eza when completing cd
+zstyle ':fzf-tab:complete:cd:*' fzf-preview "$(__fzf_preview_tool) -1 --color=always \$realpath"
+# switch group using `<` and `>`
+zstyle ':fzf-tab:*' switch-group '<' '>'
 
-# Specify the format for the completion menu
-zstyle ':completion:*' menu select=1
-zstyle ':completion:*:default' list-prompt '%M: %d'
-
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*' matcher-list '' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-
-# Tab completion colors
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-
-# add new installed packages into completions
-zstyle ':completion:*' rehash true
-
-# Show completions for commands that start with a space
-zstyle ':completion:*' ignore-parents parent pwd
-
-# Show descriptions for completed commands
-zstyle ':completion:*:descriptions' format '%B%d%b'
-zstyle ':completion:*:*:*:*:descriptions' format '%F{green}-- %d --%f'
-zstyle ':completion:*:*:*:*:corrections' format '%F{yellow}!- %d (errors: %e) -!%f'
-zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
-zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
-
-# Enable caching of completions
-zstyle ':completion:*' use-cache yes
-
-
-# Set prompt at the bottom of the screen
-__move_prompt_to_bottom
-
+unfunction __zcompile-many
+#
 # ==== PROFILING ====
 
 if [ $ZSH_PROFILING -eq 1 ]; then zprof; fi

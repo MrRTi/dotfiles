@@ -2,7 +2,7 @@
 
 SESSION_FOLDERS=${SESSION_FOLDERS:-"$HOME $HOME/repo/*"}
 
-__preview_tool() {
+__fzf_preview_tool() {
   if command -v eza > /dev/null 2>&1; then
     echo 'eza'
   else
@@ -11,7 +11,7 @@ __preview_tool() {
 }
 
 __fzf_preview() {
-  fzf --tmux bottom,75% --preview "$(__preview_tool) -la --color=always {}"
+  fzf --tmux bottom,75% --preview "$(__fzf_preview_tool) -la --color=always {}"
 }
 
 __select_dir() {
