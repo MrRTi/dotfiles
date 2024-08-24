@@ -462,7 +462,7 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview "$(__fzf_preview_tool) -1 --color=al
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
 unfunction __zcompile-many
-#
+
 # ==== PROFILING ====
 
 if [ $ZSH_PROFILING -eq 1 ]; then zprof; fi
