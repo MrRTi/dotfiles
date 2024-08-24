@@ -1,7 +1,13 @@
 # ==== PROFILING ====
 
 ZSH_PROFILING=0
-if [ $ZSH_PROFILING -eq 1 ];then zmodload zsh/zprof; fi
+if [ $ZSH_PROFILING -eq 1 ]; then zmodload zsh/zprof; fi
+
+# ==== HELPERS ====
+
+__command_available() {
+  command -v "$1" >/dev/null 2>&1
+}
 
 # ==== ALIASES ====
 
@@ -26,7 +32,7 @@ alias zshr="rel-env && rel-shell"
 
 # ---- bat aliases  ----
 
-if type bat > /dev/null 2>&1; then
+if __command_available bat; then
   alias cat='bat -pp'
   alias less='bat -p'
   alias lessl='bat -pl'
@@ -35,7 +41,7 @@ fi
 
 # ---- docker aliases  ----
 
-if type docker >/dev/null 2>&1; then
+if __command_available docker; then
   alias d='docker'
   alias dc='docker compose'
   alias dcr='dc run --rm --use-aliases'
@@ -44,14 +50,14 @@ fi
 
 # ---- eza aliases  ----
 
-if type eza >/dev/null 2>&1; then
+if __command_available eza; then
   alias ls='eza'
 fi
 
 
 # ---- git aliases  ----
 
-if type git >/dev/null 2>&1; then
+if __command_available git; then
   alias g='git'
 
   alias ga='g add'
@@ -76,7 +82,7 @@ fi
 
 # ---- nvim aliases  ----
 
-if type nvim >/dev/null 2>&1; then
+if __command_available nvim; then
   alias vim=nvim
   alias v=vim
   alias vf='vim .'
@@ -85,14 +91,14 @@ fi
 
 # ---- tldr aliases  ----
 
-if type tldr > /dev/null 2>&1 && type fzf > /dev/null 2>&1; then
+if __command_available tldr && __command_available fzf; then
   alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
 fi
 
 
 # ---- tmux aliases  ----
 
-if type tmux_sessionizer >/dev/null 2>&1; then
+if __command_available tmux_sessionizer; then
   alias tn='tmux_sessionizer'
 fi
 
@@ -101,13 +107,13 @@ fi
 
 # ---- bat ----
 
-if type bat > /dev/null 2>&1; then
+if __command_available bat; then
   export BAT_THEME="ansi"
 fi
 
 # ---- fzf ----
 
-if type fzf >/dev/null 2>&1; then
+if __command_available fzf; then
   source <(fzf --zsh)
 
   # Open in tmux popup if on tmux, otherwise use --height mode
@@ -120,7 +126,7 @@ fi
 
 # ---- git ----
 
-if type git > /dev/null 2>&1 && type fzf > /dev/null 2>&1; then
+if __command_available git && __command_available fzf; then
   __git-worktree-root() {
     git worktree list | grep 'bare' | awk '{print $1}'
   }
@@ -164,20 +170,15 @@ fi
 
 # ---- k9s ----
 
-if type k9s >/dev/null 2>&1; then
+if __command_available k9s; then
   export K9S_CONFIG_DIR="$HOME/.config/k9s"
 fi
 
 
-# ---- nvim ----
-
-if type nvim >/dev/null 2>&1; then
-  export EDITOR="nvim"
-  export VISUAL="nvim"
-fi
-
-
 # ==== ZSH CONFIG ====
+
+export EDITOR="vim"
+export VISUAL="vim"
 
 # ---- vi-mode ----
 
@@ -244,17 +245,18 @@ bindkey -M visual S add-surround
 # ---- prompt ----
 
 __source_gitstatus() {
-  if [ command -v brew >/dev/null 2>&1 ] && [ -f $(brew --prefix)/opt/gitstatus/gitstatus.plugin ]; then
-    source $(brew --prefix)/opt/gitstatus/gitstatus.plugin
-  elif [ -d "$HOME"/gitstatus/ ]; then
-    source ~/gitstatus/gitstatus.plugin.zsh
-  else
-    git clone --depth=1 https://github.com/romkatv/gitstatus.git ${HOME}/gitstatus
-    source ~/gitstatus/gitstatus.plugin.zsh
+  GIT_STATUS_FOLDER="$HOME"/.local/gitstatus
+
+  if [ ! -d "$GIT_STATUS_FOLDER"/ ]; then
+    mkdir -pv "$GIT_STATUS_FOLDER"
+    git clone --depth=1 https://github.com/romkatv/gitstatus.git "$GIT_STATUS_FOLDER"
   fi
+
+  source "$GIT_STATUS_FOLDER"/gitstatus.plugin.zsh
 }
 
 __source_gitstatus
+unfunction __source_gitstatus
 
 NEWLINE=$'\n'
 GIT_PROMPT_COUNTERS=${GIT_PROMPT_COUNTERS:=false}
@@ -265,7 +267,7 @@ __render_counter() {
 }
 
 __my_set_prompt() {
-  type gitstatus_query &>/dev/null || source_git_status
+  __command_available gitstatus_query || source_git_status
 
   PROMPT=""
 
@@ -281,7 +283,7 @@ __my_set_prompt() {
   FOLDER_PART="%F{yellow}%(5~|%-1~/…/%2~|%3~)"
   PROMPT+="$FOLDER_PART"
 
-  IS_GIT_FOLDER=$(git rev-parse --is-inside-repository &>/dev/null && echo "true" || echo "false")
+  IS_GIT_FOLDER=$(git rev-parse --is-inside-repository >/dev/null 2>&1 && echo "true" || echo "false")
 
   GIT_PART=""
   BRANCH_PART=""
@@ -457,5 +459,5 @@ zstyle ':completion:*' use-cache yes
 
 # ==== PROFILING ====
 
-if [ $ZSH_PROFILING -eq 1 ];then zprof; fi
+if [ $ZSH_PROFILING -eq 1 ]; then zprof; fi
 
