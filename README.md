@@ -1,6 +1,7 @@
 # Dotfiles
 
 This config based on usage of the [Stow](#stow) to link config files to the needed places.
+
 [Nix package manager and darwin-modules](#nix-packages) mostly used as package manager.
 
 ## How to clone
@@ -98,7 +99,7 @@ To check all packages instaled by nix package manager check `nix-pkgs/.nixpkgs/d
 - [tmux](https://github.com/tmux/tmux/wiki)
 - [zsh](https://www.zsh.org/)
 
-### Should by installed other way
+### Install these as you like
 
 - [WezTerm](https://wezfurlong.org/wezterm/index.html)
 - [aerospace (macos only)](https://nikitabobko.github.io/AeroSpace/guide#installation)
