@@ -160,7 +160,7 @@ if __command_available git && __command_available fzf; then
     git worktree add -b "${BRANCH}" "$(__git-worktree-root)/${BRANCH}"
   }
 
-  alias gwa="__git-worktree-add-query"
+  alias gwaq="__git-worktree-add-query"
 
   __git-worktree-select() {
     git worktree list | fzf | awk '{print $1}'

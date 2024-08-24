@@ -3,7 +3,7 @@
 SESSION_FOLDERS=${SESSION_FOLDERS:-"$HOME $HOME/repo/*"}
 
 __fzf_preview_tool() {
-  if command -v eza > /dev/null 2>&1; then
+  if command -v eza >/dev/null 2>&1; then
     echo 'eza'
   else
     echo 'ls'
@@ -17,7 +17,7 @@ __fzf_preview() {
 __select_dir() {
   if [ -n "$1" ]; then
     echo "$1"
-  elif type fd >/dev/null 2>&1; then
+  elif command -v fd >/dev/null 2>&1; then
     fd --type d --min-depth=0 --max-depth=1 --follow . $(echo ${SESSION_FOLDERS}) 2>/dev/null | \
       { echo $HOME; cat; } | \
       __fzf_preview
