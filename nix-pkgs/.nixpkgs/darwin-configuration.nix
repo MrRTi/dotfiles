@@ -6,6 +6,7 @@
   environment.systemPackages = with pkgs;
     [
       ack
+      aerc
       bat
       btop
       fd
@@ -13,6 +14,7 @@
       eza
       git
       delta
+      direnv
       jq
       libyaml
       kubectl
@@ -26,6 +28,7 @@
       tree
       tree-sitter
       tmux
+      yq
       wget
       zsh
     ];
