@@ -24,10 +24,15 @@ alias clean_desktop="rm ~/Desktop/*.png"
 
 # ---- zsh aliases  ----
 
-alias rel-env="source $HOME/.zshenv"
-alias rel-shell="source $HOME/.zshrc"
+alias rel-env="source $HOME/.zshenv && echo \"~/.zshenv sourced\""
+alias rel-shell="source $HOME/.zshrc  && echo \"~/.zshrc sourced\""
 alias rel-shell-debug="ZSH_PROFILING=1 rel-shell"
 alias zshr="rel-env && rel-shell"
+
+
+# ---- darwin-modules ----
+
+alias rel-nix="darwin-rebuild switch"
 
 
 # ---- bat aliases  ----

@@ -1,5 +1,8 @@
 # Dotfiles
 
+This config based on usage of the [Stow](#stow) to link config files to the needed places.
+[Nix package manager and darwin-modules](#nix-packages) mostly used as package manager.
+
 ## How to clone
 
 ```sh
@@ -58,100 +61,48 @@ To see all possible options
 ./stow.sh -h
 ```
 
-## WezTerm
+## Nix Packages
 
 ### Requirements
+
+- [Nix package manager](https://nixos.org/download/)
+- [Nix darwin modules](https://github.com/LnL7/nix-darwin/tree/master)
+
+See `install-nix-with-darvin-modules.sh` for install sequence
+
+### Configuration
+
+Set by:
+- placing `nix-pkgs/.nixpkgs/darwin-configuration.nix` at `~/.nixpkgs/darwin-configuration.nix`
+- using [Stow](#stow)
+
+## Required packages for configuration
+
+### Installed by [nix package manager](#nix-packages)
+
+The packages listed below are used in config files.
+To check all packages instaled by nix package manager check `nix-pkgs/.nixpkgs/darwin-configuration.nix`
+
+- [GNU Stow](https://www.gnu.org/software/stow/)
+- [bat](https://github.com/sharkdp/bat)
+- [delta](https://github.com/dandavison/delta)
+- [eza](https://github.com/eza-community/eza)
+- [fd](https://github.com/sharkdp/fd)
+- [fzf](https://github.com/junegunn/fzf)
+- [git](https://git-scm.com/)
+- [marksman](https://github.com/artempyanykh/marksman)
+- [neovim](https://github.com/neovim/neovim)
+- [nerdfonts](https://www.nerdfonts.com/)
+- [ripgrep](https://github.com/BurntSushi/ripgrep)
+- [tldr](https://github.com/tldr-pages/tldr)
+- [tmux](https://github.com/tmux/tmux/wiki)
+- [zsh](https://www.zsh.org/)
+
+### Should by installed other way
 
 - [WezTerm](https://wezfurlong.org/wezterm/index.html)
-- Font "JetBrains Mono"
-
-### Configuration
-
-Set by using [Stow](#stow)
-
-## Tmux
-
-### Requirements
-
-- [Tmux](https://github.com/tmux/tmux/wiki)
-
-For tmux sessionizer
-
-- [fzf](https://github.com/junegunn/fzf)
-- [fd](https://github.com/sharkdp/fd) (Optional, find will be used if fd not found)
-
-### Configuration
-
-Set by using [Stow](#stow)
-
-## Zsh
-
-### Requirements
-
-- [Zsh](https://www.zsh.org/)
-
-#### Optional
-
-- [bat](https://github.com/sharkdp/bat)
-- [fzf](https://github.com/junegunn/fzf)
-- [eza](https://github.com/eza-community/eza)
-- [tldr](https://github.com/tldr-pages/tldr)
-
-### Configuration
-
-Set by using [Stow](#stow)
-
-## Git
-
-### Requirements
-
-- [git](https://git-scm.com/)
-- [delta](https://github.com/dandavison/delta)
-
-### Configuration
-
-Set by using [Stow](#stow)
-
-Zsh configurations will be auto-sourced into zsh if zsh configuration applied
-
-## Aerospace (macos only)
-
-### Requirements
-
-- [aerospace](https://nikitabobko.github.io/AeroSpace/guide#installation)
-
-### Configuration
-
-Set by using [Stow](#stow)
-
-Zsh configurations will be auto-sourced into zsh if zsh configuration applied
-
-## JunkyBorders (macos only)
-
-### Requirements
-
-- [JankyBorders](https://github.com/FelixKratz/JankyBorders)
-
-### Configuration
-
-Set by using [Stow](#stow)
-
-Zsh configurations will be auto-sourced into zsh if zsh configuration applied
-
-## WIP: Neovim (nvim)
-
-### Requirements
-
-- [neovim](https://github.com/neovim/neovim)
-- TBD
-
-### Configuration
-
-Neovim configuration - WIP
-
-Set by using [Stow](#stow)
-
-Zsh configurations will be auto-sourced into zsh if zsh configuration applied
+- [aerospace (macos only)](https://nikitabobko.github.io/AeroSpace/guide#installation)
+- [JankyBorders (macos only)](https://github.com/FelixKratz/JankyBorders)
 
 ## TODO
 
@@ -160,11 +111,4 @@ Zsh configurations will be auto-sourced into zsh if zsh configuration applied
 - Add direnv
 - Add k9s config
 
-### Mac only
-- Add Brewfile
 
-### Fedora only
-- TBD
-
-### NixOS only
-- TBD
