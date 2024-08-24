@@ -9,6 +9,10 @@ __command_available() {
   command -v "$1" >/dev/null 2>&1
 }
 
+__move_prompt_to_bottom() {
+  tput cup 9999 0
+}
+
 # ==== ALIASES ====
 
 # ---- shell aliases  ----
@@ -16,7 +20,7 @@ __command_available() {
 alias ..='cd ..'
 alias md='mkdir -pv'
 alias ll='ls -la'
-alias c='clear'
+alias c='clear && __move_prompt_to_bottom'
 alias :q='exit'
 
 alias clean_desktop="rm ~/Desktop/*.png"
@@ -461,6 +465,10 @@ zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
 
 # Enable caching of completions
 zstyle ':completion:*' use-cache yes
+
+
+# Set prompt at the bottom of the screen
+__move_prompt_to_bottom
 
 # ==== PROFILING ====
 
