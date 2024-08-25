@@ -23,7 +23,11 @@ __fzf_preview() {
 }
 
 __select_path() {
-  fd --type f . $NOTES_FOLDER | sed "s:$NOTES_FOLDER/::" | __fzf_preview | tail -n 1
+  fd --type f . $NOTES_FOLDER | \
+    awk '{printf "\x1b[35m%s\x1b[0m\n", $1}' | \
+    sed "s:$NOTES_FOLDER/::" | \
+    __fzf_preview | \
+    tail -n 1
 }
 
 FILE_PATH=$(__select_path)
