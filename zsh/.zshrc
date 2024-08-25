@@ -1,6 +1,6 @@
 # ==== PROFILING ====
 
-ZSH_PROFILING=0
+ZSH_PROFILING=${ZSH_PROFILING:-0}
 if [ $ZSH_PROFILING -eq 1 ]; then zmodload zsh/zprof; fi
 
 # ==== HELPERS ====
