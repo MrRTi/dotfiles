@@ -5,11 +5,11 @@ if [ $ZSH_PROFILING -eq 1 ]; then zmodload zsh/zprof; fi
 
 # ==== HELPERS ====
 
-__command_available() {
+__command-available() {
   command -v "$1" >/dev/null 2>&1
 }
 
-__fzf_preview_tool() {
+__fzf-preview-tool() {
   if command -v eza > /dev/null 2>&1; then
     echo 'eza'
   else
@@ -45,7 +45,7 @@ alias rel-nix="darwin-rebuild switch"
 
 # ---- bat aliases  ----
 
-if __command_available bat; then
+if __command-available bat; then
   alias cat='bat -pp'
   alias less='bat -p'
   alias lessl='bat -pl'
@@ -54,7 +54,7 @@ fi
 
 # ---- docker aliases  ----
 
-if __command_available docker; then
+if __command-available docker; then
   alias d='docker'
   alias dc='docker compose'
   alias dcr='dc run --rm --use-aliases'
@@ -63,14 +63,14 @@ fi
 
 # ---- eza aliases  ----
 
-if __command_available eza; then
+if __command-available eza; then
   alias ls='eza'
 fi
 
 
 # ---- git aliases  ----
 
-if __command_available git; then
+if __command-available git; then
   alias g='git'
 
   alias ga='g add'
@@ -95,7 +95,7 @@ fi
 
 # ---- nvim aliases  ----
 
-if __command_available nvim; then
+if __command-available nvim; then
   alias vim=nvim
   alias v=vim
   alias vf='vim .'
@@ -104,15 +104,15 @@ fi
 
 # ---- tldr aliases  ----
 
-if __command_available tldr && __command_available fzf; then
+if __command-available tldr && __command-available fzf; then
   alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
 fi
 
 
 # ---- tmux aliases  ----
 
-if __command_available tmux_sessionizer; then
-  alias tn='tmux_sessionizer'
+if __command-available tmux_sessionizer; then
+  alias tn='tmux-sessionizer'
 fi
 
 
@@ -120,13 +120,13 @@ fi
 
 # ---- bat ----
 
-if __command_available bat; then
+if __command-available bat; then
   export BAT_THEME="ansi"
 fi
 
 # ---- fzf ----
 
-if __command_available fzf; then
+if __command-available fzf; then
   source <(fzf --zsh)
 
   # Open in tmux popup if on tmux, otherwise use --height mode
@@ -138,58 +138,77 @@ fi
 
 # ---- direnv ----
 
-if __command_available direnv; then
+if __command-available direnv; then
   eval "$(direnv hook zsh)"
 fi
 
 
 # ---- git ----
 
-if __command_available git && __command_available fzf; then
+if __command-available git && __command-available fzf; then
   __git-worktree-root() {
     git worktree list | grep 'bare' | awk '{print $1}'
   }
 
-  __git_branch_query() {
-    git branch | fzf --print-query | head -n 1
+  __git-branch-query() {
+    git branch | \
+      sed -r "s:\+ (.*):\1 [exists]:" | \
+      awk '{printf "\x1b[34m%s\x1b[0m\t\x1b[31m%s\x1b[0m\n", $1, $2}' | \
+      fzf --print-query --ansi | \
+      tail -n 1
   }
 
   __git-worktree-add-query() {
-    BRANCH=$(__git_branch_query)
+    BRANCH=$(__git-branch-query)
     echo "Creating worktree at ${BRANCH}"
     git worktree add -b "${BRANCH}" "$(__git-worktree-root)/${BRANCH}"
   }
 
   alias gwaq="__git-worktree-add-query"
 
-  __git-worktree-select() {
-    git worktree list | fzf | awk '{print $1}'
+  __select-worktree-path() {
+    if [ -n "$1" ]; then
+      echo "$1"
+    else
+      ROOT=$(__git-worktree-root)
+      git worktree list | \
+        awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' | \
+        { if [ -n "$ROOT" ]; then sed "s:${ROOT}:󰾛 :"; else cat -; fi } | \
+        sed "/ (root)*/d" | \
+        column -t | \
+        fzf --ansi | \
+        { if [ -n "$ROOT" ]; then sed "s:󰾛  :${ROOT}:"; else cat -; fi } | \
+        awk '{print $3}'
+    fi
   }
 
   __git-worktree-delete-query() {
-    __git-worktree-select | xargs -0 git worktree remove
+    __select-worktree-path | xargs -0 git worktree remove
   }
 
   alias gwdq="__git-worktree-delete-query"
 
   __git-worktree-delete-force-query() {
-    __git-worktree-select | xargs -0 git worktree remove --force
+    __select-worktree-path | xargs -0 git worktree remove --force
   }
 
   alias gwdqf="__git-worktree-delete-force-query"
 
-  __git-worktree-select() {
-    NEW_PATH=$(git worktree list | awk '{print ($3 == "" ? "(root)" : $3), $1}' | fzf | awk '{print $2}')
-    cd "$NEW_PATH" || exit
+  __git-worktree-switch() {
+    WORKTREE_PATH="$(__select-worktree-path $1)"
+
+    if [ -z "$WORKTREE_PATH" ]; then return; fi
+
+    cd "${WORKTREE_PATH}"
   }
 
-  alias gws="__git-worktree-select"
+  alias gws="__git-worktree-switch"
 fi
 
 
 # ---- k9s ----
 
-if __command_available k9s; then
+if __command-available k9s; then
   export K9S_CONFIG_DIR="$HOME/.config/k9s"
 fi
 
@@ -263,7 +282,7 @@ bindkey -M visual S add-surround
 
 # ---- prompt ----
 
-__source_gitstatus() {
+__source-gitstatus() {
   GIT_STATUS_FOLDER="$HOME"/.local/gitstatus
 
   if [ ! -d "$GIT_STATUS_FOLDER"/ ]; then
@@ -274,20 +293,18 @@ __source_gitstatus() {
   source "$GIT_STATUS_FOLDER"/gitstatus.plugin.zsh
 }
 
-__source_gitstatus
-unfunction __source_gitstatus
+__source-gitstatus
+unfunction __source-gitstatus
 
 NEWLINE=$'\n'
 GIT_PROMPT_COUNTERS=${GIT_PROMPT_COUNTERS:=false}
 GIT_PROMPT_LESS_DIRTY=${GIT_PROMPT_LESS_DIRTY:=true}
 
-__render_counter() {
+__render-counter() {
   $GIT_PROMPT_COUNTERS && printf "$1 "
 }
 
-__my_set_prompt() {
-  __command_available gitstatus_query || source_git_status
-
+__prompt() {
   PROMPT=""
 
   # NOTE: User & host name
@@ -333,34 +350,34 @@ __my_set_prompt() {
       local        red='%196F'  # red foreground
 
       # ⇣42 if behind the remote.
-      (( VCS_STATUS_COMMITS_BEHIND )) && GIT_DIRTY_PART+="${clean}⇣$(__render_counter ${VCS_STATUS_COMMITS_BEHIND})"
+      (( VCS_STATUS_COMMITS_BEHIND )) && GIT_DIRTY_PART+="${clean}⇣$(__render-counter ${VCS_STATUS_COMMITS_BEHIND})"
       # ⇡42 if ahead of the remote; no leading space if also behind the remote: ⇣42⇡42.
       (( VCS_STATUS_COMMITS_AHEAD && !VCS_STATUS_COMMITS_BEHIND )) && GIT_DIRTY_PART+=""
-      (( VCS_STATUS_COMMITS_AHEAD  )) && GIT_DIRTY_PART+="${clean}⇡$(__render_counter ${VCS_STATUS_COMMITS_AHEAD})"
+      (( VCS_STATUS_COMMITS_AHEAD  )) && GIT_DIRTY_PART+="${clean}⇡$(__render-counter ${VCS_STATUS_COMMITS_AHEAD})"
       # ⇠42 if behind the push remote.
-      (( VCS_STATUS_PUSH_COMMITS_BEHIND )) && GIT_DIRTY_PART+="${clean}⇠$(__render_counter ${VCS_STATUS_PUSH_COMMITS_BEHIND})"
+      (( VCS_STATUS_PUSH_COMMITS_BEHIND )) && GIT_DIRTY_PART+="${clean}⇠$(__render-counter ${VCS_STATUS_PUSH_COMMITS_BEHIND})"
       (( VCS_STATUS_PUSH_COMMITS_AHEAD && !VCS_STATUS_PUSH_COMMITS_BEHIND )) && GIT_DIRTY_PART+=""
       # ⇢42 if ahead of the push remote; no leading space if also behind: ⇠42⇢42.
-      (( VCS_STATUS_PUSH_COMMITS_AHEAD  )) && GIT_DIRTY_PART+="${clean}⇢$(__render_counter ${VCS_STATUS_PUSH_COMMITS_AHEAD})"
+      (( VCS_STATUS_PUSH_COMMITS_AHEAD  )) && GIT_DIRTY_PART+="${clean}⇢$(__render-counter ${VCS_STATUS_PUSH_COMMITS_AHEAD})"
 
       # 'merge' if the repo is in an unusual state.
       [[ -n $VCS_STATUS_ACTION     ]] && GIT_DIRTY_PART+="${conflicted}${VCS_STATUS_ACTION}"
       # ~42 if have merge conflicts.
-      (( VCS_STATUS_NUM_CONFLICTED )) && GIT_DIRTY_PART+="${conflicted}~$(__render_counter ${VCS_STATUS_NUM_CONFLICTED})"
+      (( VCS_STATUS_NUM_CONFLICTED )) && GIT_DIRTY_PART+="${conflicted}~$(__render-counter ${VCS_STATUS_NUM_CONFLICTED})"
 
       if [ $GIT_DIRTY_PART_LESS_DIRTY ]; then
         (( VCS_STATUS_NUM_STAGED || VCS_STATUS_NUM_UNSTAGED || VCS_STATUS_NUM_UNTRACKED )) && GIT_DIRTY_PART+="$red!"
       else
         # +42 if have staged changes.
-        (( VCS_STATUS_NUM_STAGED     )) && GIT_DIRTY_PART+="${modified}+$(__render_counter ${VCS_STATUS_NUM_STAGED})"
+        (( VCS_STATUS_NUM_STAGED     )) && GIT_DIRTY_PART+="${modified}+$(__render-counter ${VCS_STATUS_NUM_STAGED})"
         # !42 if have unstaged changes.
-        (( VCS_STATUS_NUM_UNSTAGED   )) && GIT_DIRTY_PART+="${modified}!$(__render_counter ${VCS_STATUS_NUM_UNSTAGED})"
+        (( VCS_STATUS_NUM_UNSTAGED   )) && GIT_DIRTY_PART+="${modified}!$(__render-counter ${VCS_STATUS_NUM_UNSTAGED})"
         # ?42 if have untracked files. It's really a question mark, your font isn't broken.
-        (( VCS_STATUS_NUM_UNTRACKED  )) && GIT_DIRTY_PART+="${untracked}?$(__render_counter ${VCS_STATUS_NUM_UNTRACKED})"
+        (( VCS_STATUS_NUM_UNTRACKED  )) && GIT_DIRTY_PART+="${untracked}?$(__render-counter ${VCS_STATUS_NUM_UNTRACKED})"
       fi
 
       # *42 if have stashes.
-      (( VCS_STATUS_STASHES        )) && GIT_DIRTY_PART+="${clean}*$(__render_counter ${VCS_STATUS_STASHES})"
+      (( VCS_STATUS_STASHES        )) && GIT_DIRTY_PART+="${clean}*$(__render-counter ${VCS_STATUS_STASHES})"
     fi
 
     GIT_PART+=$BRANCH_PART
@@ -375,7 +392,7 @@ __my_set_prompt() {
 
 gitstatus_stop 'MY' && gitstatus_start -s -1 -u -1 -c -1 -d -1 'MY'
 autoload -Uz add-zsh-hook
-add-zsh-hook precmd __my_set_prompt
+add-zsh-hook precmd __prompt
 
 
 # ---- history ----
@@ -463,7 +480,7 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
 zstyle ':completion:*' menu no
 # preview directory's content with eza when completing cd
-zstyle ':fzf-tab:complete:cd:*' fzf-preview "$(__fzf_preview_tool) -1 --color=always \$realpath"
+zstyle ':fzf-tab:complete:cd:*' fzf-preview "$(__fzf-preview-tool) -1 --color=always \$realpath"
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
 
