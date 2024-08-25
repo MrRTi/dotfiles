@@ -41,6 +41,7 @@ alias zshr="rel-env && rel-shell"
 # ---- darwin-modules ----
 
 alias rel-nix="darwin-rebuild switch"
+alias nix-shell='nix-shell --command "export WITHIN_NIX_SHELL=1 && exec zsh"'
 
 
 # ---- bat aliases  ----
@@ -111,7 +112,7 @@ fi
 
 # ---- tmux aliases  ----
 
-if __command-available tmux_sessionizer; then
+if __command-available tmux-sessionizer; then
   alias tn='tmux-sessionizer'
 fi
 
@@ -307,14 +308,20 @@ __render-counter() {
 __prompt() {
   PROMPT=""
 
-  # NOTE: User & host name
-  if [ -z $TMUX ]; then
-    USER_HOST_PART="%F{cyan}%n@%m "
-  else
-    USER_HOST_PART="%F{cyan}  "
+  if [ -n "$TMUX" ]; then
+    PROMPT+="%F{cyan} "
   fi
 
-  PROMPT+="$USER_HOST_PART"
+  if [ -n "$WITHIN_NIX_SHELL" ]; then
+    PROMPT+="%F{magenta}󱄅 "
+  fi
+
+  # NOTE: User & host name
+  if [ -z $TMUX ]; then
+    PROMPT+="%F{cyan}%n@%m"
+  fi
+
+  PROMPT+=" "
 
   FOLDER_PART="%F{yellow}%(5~|%-1~/…/%2~|%3~)"
   PROMPT+="$FOLDER_PART"
