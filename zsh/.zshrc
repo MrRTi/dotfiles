@@ -140,7 +140,75 @@ fi
 # ---- direnv ----
 
 if __command-available direnv; then
+  export DIRENV_LOG_FORMAT=$'\033[2mdirenv: %s\033[0m'
+
   eval "$(direnv hook zsh)"
+
+  copy_function() {
+    test -n "$(declare -f "$1")" || return
+    eval "${_/$1/$2}"
+  }
+
+  copy_function _direnv_hook _direnv_hook__old
+
+  _direnv_hook() {
+    _direnv_hook__old "$@" 2> >({
+      IFS=$'\n'
+      direnv_log=($(cat - | sed -e $'s/\x1b\[[0-9;]*m//g'))
+      unset IFS
+
+      for line in "${direnv_log[@]}"; do
+        log_type=$(echo $line | awk '{print $2}')
+
+        case "$log_type" in
+          "loading" | "unloading")
+            echo "\033[2;33m$line\033[0m"
+            ;;
+          "export")
+            if [ -e "./.envrc" ];then
+              direnv_exp_envs=($(echo "$line" | sed "s/direnv: export //" | sort))
+
+              result=""
+              for direnv_exp_env in "$direnv_exp_envs[@]"; do
+
+                message=""
+
+                case "${direnv_exp_env:0:1}" in
+                  "+")
+                    message+="\033[2;32m";;
+                  "-")
+                    message+="\033[2;31m";;
+                  "~")
+                    message+="\033[2;33m";;
+                  *)
+                    message+="\033[2m";;
+                esac
+
+                message+="$direnv_exp_env"
+                message+="\033[0m"
+                result+="$message "
+              done
+
+              echo "\033[2;34mdirenv: export\033[0m"
+              echo $result | xargs -n3 | column -t
+              echo ""
+            else
+              echo "\033[2;32m$line\033[0m"
+            fi
+            ;;
+          *)
+            echo "$line"
+            ;;
+        esac
+      done
+    })
+    # as suggested by user "radekh" above
+    wait
+
+    # as suggested by user "Ic-guy" below if you're using bash > v4.4
+    # throws error for me on zsh
+    # wait $!
+  }
 fi
 
 
