@@ -152,7 +152,7 @@ if __command-available direnv; then
   copy_function _direnv_hook _direnv_hook__old
 
   _direnv_hook() {
-    _direnv_hook__old "$@" 2> >({
+    _direnv_hook__old "$@" 2> >(
       IFS=$'\n'
       direnv_log=($(cat - | sed -e $'s/\x1b\[[0-9;]*m//g'))
       unset IFS
@@ -162,35 +162,45 @@ if __command-available direnv; then
 
         case "$log_type" in
           "loading" | "unloading")
-            echo "\033[2;33m$line\033[0m"
+            echo "\033[2;35m$line\033[0m"
             ;;
           "export")
             if [ -e "./.envrc" ];then
               direnv_exp_envs=($(echo "$line" | sed "s/direnv: export //" | sort))
 
-              result=""
-              for direnv_exp_env in "$direnv_exp_envs[@]"; do
+              exp_envs=($(cat .envrc | grep -e "export" -e "unset " | tr "=" "\t" | awk '{print $2}' | sort))
 
+              result=""
+              counter=0
+              for direnv_exp_env in "$direnv_exp_envs[@]"; do
                 message=""
 
-                case "${direnv_exp_env:0:1}" in
-                  "+")
-                    message+="\033[2;32m";;
-                  "-")
-                    message+="\033[2;31m";;
-                  "~")
-                    message+="\033[2;33m";;
-                  *)
-                    message+="\033[2m";;
-                esac
+                for exp_env in "$exp_envs[@]"; do
+                  if [[ "$exp_env" = "${direnv_exp_env:1}" ]]; then
+                    case "${direnv_exp_env:0:1}" in
+                      "+")
+                        message+="\033[2;32m";;
+                      "-")
+                        message+="\033[2;31m";;
+                      "~")
+                        message+="\033[2;33m";;
+                      *)
+                        message+="\033[2m";;
+                    esac
 
-                message+="$direnv_exp_env"
-                message+="\033[0m"
-                result+="$message "
+                    message+="$direnv_exp_env"
+                    message+="\033[0m"
+                    result+="$message "
+                    break
+                  fi
+                done
+
+                if [ -z "$message" ]; then ((counter++)); fi
               done
 
               echo "\033[2;34mdirenv: export\033[0m"
-              echo $result | xargs -n3 | column -t
+              echo "\033[2;34mLorri related envs changes: #$counter\033[0m"
+              echo "$result" | xargs -n3 | column -t
               echo ""
             else
               echo "\033[2;32m$line\033[0m"
@@ -201,7 +211,7 @@ if __command-available direnv; then
             ;;
         esac
       done
-    })
+    )
     # as suggested by user "radekh" above
     wait
 
