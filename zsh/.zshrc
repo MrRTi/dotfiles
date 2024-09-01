@@ -17,8 +17,6 @@ __fzf-preview-tool() {
   fi
 }
 
-# ==== ALIASES ====
-
 # ---- shell aliases  ----
 
 alias ..='cd ..'
@@ -43,99 +41,22 @@ alias zshr="rel-env && rel-shell"
 alias rel-nix="darwin-rebuild switch"
 alias nix-shell='nix-shell --command "export WITHIN_NIX_SHELL=1 && exec zsh"'
 
+darwin-reinstall() {
+  nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
+  ./result/bin/darwin-installer
+}
 
-# ---- bat aliases  ----
+
+# ---- bat ----
 
 if __command-available bat; then
   alias cat='bat -pp'
   alias less='bat -p'
   alias lessl='bat -pl'
-fi
 
-
-# ---- docker aliases  ----
-
-if __command-available docker; then
-  alias d='docker'
-  alias dc='docker compose'
-  alias dcr='dc run --rm --use-aliases'
-  alias dcrs='dcr --service-ports'
-fi
-
-# ---- eza aliases  ----
-
-if __command-available eza; then
-  alias ls='eza'
-fi
-
-
-# ---- git aliases  ----
-
-if __command-available git; then
-  alias g='git'
-
-  alias ga='g add'
-  alias gb='g branch'
-  alias gc='g commit'
-  alias gcb='g rev-parse --abbrev-ref HEAD'
-  alias gco='g checkout'
-  alias gd='g diff'
-  alias glol='g log --graph --pretty='\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\'
-  alias gpu="g push -u origin \$(gcb)"
-  alias grup='g remote update'
-  alias gs='g status '
-
-  alias gw='g worktree'
-  alias gwa='gw add'
-  alias gwl='gw list'
-  alias gwp='gw prune'
-  alias gwr='gw remove'
-  alias gwrf='gw remove --force'
-fi
-
-
-# ---- nvim aliases  ----
-
-if __command-available nvim; then
-  alias vim=nvim
-  alias v=vim
-  alias vf='vim .'
-fi
-
-
-# ---- tldr aliases  ----
-
-if __command-available tldr && __command-available fzf; then
-  alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
-fi
-
-
-# ---- tmux aliases  ----
-
-if __command-available tmux-sessionizer; then
-  alias tn='tmux-sessionizer'
-fi
-
-
-# ==== LIB'S RELATED CONFIG ====
-
-# ---- bat ----
-
-if __command-available bat; then
   export BAT_THEME="ansi"
 fi
 
-# ---- fzf ----
-
-if __command-available fzf; then
-  source <(fzf --zsh)
-
-  # Open in tmux popup if on tmux, otherwise use --height mode
-  export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,40% --layout reverse --border top'
-
-  # To follow symbolic links and don't want it to exclude hidden files
-  export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
-fi
 
 # ---- direnv ----
 
@@ -222,7 +143,59 @@ if __command-available direnv; then
 fi
 
 
+# ---- docker ----
+
+if __command-available docker; then
+  alias d='docker'
+  alias dc='docker compose'
+  alias dcr='dc run --rm --use-aliases'
+  alias dcrs='dcr --service-ports'
+fi
+
+
+# ---- eza ----
+
+if __command-available eza; then
+  alias ls='eza'
+fi
+
+
+# ---- fzf ----
+
+if __command-available fzf; then
+  source <(fzf --zsh)
+
+  # Open in tmux popup if on tmux, otherwise use --height mode
+  export FZF_DEFAULT_OPTS='--height 40% --tmux bottom,40% --layout reverse --border top'
+
+  # To follow symbolic links and don't want it to exclude hidden files
+  export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git'
+fi
+
+
 # ---- git ----
+
+if __command-available git; then
+  alias g='git'
+
+  alias ga='g add'
+  alias gb='g branch'
+  alias gc='g commit'
+  alias gcb='g rev-parse --abbrev-ref HEAD'
+  alias gco='g checkout'
+  alias gd='g diff'
+  alias glol='g log --graph --pretty='\''%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'\'
+  alias gpu="g push -u origin \$(gcb)"
+  alias grup='g remote update'
+  alias gs='g status '
+
+  alias gw='g worktree'
+  alias gwa='gw add'
+  alias gwl='gw list'
+  alias gwp='gw prune'
+  alias gwr='gw remove'
+  alias gwrf='gw remove --force'
+fi
 
 if __command-available git && __command-available fzf; then
   __git-worktree-root() {
@@ -289,6 +262,29 @@ fi
 
 if __command-available k9s; then
   export K9S_CONFIG_DIR="$HOME/.config/k9s"
+fi
+
+
+# ---- nvim ----
+
+if __command-available nvim; then
+  alias vim=nvim
+  alias v=vim
+  alias vf='vim .'
+fi
+
+
+# ---- tldr ----
+
+if __command-available tldr && __command-available fzf; then
+  alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
+fi
+
+
+# ---- tmux ----
+
+if __command-available tmux-sessionizer; then
+  alias tn='tmux-sessionizer'
 fi
 
 

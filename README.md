@@ -87,10 +87,12 @@ To check all packages instaled by nix package manager check `nix-pkgs/.nixpkgs/d
 - [GNU Stow](https://www.gnu.org/software/stow/)
 - [bat](https://github.com/sharkdp/bat)
 - [delta](https://github.com/dandavison/delta)
+- [direnv](https://direnv.net/)
 - [eza](https://github.com/eza-community/eza)
 - [fd](https://github.com/sharkdp/fd)
 - [fzf](https://github.com/junegunn/fzf)
 - [git](https://git-scm.com/)
+- [lorri](https://github.com/nix-community/lorri)
 - [marksman](https://github.com/artempyanykh/marksman)
 - [neovim](https://github.com/neovim/neovim)
 - [nerdfonts](https://www.nerdfonts.com/)
@@ -109,7 +111,6 @@ To check all packages instaled by nix package manager check `nix-pkgs/.nixpkgs/d
 
 ### All systems
 - Add nvim config (as submodule)
-- Add direnv
 - Add k9s config
 
 

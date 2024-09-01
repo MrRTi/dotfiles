@@ -48,7 +48,6 @@ if [ ! -f "$NOTES_FOLDER/$FILE_PATH" ]; then
   FILE_PATH="$FILE_DIRNAME/$FILE_NAME"
 
   mkdir -pv "${FILE_DIRNAME}"
-  touch $FILE_PATH
 else
   FILE_PATH="$NOTES_FOLDER/$FILE_PATH"
 fi
