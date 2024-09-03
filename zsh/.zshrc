@@ -70,6 +70,13 @@ if __command-available bat; then
   export BAT_THEME="ansi"
 fi
 
+# ---- brew ----
+
+if __command-available brew; then
+  # To fix gem pg install
+  export PATH="$(brew --prefix)/opt/libpq/bin:$PATH"
+fi
+
 
 # ---- direnv ----
 
@@ -279,7 +286,6 @@ if __command-available nvim; then
   alias v=vim
   alias vf='vim .'
 fi
-
 
 # ---- tldr ----
 

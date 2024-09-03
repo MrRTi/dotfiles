@@ -27,7 +27,8 @@ return {
 			end,
 			formatters_by_ft = {
 				lua = { "stylua" },
-				ruby = { "rubocop" },
+				-- rubocop(?) override file with error, and you can't revert back within editor
+				-- ruby = { "rubocop" },
 				go = { "goimports", "gofmt" },
 				rust = { "rustfmt", lsp_format = "fallback" },
 				["*"] = { "trim_whitespace" },
