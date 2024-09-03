@@ -17,6 +17,30 @@ __fzf-preview-tool() {
   fi
 }
 
+__red-dim-message() {
+  echo "\033[2;31m$1\033[0m"
+}
+
+__green-dim-message() {
+  echo "\033[2;32m$1\033[0m"
+}
+
+__yellow-dim-message() {
+  echo "\033[2;33m$1\033[0m"
+}
+
+__blue-dim-message() {
+  echo "\033[2;34m$1\033[0m"
+}
+
+__magenta-dim-message() {
+  echo "\033[2;35m$1\033[0m"
+}
+
+__dim-message() {
+  echo "\033[2m$1\033[0m"
+}
+
 # ---- shell aliases  ----
 
 alias ..='cd ..'
@@ -30,8 +54,8 @@ alias clean_desktop="rm ~/Desktop/*.png"
 
 # ---- zsh aliases  ----
 
-alias rel-env="source $HOME/.zshenv && echo \"~/.zshenv sourced\""
-alias rel-shell="source $HOME/.zshrc  && echo \"~/.zshrc sourced\""
+alias rel-env="source $HOME/.zshenv && __magenta-dim-message \"~/.zshenv sourced\""
+alias rel-shell="source $HOME/.zshrc  && __magenta-dim-message \"~/.zshrc sourced\""
 alias rel-shell-debug="ZSH_PROFILING=1 rel-shell"
 alias zshr="rel-env && rel-shell"
 
@@ -54,12 +78,12 @@ if __command-available direnv; then
 
   eval "$(direnv hook zsh)"
 
-  copy_function() {
+  __copy-function() {
     test -n "$(declare -f "$1")" || return
     eval "${_/$1/$2}"
   }
 
-  copy_function _direnv_hook _direnv_hook__old
+  __copy-function _direnv_hook _direnv_hook__old
 
   _direnv_hook() {
     _direnv_hook__old "$@" 2> >(
@@ -72,49 +96,39 @@ if __command-available direnv; then
 
         case "$log_type" in
           "loading" | "unloading")
-            echo "\033[2;35m$line\033[0m"
+            __magenta-dim-message $line
             ;;
           "export")
-            if [ -e "./.envrc" ];then
-              direnv_exp_envs=($(echo "$line" | sed "s/direnv: export //" | sort))
+            direnv_exp_envs=($(echo "$line" | sed "s/direnv: export //" | sort))
 
-              exp_envs=($(cat .envrc | grep -e "export" -e "unset " | tr "=" "\t" | awk '{print $2}' | sort))
+            result=""
+            max_env_title_length=0
 
-              result=""
-              counter=0
-              for direnv_exp_env in "$direnv_exp_envs[@]"; do
-                message=""
+            for direnv_exp_env in "$direnv_exp_envs[@]"; do
+              message=""
 
-                for exp_env in "$exp_envs[@]"; do
-                  if [[ "$exp_env" = "${direnv_exp_env:1}" ]]; then
-                    case "${direnv_exp_env:0:1}" in
-                      "+")
-                        message+="\033[2;32m";;
-                      "-")
-                        message+="\033[2;31m";;
-                      "~")
-                        message+="\033[2;33m";;
-                      *)
-                        message+="\033[2m";;
-                    esac
+              case "${direnv_exp_env:0:1}" in
+                "+")
+                  result+=$(__green-dim-message ${direnv_exp_env})
+                  ;;
+                "-")
+                  result+=$(__red-dim-message ${direnv_exp_env})
+                  ;;
+                "~")
+                  result+=$(__yellow-dim-message ${direnv_exp_env})
+                  ;;
+                *)
+                  result+=$(__dim-message ${direnv_exp_env})
+                  ;;
+              esac
+              max_env_title_length=$(( ${#direnv_exp_env} > max_env_title_length ? ${#direnv_exp_env} : max_env_title_length ))
+              result+=" "
+            done
 
-                    message+="$direnv_exp_env"
-                    message+="\033[0m"
-                    result+="$message "
-                    break
-                  fi
-                done
-
-                if [ -z "$message" ]; then ((counter++)); fi
-              done
-
-              echo "\033[2;34mdirenv: export\033[0m"
-              echo "\033[2;34mLorri related envs changes: #$counter\033[0m"
-              echo "$result" | xargs -n3 | column -t
-              echo ""
-            else
-              echo "\033[2;32m$line\033[0m"
-            fi
+            __blue-dim-message "direnv: export"
+            col_count=$(($(tput cols) / max_env_title_length))
+            echo "$result" | xargs -n${col_count} | column -t
+            echo ""
             ;;
           *)
             echo "$line"
