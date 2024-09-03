@@ -148,6 +148,10 @@ if __command-available eza; then
   alias ls='eza'
 fi
 
+if __command-available frum; then
+  eval "$(frum init)"
+fi
+
 
 # ---- fzf ----
 

@@ -29,6 +29,7 @@ git checkout dotfiles-v2
 - [direnv](https://direnv.net/)
 - [eza](https://github.com/eza-community/eza)
 - [fd](https://github.com/sharkdp/fd)
+- [frum](https://github.com/tako8ki/frum)
 - [fzf](https://github.com/junegunn/fzf)
 - [git](https://git-scm.com/)
 - [lorri](https://github.com/nix-community/lorri)
