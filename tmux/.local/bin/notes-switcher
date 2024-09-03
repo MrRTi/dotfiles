@@ -4,29 +4,17 @@ NOTES_FOLDER=${NOTES_FODLER:-"$HOME/notes"}
 
 mkdir -pv $NOTES_FOLDER
 
-__fzf_preview_tool() {
-  if command -v bat > /dev/null 2>&1; then
-    echo 'bat'
-  else
-    echo 'cat'
-  fi
-}
-
-__fzf_preview() {
-  fzf \
-    --print-query \
-    --ansi \
-    --preview-window up,80% \
-    --height=80% \
-    --layout=reverse  \
-    --preview "$(__fzf_preview_tool) --color=always $NOTES_FOLDER/{}"
-}
-
 __select_path() {
   fd --type f . $NOTES_FOLDER | \
     awk '{printf "\x1b[35m%s\x1b[0m\n", $1}' | \
     sed "s:$NOTES_FOLDER/::" | \
-    __fzf_preview | \
+    fzf \
+      --print-query \
+      --ansi \
+      --preview-window up,80% \
+      --height=80% \
+      --layout=reverse  \
+      --preview "bat --color=always $NOTES_FOLDER/{}" | \
     tail -n 1
 }
 
