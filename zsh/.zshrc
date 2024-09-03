@@ -233,19 +233,15 @@ if __command-available git && __command-available fzf; then
   alias gwaq="__git-worktree-add-query"
 
   __select-worktree-path() {
-    if [ -n "$1" ]; then
-      echo "$1"
-    else
-      ROOT=$(__git-worktree-root)
-      git worktree list | \
-        awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' | \
-        { if [ -n "$ROOT" ]; then sed "s:${ROOT}:󰾛 :"; else cat -; fi } | \
+    ROOT=$(__git-worktree-root)
+    git worktree list | \
+      awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' | \
+      { if [ -n "$ROOT" ]; then sed "s:${ROOT}:󰾛 :"; else cat -; fi } | \
         sed "/ (root)*/d" | \
         column -t | \
-        fzf --ansi | \
+        fzf --ansi --query "$1" | \
         { if [ -n "$ROOT" ]; then sed "s:󰾛  :${ROOT}:"; else cat -; fi } | \
-        awk '{print $3}'
-    fi
+          awk '{print $3}'
   }
 
   __git-worktree-delete-query() {
