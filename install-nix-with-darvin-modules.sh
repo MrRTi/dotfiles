@@ -22,6 +22,7 @@ fi
 nix-channel --add https://github.com/LnL7/nix-darwin/archive/master.tar.gz darwin
 nix-channel --update
 
+cd "$HOME"
 nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
 "$HOME/result/bin/darwin-installer"
 
