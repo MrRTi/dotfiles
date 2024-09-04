@@ -1,0 +1,4 @@
+.DS_Store
+iTerm-profile-local.json
+.envrc
+shell.nix

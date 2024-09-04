@@ -1,0 +1,45 @@
+[user]
+	name = Artem Musalitin
+	email = musalitin.a.a@gmail.com
+
+[init]
+	defaultBranch = main
+
+[core]
+	editor = vim
+	pager = delta
+
+[push]
+	default = current
+
+[credential]
+	helper = cache --timeout=3600
+
+[help]
+	autocorrect = 1
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	features = side-by-side line-numbers decorations
+	side-by-side = true
+	line-numbers = true
+
+[delta "decorations"]
+	commit-decoration-style = bold yellow box
+	file-style = bold yellow ul
+	hunk-header-decoration-style = cyan box
+
+[merge]
+	conflictstyle = diff3
+
+[diff]
+	colorMoved = default
+
+[color]
+	ui = true
+
+[alias]
+	cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop\\|main' | xargs -n 1 -r git branch -d"

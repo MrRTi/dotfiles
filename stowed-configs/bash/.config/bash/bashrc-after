@@ -1,5 +1,0 @@
-#! /bin/bash
-
-add_file "$HOME/.config/shell/shell-after.sh" 
-add_all "$HOME"/.config/bash/extensions-after/*.sh
-
