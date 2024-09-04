@@ -9,13 +9,11 @@ This config based on usage of the [Stow](#stow) to link config files to the need
 ```sh
 git clone --recurse-submodules https://github.com/MrRTi/dotfiles.git
 cd dotfiles
-git checkout dotfiles-v2
 ```
 
 ```sh
 git clone --recurse-submodules git@github.com:MrRTi/dotfiles.git
 cd dotfiles
-git checkout dotfiles-v2
 ```
 
 ## Stow
