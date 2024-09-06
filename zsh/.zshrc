@@ -169,8 +169,25 @@ if __command-available eza; then
   alias ls='eza'
 fi
 
+
+# ---- frum ----
 if __command-available frum; then
   eval "$(frum init)"
+
+  frum-install() {
+    if frum versions | grep -q "$1"; then
+      echo "$1 already installed. Uninstall? [y/N]"
+      read answer
+      [ "$answer" = 'y' ] && frum uninstall "$1"
+    fi
+
+    frum install "$1" \
+      --with-openssl-dir=$(brew --prefix openssl)
+  }
+
+  frum-install-cur() {
+    frum-install $(cat .ruby-version)
+  }
 fi
 
 
