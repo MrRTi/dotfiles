@@ -220,38 +220,51 @@ if __command-available git && __command-available fzf; then
     git branch | \
       sed -r "s:\+ (.*):\1 [exists]:" | \
       awk '{printf "\x1b[34m%s\x1b[0m\t\x1b[31m%s\x1b[0m\n", $1, $2}' | \
-      fzf --print-query --ansi | \
+      fzf --print-query --ansi --query "$1" | \
       tail -n 1
   }
 
   __git-worktree-add-query() {
-    BRANCH=$(__git-branch-query)
+    BRANCH=$(__git-branch-query "$1")
     echo "Creating worktree at ${BRANCH}"
-    git worktree add -b "${BRANCH}" "$(__git-worktree-root)/${BRANCH}"
+    if git branch | grep -q $BRANCH; then
+      git worktree add "$(__git-worktree-root)/${BRANCH}" "${BRANCH}"
+    else
+      git worktree add "$(__git-worktree-root)/${BRANCH}" -b "${BRANCH}"
+    fi
+
+    cd "$(__git-worktree-root)/${BRANCH}"
   }
 
   alias gwaq="__git-worktree-add-query"
 
-  __select-worktree-path() {
+  __select-worktree() {
     ROOT=$(__git-worktree-root)
     git worktree list | \
       awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' | \
       { if [ -n "$ROOT" ]; then sed "s:${ROOT}:󰾛 :"; else cat -; fi } | \
-        sed "/ (root)*/d" | \
-        column -t | \
-        fzf --ansi --query "$1" | \
-        { if [ -n "$ROOT" ]; then sed "s:󰾛  :${ROOT}:"; else cat -; fi } | \
-          awk '{print $3}'
+      sed "/ (root)*/d" | \
+      column -t | \
+      fzf --ansi --query "$1" | \
+      { if [ -n "$ROOT" ]; then sed "s:󰾛  :${ROOT}:"; else cat -; fi }
+  }
+
+  __select-worktree-branch() {
+    __select-worktree "$1" | awk '{print $2}'| sed -r "s:\[(.*)\]:\1:"
+  }
+
+  __select-worktree-path() {
+    __select-worktree "$1" | awk '{print $3}'
   }
 
   __git-worktree-delete-query() {
-    __select-worktree-path | xargs -0 git worktree remove
+    __select-worktree-path "$1" | basename | xargs -0 git worktree remove
   }
 
   alias gwdq="__git-worktree-delete-query"
 
   __git-worktree-delete-force-query() {
-    __select-worktree-path | xargs -0 git worktree remove --force
+    __select-worktree-path "$1" | basename | xargs -0 git worktree remove --force
   }
 
   alias gwdqf="__git-worktree-delete-force-query"
