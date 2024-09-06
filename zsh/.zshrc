@@ -74,7 +74,10 @@ fi
 
 if __command-available brew; then
   # To fix gem pg install
-  export PATH="$(brew --prefix)/opt/libpq/bin:$PATH"
+  export PATH="$(brew --prefix libpq)/bin:$PATH"
+
+  export LDFLAGS="-L$(brew --prefix zlib)/lib"
+  export CPPFLAGS="-I$(brew --prefix zlib)/include"
 fi
 
 
