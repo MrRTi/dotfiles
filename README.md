@@ -31,7 +31,6 @@ cd dotfiles
 - [frum](https://github.com/tako8ki/frum)
 - [fzf](https://github.com/junegunn/fzf)
 - [git](https://git-scm.com/)
-- [lorri](https://github.com/nix-community/lorri)
 - [marksman](https://github.com/artempyanykh/marksman)
 - [neovim](https://github.com/neovim/neovim)
 - [nerdfonts](https://www.nerdfonts.com/)
