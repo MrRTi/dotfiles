@@ -165,6 +165,21 @@ if __command-available docker; then
   alias dcrs='dcr --service-ports'
 fi
 
+# ---- emacs / doom emacs ----
+
+if [ -d "$HOME/.config/emacs/bin" ]; then
+  export PATH="$PATH":"$HOME"/.config/emacs/bin
+fi
+
+if __command-available emacs; then
+  alias em='emacs --tty'
+  # When using emacs daemon menu bar is shown in attached clients. -a "" = if no daemon - run daemon and retry
+  alias emacsclient-no-bars='emacsclient -c -e "(progn (scroll-bar-mode -1) (tool-bar-mode -1) (menu-bar-mode -1))" -a ""'
+  alias emc='emacsclient-no-bars --tty'
+  alias emcd='emacsclient-no-bars'
+  alias emd='emacs --daemon'
+fi
+
 
 # ---- eza ----
 
