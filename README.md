@@ -25,6 +25,7 @@ cd dotfiles
 - [bat](https://github.com/sharkdp/bat)
 - [delta](https://github.com/dandavison/delta)
 - [direnv](https://direnv.net/)
+- [emacs](https://www.gnu.org/software/emacs/)
 - [eza](https://github.com/eza-community/eza)
 - [fd](https://github.com/sharkdp/fd)
 - [frum](https://github.com/tako8ki/frum)
@@ -83,10 +84,42 @@ To see all possible options
 ./stow.sh -h
 ```
 
+## Brew
+
+### Requirements
+
+- [brew](https://brew.sh/)
+
+### Usage
+
+#### Install brew (use command from original site)
+
+```sh
+./brew.sh -i
+```
+
+#### Install all packages listed in Brewfile (restore)
+
+```sh
+./brew.sh -r
+```
+
+#### Save list of installed packages in Brewfile
+
+```sh
+./brew.sh -d
+```
+
+#### Help
+
+To see all possible options
+
+```sh
+./brew.sh -h
+```
+
 ## TODO
 
 ### All systems
-- Add nvim config (as submodule)
+
 - Add k9s config
-
-
