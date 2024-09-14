@@ -338,6 +338,7 @@ if __command-available nvim; then
   alias vf='vim .'
 fi
 
+
 # ---- tldr ----
 
 if __command-available tldr && __command-available fzf; then
@@ -580,6 +581,11 @@ if [[ ! -e "$ZSH_EXT_FOLDER"/zsh-completions ]]; then
   git clone --depth=1 https://github.com/zsh-users/zsh-completions.git "$ZSH_EXT_FOLDER/zsh-completions"
   fpath=("$ZSH_EXT_FOLDER"/zsh-completions/src $fpath)
   rm -f ~/.zcompdump
+fi
+
+
+if [[ -e "$(brew --prefix)/share/zsh/site-functions" ]]; then
+  fpath+="$(brew --prefix)/share/zsh/site-functions"
 fi
 
 autoload -Uz compinit
