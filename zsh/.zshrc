@@ -88,81 +88,6 @@ if __command-available cargo; then
 fi
 
 
-# ---- direnv ----
-
-if __command-available direnv; then
-  export DIRENV_LOG_FORMAT=$'\033[2mdirenv: %s\033[0m'
-
-  # eval "$(direnv hook zsh)"
-
-  __copy-function() {
-    test -n "$(declare -f "$1")" || return
-    eval "${_/$1/$2}"
-  }
-
-  __copy-function _direnv_hook _direnv_hook__old
-
-  _direnv_hook() {
-    _direnv_hook__old "$@" 2> >(
-      IFS=$'\n'
-      direnv_log=($(cat - | sed -e $'s/\x1b\[[0-9;]*m//g'))
-      unset IFS
-
-      for line in "${direnv_log[@]}"; do
-        log_type=$(echo $line | awk '{print $2}')
-
-        case "$log_type" in
-          "loading" | "unloading")
-            __magenta-dim-message $line
-            ;;
-          "export")
-            direnv_exp_envs=($(echo "$line" | sed "s/direnv: export //" | sort))
-
-            result=""
-            max_env_title_length=0
-
-            for direnv_exp_env in "$direnv_exp_envs[@]"; do
-              message=""
-
-              case "${direnv_exp_env:0:1}" in
-                "+")
-                  result+=$(__green-dim-message ${direnv_exp_env})
-                  ;;
-                "-")
-                  result+=$(__red-dim-message ${direnv_exp_env})
-                  ;;
-                "~")
-                  result+=$(__yellow-dim-message ${direnv_exp_env})
-                  ;;
-                *)
-                  result+=$(__dim-message ${direnv_exp_env})
-                  ;;
-              esac
-              max_env_title_length=$(( ${#direnv_exp_env} > max_env_title_length ? ${#direnv_exp_env} : max_env_title_length ))
-              result+=" "
-            done
-
-            __blue-dim-message "direnv: export"
-            col_count=$(($(tput cols) / max_env_title_length))
-            echo "$result" | xargs -n${col_count} | column -t
-            echo ""
-            ;;
-          *)
-            echo "$line"
-            ;;
-        esac
-      done
-    )
-    # as suggested by user "radekh" above
-    wait
-
-    # as suggested by user "Ic-guy" below if you're using bash > v4.4
-    # throws error for me on zsh
-    # wait $!
-  }
-fi
-
-
 # ---- docker ----
 
 if __command-available docker; then
@@ -192,27 +117,6 @@ fi
 
 if __command-available eza; then
   alias ls='eza'
-fi
-
-
-# ---- frum ----
-if __command-available frum; then
-  eval "$(frum init)"
-
-  frum-install() {
-    if frum versions | grep -q "$1"; then
-      echo "$1 already installed. Uninstall? [y/N]"
-      read answer
-      [ "$answer" = 'y' ] && frum uninstall "$1"
-    fi
-
-    frum install "$1" \
-      --with-openssl-dir=$(brew --prefix openssl)
-  }
-
-  frum-install-cur() {
-    frum-install $(cat .ruby-version)
-  }
 fi
 
 
@@ -327,6 +231,13 @@ fi
 
 if __command-available k9s; then
   export K9S_CONFIG_DIR="$HOME/.config/k9s"
+fi
+
+
+# ---- mice ----
+
+if __command-available mise; then
+  eval "$(mise activate zsh)"
 fi
 
 
