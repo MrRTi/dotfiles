@@ -6,22 +6,27 @@ if ! command -v cargo >/dev/null 2>&1; then
 fi
 
 # use chache to speed up compilation
-cargo install sccache
+if ! cargo install --list | grep -q sccache; then
+	cargo install sccache
+fi
 export RUSTC_WRAPPER=sccache
 
 # install packages
 packages=(
 		bat
+		bottom
 		cargo-info
+		coreutils
+		du-dust
 		eza
-		git-delta
 		fd-find
+		git-delta
 		jnv
-		mice
+		mise
 		mprocs
 		ripgrep
 		wiki-tui
 )
 
-cargo install $packages[@]
+cargo install ${packages[@]}
 

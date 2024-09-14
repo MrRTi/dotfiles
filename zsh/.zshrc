@@ -85,6 +85,11 @@ fi
 
 if __command-available cargo; then
   export PATH="$HOME/.cargo/bin:$PATH"
+
+
+  if cargo install --list | grep -q sccache; then
+    export RUSTC_WRAPPER=sccache
+  fi
 fi
 
 
