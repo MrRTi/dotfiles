@@ -81,12 +81,19 @@ if __command-available brew; then
 fi
 
 
+# ---- cargo ----
+
+if __command-available cargo; then
+  export PATH="$HOME/.cargo/bin:$PATH"
+fi
+
+
 # ---- direnv ----
 
 if __command-available direnv; then
   export DIRENV_LOG_FORMAT=$'\033[2mdirenv: %s\033[0m'
 
-  eval "$(direnv hook zsh)"
+  # eval "$(direnv hook zsh)"
 
   __copy-function() {
     test -n "$(declare -f "$1")" || return
