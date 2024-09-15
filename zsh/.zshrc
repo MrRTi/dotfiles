@@ -110,11 +110,15 @@ fi
 
 if __command-available emacs; then
   alias em='emacs --tty'
-  # When using emacs daemon menu bar is shown in attached clients. -a "" = if no daemon - run daemon and retry
-  alias emacsclient-no-bars='emacsclient -c -e "(progn (scroll-bar-mode -1) (tool-bar-mode -1) (menu-bar-mode -1))" -a ""'
-  alias emc='emacsclient-no-bars --tty'
-  alias emcd='emacsclient-no-bars'
   alias emd='emacs --daemon'
+
+  # When using emacs daemon menu bar is shown in attached clients. -a "" = if no daemon - run daemon and retry
+  __emacsclient-no-bars() {
+    emacsclient -c -a "" -e "(progn (scroll-bar-mode -1) (tool-bar-mode -1) (menu-bar-mode -1) (find-file \"$1\"))" &
+  }
+
+  alias emc='emacsclient -c -a "" --tty'
+  alias emcd='__emacsclient-no-bars'
 fi
 
 
