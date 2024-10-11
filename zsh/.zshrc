@@ -81,6 +81,12 @@ if __command-available brew; then
   export CPPFLAGS="-I$(brew --prefix zstd)/include"
 fi
 
+if __command-available bundle; then
+  alias be="bundle exec"
+  alias rspec="COVERBAND_DISABLE_AUTO_START=true RAILS_ENV=test bundle exec rspec --no-profile --format=progress"
+  alias lint="bundle exec rubocop"
+fi
+
 
 # ---- cargo ----
 
