@@ -116,8 +116,22 @@ To see all possible options
 ./brew.sh -h
 ```
 
+## Nix Packages
+
+### Requirements
+
+- [Nix package manager](https://nixos.org/download/)
+- [Nix darwin modules](https://github.com/LnL7/nix-darwin/tree/master)
+
+See `install-nix-with-darvin-modules.sh` for install sequence
+
+### Configuration
+
+Set by:
+- placing `nix-pkgs/.nixpkgs/darwin-configuration.nix` at `~/.nixpkgs/darwin-configuration.nix`
+- using [Stow](#stow)
+
 ## TODO
 
 ### All systems
-
 - Add k9s config

@@ -60,6 +60,17 @@ alias rel-shell-debug="ZSH_PROFILING=1 rel-shell"
 alias zshr="rel-env && rel-shell"
 
 
+# ---- darwin-modules ----
+
+alias rel-nix="darwin-rebuild switch"
+alias nix-shell='nix-shell --command "export WITHIN_NIX_SHELL=1 && exec zsh"'
+
+darwin-reinstall() {
+  nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
+  ./result/bin/darwin-installer
+}
+
+
 # ---- bat ----
 
 if __command-available bat; then
@@ -376,6 +387,10 @@ __prompt() {
 
   if [ -n "$TMUX" ]; then
     PROMPT+="%F{cyan} "
+  fi
+
+  if [ -n "$WITHIN_NIX_SHELL" ]; then
+    PROMPT+="%F{magenta}󱄅 "
   fi
 
   # NOTE: User & host name
