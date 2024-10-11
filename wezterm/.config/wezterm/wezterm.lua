@@ -10,6 +10,8 @@ if wezterm.config_builder then
 	config = wezterm.config_builder()
 end
 
+config.front_end = "WebGpu"
+
 local function get_appearance()
 	if wezterm.gui then
 		return wezterm.gui.get_appearance()
