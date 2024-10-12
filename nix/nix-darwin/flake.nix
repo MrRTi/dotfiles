@@ -163,21 +163,19 @@
 
         system.defaults = {
           dock = {
-            autohide = true;
+            autohide = false;
+            show-recents = false;
             persistent-apps = [
-              "/System/Applications/System Settings.app"
               "/Applications/ChatGPT.app/"
-              "/Applications/Яндекс Музыка.app/"
               "/System/Applications/Calendar.app"
               "/System/Applications/Reminders.app"
               "/System/Applications/Notes.app"
-              "${pkgs.obsidian}/Applications/Obsidian.app"
               "/System/Applications/Mail.app"
               "/Applications/Proton Mail.app"
-              "/Applications/Telegram.app"
               "${pkgs.wezterm}/Applications/WezTerm.app"
               "/Applications/Arc.app"
-              "/Applications/Safari.app"
+              "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app"
+              "/Applications/Telegram.app"
               "/Applications/LOOP.app"
             ];
           };
