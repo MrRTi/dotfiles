@@ -29,32 +29,51 @@
     };
   };
 
-  outputs = {
-    self,
-    nix-darwin,
-    nixpkgs,
-    nixpkgs-stable,
-    nix-homebrew,
-    homebrew-bundle,
-    homebrew-core,
-    homebrew-cask,
-    homebrew-aerospace,
-    ...
-  } @ inputs: let
-      add-stable-packages = final: _prev: {
+  outputs = inputs@{self, nix-darwin, nixpkgs, ...}:
+    let
+      username = "rti";
+
+      stableOverlay = final: _prev: {
         stable = import inputs.nixpkgs-stable {
           system = "aarch64-darwin";
         };
       };
-      username = "rti";
-      configuration = { pkgs, config, ... }: {
-        nixpkgs.hostPlatform = "aarch64-darwin";
-        nixpkgs.config.allowUnfree = true;
-        nixpkgs.overlays = [
-          add-stable-packages
-        ];
 
-        users.users.elliott = {
+      homebrewConfig = {
+        nix-homebrew = {
+          # Install Homebrew under the default prefix
+          enable = true;
+          autoMigrate = true;
+
+          # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
+          enableRosetta = true;
+
+          # User owning the Homebrew prefix
+          user = username;
+
+          # Optional: Enable fully-declarative tap management
+          # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
+          mutableTaps = false;
+          # Optional: Declarative tap management
+          taps = {
+            "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
+            "homebrew/homebrew-cask" = inputs.homebrew-cask;
+            "homebrew/homebrew-core" = inputs.homebrew-core;
+            "nikitabobko/homebrew-tap" = inputs.homebrew-aerospace;
+          };
+        };
+      };
+
+      configuration = { pkgs, config, ... }: {
+        nixpkgs = {
+          hostPlatform = "aarch64-darwin";
+          config.allowUnfree = true;
+          overlays = [
+            stableOverlay
+          ];
+        };
+
+        users.users.rti= {
           name = username;
           home = "/Users/${username}";
         };
@@ -114,10 +133,10 @@
 
           casks = [
             "bruno"
-            "hammerspoon"
             "logseq"
             "nikitabobko/tap/aerospace"
             "notion"
+            "orbstack"
           ];
 
           masApps = {
@@ -210,13 +229,13 @@
             while read src; do
               app_name=$(basename "$src")
               echo "copying $src" >&2
-                      ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
+            ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
             done
           '';
 
         # Auto upgrade nix package and the daemon service.
         services.nix-daemon.enable = true;
-        # nix.package = pkgs.nix;
+        nix.package = pkgs.nix;
 
         # Necessary for using flakes on this system.
         nix.settings.experimental-features = "nix-command flakes";
@@ -231,34 +250,8 @@
         specialArgs = { inherit inputs; };
         modules = [
           configuration
-          nix-homebrew.darwinModules.nix-homebrew
-          {
-            nix-homebrew = {
-              # Install Homebrew under the default prefix
-              enable = true;
-
-              # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
-              enableRosetta = true;
-
-              # User owning the Homebrew prefix
-              user = "rti";
-
-              # Optional: Declarative tap management
-              taps = {
-                "homebrew/homebrew-bundle" = homebrew-bundle;
-                "homebrew/homebrew-cask" = homebrew-cask;
-                "homebrew/homebrew-core" = homebrew-core;
-                "nikitabobko/homebrew-tap" = homebrew-aerospace;
-              };
-
-              autoMigrate = true;
-
-              # Optional: Enable fully-declarative tap management
-              #
-              # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
-              mutableTaps = false;
-            };
-          }
+          inputs.nix-homebrew.darwinModules.nix-homebrew
+          homebrewConfig
         ];
       };
 
