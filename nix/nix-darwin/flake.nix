@@ -50,11 +50,6 @@
           ];
         };
 
-        users.users.rti= {
-          name = username;
-          home = "/Users/${username}";
-        };
-
         # Set Git commit hash for darwin-version.
         system.configurationRevision = self.rev or self.dirtyRev or null;
 
@@ -89,6 +84,7 @@
           ./modules/fonts.nix
           ./modules/programs.nix
           ./modules/homebrew.nix
+          ./modules/users.nix
         ];
       };
 
