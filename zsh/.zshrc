@@ -64,6 +64,7 @@ alias zshr="rel-env && rel-shell"
 
 alias rel-nix="darwin-rebuild switch"
 alias nix-shell='nix-shell --command "export WITHIN_NIX_SHELL=1 && exec zsh"'
+alias rel-flake="darwin-rebuild switch --flake"
 
 darwin-reinstall() {
   nix-build https://github.com/LnL7/nix-darwin/archive/master.tar.gz -A installer
@@ -84,13 +85,13 @@ fi
 # ---- brew ----
 
 if __command-available brew; then
-  # To fix gem pg install
-  export PATH="$(brew --prefix libpq)/bin:$PATH"
-
-  # To fix ruby gems build
-  export LDFLAGS="-L$(brew --prefix zstd)/lib"
-  export CPPFLAGS="-I$(brew --prefix zstd)/include"
+  # # To fix ruby gems build
+  # export LDFLAGS="-L$(brew --prefix zstd)/lib"
+  # export CPPFLAGS="-I$(brew --prefix zstd)/include"
 fi
+
+
+# ---- bundle ----
 
 if __command-available bundle; then
   alias be="bundle exec"
@@ -108,6 +109,13 @@ if __command-available cargo; then
   if cargo install --list | grep -q sccache; then
     export RUSTC_WRAPPER=sccache
   fi
+fi
+
+
+# ---- direnv ----
+
+if __command-available direnv; then
+  eval "$(direnv hook zsh)"
 fi
 
 
@@ -261,10 +269,16 @@ if __command-available k9s; then
 fi
 
 
-# ---- mice ----
+# ---- mise ----
 
 if __command-available mise; then
   eval "$(mise activate zsh)"
+
+  if [[ ! -e "${HOME}/.config/direnv/lib/use_mise.sh" ]]; then
+    mkdir -p "${HOME}/.config/direnv/lib/"
+
+    mise direnv activate > "${HOME}/.config/direnv/lib/use_mise.sh"
+  fi
 fi
 
 

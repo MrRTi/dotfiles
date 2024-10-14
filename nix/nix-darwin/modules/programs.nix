@@ -7,7 +7,9 @@
       ack
       bat
       bottom
+      cmake
       delta
+      direnv
       du-dust
       emacs
       eza
@@ -24,7 +26,6 @@
       marksman
       mise
       mkalias
-      mysql
       neofetch
       neovim
       obsidian

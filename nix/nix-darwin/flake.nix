@@ -30,7 +30,7 @@
 
   };
 
-  outputs = {self, nix-darwin, nixpkgs, ...} @ inputs:
+  outputs = { self, nix-darwin, nixpkgs, ... } @ inputs:
     let
       username = "rti";
       platform = "aarch64-darwin";
@@ -65,6 +65,9 @@
         # Auto upgrade nix package and the daemon service.
         services.nix-daemon.enable = true;
         nix.package = pkgs.nix;
+
+        # https://github.com/nix-community/lorri
+        services.lorri.enable = true;
 
         # Necessary for using flakes on this system.
         nix.settings.experimental-features = "nix-command flakes";
