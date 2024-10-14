@@ -42,13 +42,11 @@
       };
 
       configuration = { pkgs, config, ... }: {
-        nixpkgs = {
-          hostPlatform = platform;
-          config.allowUnfree = true;
-          overlays = [
-            stableOverlay
-          ];
-        };
+        nixpkgs.hostPlatform = platform;
+        nixpkgs.config.allowUnfree = true;
+        nixpkgs.overlays = [
+          stableOverlay
+        ];
 
         # Set Git commit hash for darwin-version.
         system.configurationRevision = self.rev or self.dirtyRev or null;
@@ -60,6 +58,7 @@
         # Auto upgrade nix package and the daemon service.
         services.nix-daemon.enable = true;
         nix.package = pkgs.nix;
+        nix.settings.sandbox = true;
 
         # https://github.com/nix-community/lorri
         services.lorri.enable = true;
