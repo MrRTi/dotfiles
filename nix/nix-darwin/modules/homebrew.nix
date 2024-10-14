@@ -30,7 +30,9 @@
     "nikitabobko/homebrew-tap" = inputs.homebrew-aerospace;
   };
 
+  # Manage homebrew
   homebrew.enable = true;
+  # Whether to enable nix-darwin to manage installing/updating/upgrading Homebrew taps, formulae, and casks, as well as Mac App Store apps and Docker containers, using Homebrew Bundle.
   homebrew.onActivation.cleanup = "zap";
   homebrew.onActivation.autoUpdate = true;
   homebrew.onActivation.upgrade = true;
@@ -71,4 +73,8 @@
     "UnTrap youtube" = 1637438059;
     "Wipr" = 1320666476;
   };
+
+  homebrew.extraConfig = ''
+    # This file is managed be nix-darwin
+  '';
 }

@@ -79,6 +79,7 @@
         };
         modules = [
           configuration
+          ./modules/environment.nix
           ./modules/macos-system.nix
           ./modules/fonts.nix
           ./modules/programs.nix
