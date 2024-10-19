@@ -2,6 +2,8 @@
 
 This repos is setup for use with MacOS and nix-darwin.
 
+Previous version of dotfiles using stow is here -> [v.2.1.1](https://github.com/MrRTi/dotfiles/tree/v.2.1.1)
+
 ## Requirements
 
 - [Nix package manager](https://nixos.org/download/)
