@@ -18,7 +18,7 @@
         enableFishIntegration = true;
         enableZshIntegration = true;
 
-        enableTransience = false;
+        enableTransience = true;
 
         settings = {
           add_newline = false;
@@ -34,13 +34,14 @@
             "$git_commit"
             "$git_state"
             "$git_status"
+            "$line_break"
             "$shell"
             "$character"
           ];
 
           directory = {
             truncation_symbol = ".../";
-            repo_root_style = "bold underline bright-yellow";
+            repo_root_style = "underline yellow";
             fish_style_pwd_dir_length = 1;
             style = "yellow";
             read_only = " ";
@@ -55,15 +56,16 @@
             ahead = "⇡$count";
             diverged = "⇕⇡$ahead_count⇣$behind_count";
             behind = "⇣$count";
+            style = "red";
           };
 
           character = {
-            success_symbol = "[>](green)";
+            success_symbol = "[>](bold green)";
             error_symbol = "[x](red)";
-            vimcmd_symbol = "[N](bold green)";
-            vimcmd_replace_one_symbol = "[R](bold purple)";
-            vimcmd_replace_symbol = "[R](bold purple)";
-            vimcmd_visual_symbol = "[V](bold yellow)";
+            vimcmd_symbol = "[N](green)";
+            vimcmd_replace_one_symbol = "[R](purple)";
+            vimcmd_replace_symbol = "[R](purple)";
+            vimcmd_visual_symbol = "[V](yellow)";
           };
         };
       };
