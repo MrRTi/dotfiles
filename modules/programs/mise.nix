@@ -9,6 +9,7 @@ rubocop-rspec
 rubocop-performance
 rubocop-factory_bot
 rubocop-rspec_rails
+reek
   '';
 in
 {
