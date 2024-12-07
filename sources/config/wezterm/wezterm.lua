@@ -21,9 +21,9 @@ end
 
 local function scheme_for_appearance(appearance)
 	if appearance:find("Dark") then
-		return "Solarized Dark (Gogh)"
+		return "Tokyo Night (Gogh)"
 	else
-		return "Solarized Light (Gogh)"
+		return "Tokyo Night Light (Gogh)"
 	end
 end
 
