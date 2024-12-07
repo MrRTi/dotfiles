@@ -1,9 +1,10 @@
 { config, pkgs, inputs, ... }:
 let
-  homeDirectory = builtins.getEnv "HOME";
 
   username = "rti";
   name = "Artem Musalitin";
+
+  homeDirectory = "/Users/${username}";
 
   gitConfig = {
     name = name;
