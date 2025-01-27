@@ -22,6 +22,7 @@ brew-dump() {
   echo "Saving packages list to Brewfile"
   brew bundle dump --force --file=./Brewfile
   echo "Brew bundle saved to Brewfile"
+  echo "For info on \"mas\" - see https://github.com/mas-cli/mas"
 }
 
 rebrew() {

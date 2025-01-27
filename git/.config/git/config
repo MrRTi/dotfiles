@@ -1,16 +1,33 @@
 [user]
 	name = Artem Musalitin
 	email = artem@musalitin.me
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOGiOKXJVCNkbMY0oKSl0ZqaXsXfGDL//wKZ4KP9ZtCP
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+[commit]
+	gpgsign = true
 
 [init]
 	defaultBranch = main
 
 [core]
-	editor = vim
+	editor = nvim
 	pager = delta
+	autocrlf = "input"
+
+[pull]
+	rebase = true
 
 [push]
 	default = current
+
+[rebase]
+	autoStash = true
 
 [credential]
 	helper = cache --timeout=3600
@@ -43,3 +60,5 @@
 
 [alias]
 	cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop\\|main' | xargs -n 1 -r git branch -d"
+	log-pretty = "log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'";
+

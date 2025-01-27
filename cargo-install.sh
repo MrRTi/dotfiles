@@ -13,18 +13,11 @@ export RUSTC_WRAPPER=sccache
 
 # install packages
 packages=(
-		bat
-		bottom
 		cargo-info
 		coreutils
 		du-dust
-		eza
-		fd-find
-		git-delta
 		jnv
-		mise
 		mprocs
-		ripgrep
 		wiki-tui
 )
 
