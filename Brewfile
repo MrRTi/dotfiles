@@ -7,7 +7,9 @@ brew "docker-slim"
 brew "eza"
 brew "fd"
 brew "fzf"
+brew "gcc"
 brew "git-delta"
+brew "gnupg"
 brew "jq"
 brew "k9s"
 brew "mas"
@@ -18,6 +20,7 @@ brew "starship"
 brew "stow"
 brew "tldr"
 brew "tmux"
+brew "wget"
 cask "bruno"
 cask "orbstack"
 mas "1Password for Safari", id: 1569813296
@@ -36,6 +39,5 @@ mas "SocialFocus", id: 1661093205
 mas "Surfingkeys", id: 1609752330
 mas "Telegram", id: 747648890
 mas "UnTrap", id: 1637438059
-mas "Wipr", id: 1662217862
 mas "WireGuard", id: 1451685025
 mas "Yubico Authenticator", id: 1497506650
