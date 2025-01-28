@@ -20,6 +20,9 @@
 	pager = delta
 	autocrlf = "input"
 
+[include]
+  path = ~/.config/git/if-config
+
 [pull]
 	rebase = true
 
