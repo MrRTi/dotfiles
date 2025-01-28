@@ -125,3 +125,12 @@ fzf --fish | source
 
 # NOTE: Add starship
 starship init fish | source
+
+# NOTE: Add mise
+
+mise activate fish | source
+
+# NOTE: Add direnv
+
+direnv hook fish | source
+
