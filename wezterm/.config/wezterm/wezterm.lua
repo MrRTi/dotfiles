@@ -38,7 +38,7 @@ config.window_padding = {
 
 config.window_background_opacity = 0.9
 
-config.font_size = 16.0
+config.font_size = 15.0
 config.font = wezterm.font({
 	family = "JetBrains Mono",
 	harfbuzz_features = { "calt=0", "clig=0", "liga=0" },
