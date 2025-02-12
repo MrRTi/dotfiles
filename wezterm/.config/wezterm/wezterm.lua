@@ -29,6 +29,8 @@ config.color_scheme = scheme_for_appearance(get_appearance())
 
 config.enable_tab_bar = false
 
+config.window_decorations = "RESIZE"
+
 config.window_padding = {
 	left = "20px",
 	right = "20px",
@@ -36,7 +38,8 @@ config.window_padding = {
 	bottom = "10px",
 }
 
-config.window_background_opacity = 0.9
+config.window_background_opacity = 0.85
+config.text_background_opacity = 1.0
 
 config.font_size = 15.0
 config.font = wezterm.font({
@@ -45,6 +48,25 @@ config.font = wezterm.font({
 	weight = "DemiBold",
 })
 -- config.font = wezterm.font('JetBrains Mono', { weight = 'Bold', italic = true })
+
+config.keys = {
+  -- Turn off the default CMD-m Hide action, allowing CMD-m to
+  -- be potentially recognized and handled by the tab
+  {
+    key = 'h',
+    mods = 'CMD|CTRL|ALT|SHIFT',
+    action = wezterm.action_callback(function(window, pane)
+      if window_decorations == 'RESIZE' then
+        window_decorations = 'TITLE | RESIZE'
+      else
+        window_decorations = 'RESIZE'
+      end
+      window:set_config_overrides({
+        window_decorations = window_decorations,
+      })
+    end),
+  },
+}
 
 -- and finally, return the configuration to wezterm
 return config
