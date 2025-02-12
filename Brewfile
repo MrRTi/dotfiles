@@ -8,15 +8,20 @@ brew "docker-slim"
 brew "eza"
 brew "fd"
 brew "fzf"
+brew "zstd"
 brew "gcc"
 brew "git-delta"
 brew "gnupg"
 brew "hledger"
+brew "httpie"
+brew "jnv"
 brew "jq"
 brew "k9s"
+brew "lazygit"
 brew "libyaml"
 brew "mas"
 brew "mise"
+brew "mysql"
 brew "neovim"
 brew "ripgrep"
 brew "starship"
@@ -43,5 +48,6 @@ mas "SocialFocus", id: 1661093205
 mas "Surfingkeys", id: 1609752330
 mas "Telegram", id: 747648890
 mas "UnTrap", id: 1637438059
+mas "Wipr", id: 1662217862
 mas "WireGuard", id: 1451685025
 mas "Yubico Authenticator", id: 1497506650
