@@ -90,6 +90,15 @@ function git_worktree_switch
     cd "$worktree_path"
 end
 
+function fish_greeting
+    echo "🐟 Welcome back, captain!"
+end
+
+if status is-interactive; and not set -q skip_init_command
+    printf '\e[999B'
+    set skip_init_command 1
+end
+
 # NOTE: Aliases
 alias :q=exit
 alias re-fish="source ~/.config/fish/config.fish"
