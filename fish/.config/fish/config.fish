@@ -1,6 +1,9 @@
 # NOTE: Abbreviations
 abbr --add b bundle
 abbr --add be "bundle exec"
+abbr --add berc "bundle exec rails c"
+abbr --add belint "bundle exec rubocop -a"
+abbr --add betest "RAILS_ENV=test bundle exec rspec"
 
 abbr --add c "clear && printf '\e[999B'"
 
@@ -11,6 +14,8 @@ abbr --add dcrs "docker compose run --rm --use-aliases --service-ports"
 
 abbr --add md "mkdir -pv"
 
+abbr --add ll "ls -la"
+
 abbr --add tn tmux-sessionizer
 
 abbr --add v nvim
@@ -20,6 +25,7 @@ abbr --add g git
 abbr --add ga "git add"
 abbr --add gb "git branch"
 abbr --add gc "git commit"
+abbr --add gcm "git commit -m "
 abbr --add gco "git checkout"
 abbr --add gd "git diff"
 abbr --add glol "git log-pretty"
