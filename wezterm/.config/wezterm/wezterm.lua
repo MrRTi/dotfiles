@@ -41,7 +41,7 @@ config.window_padding = {
 config.window_background_opacity = 0.85
 config.text_background_opacity = 1.0
 
-config.line_height = 1.0
+config.line_height = 1.1
 config.font_size = 15.5
 config.font = wezterm.font({
 	family = "Fira Code",
