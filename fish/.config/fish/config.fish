@@ -1,22 +1,22 @@
 # NOTE: Abbreviations
-abbr --add b "bundle"
+abbr --add b bundle
 abbr --add be "bundle exec"
 
-abbr --add c "clear"
+abbr --add c "clear && printf '\e[999B'"
 
-abbr --add d "docker"
+abbr --add d docker
 abbr --add dc "docker compose"
 abbr --add dcr "docker compose run --rm --use-aliases"
 abbr --add dcrs "docker compose run --rm --use-aliases --service-ports"
 
 abbr --add md "mkdir -pv"
 
-abbr --add tn "tmux-sessionizer"
+abbr --add tn tmux-sessionizer
 
-abbr --add v "nvim"
+abbr --add v nvim
 abbr --add vf "nvim ."
 
-abbr --add g "git"
+abbr --add g git
 abbr --add ga "git add"
 abbr --add gb "git branch"
 abbr --add gc "git commit"
@@ -33,24 +33,20 @@ abbr --add gwr "git worktree remove"
 abbr --add gwrf "git worktree remove --force"
 
 function git_worktree_root
-  git worktree list | grep 'bare' | awk '{print $1}'
+    git worktree list | grep bare | awk '{print $1}'
 end
 
 function git_branch_query
-    git branch | \
-    sed -r "s:\+ (.*):\1 [exists]:" | \
-    awk '{printf "\x1b[34m%s\x1b[0m\t\x1b[31m%s\x1b[0m\n", $1, $2}' | \
-    fzf --print-query --ansi --query "$argv[1]" | \
-    tail -n 1
+    git branch | sed -r "s:\+ (.*):\1 [exists]:" | awk '{printf "\x1b[34m%s\x1b[0m\t\x1b[31m%s\x1b[0m\n", $1, $2}' | fzf --print-query --ansi --query "$argv[1]" | tail -n 1
 end
 
 function git_worktree_add_query
     set branch (git_branch_query "$argv[1]")
     echo "Creating worktree at $branch"
     if git branch | grep -q $branch
-      git worktree add (git_worktree_root)/$branch $branch
+        git worktree add (git_worktree_root)/$branch $branch
     else
-      git worktree add (git_worktree_root)/$branch -b $branch
+        git worktree add (git_worktree_root)/$branch -b $branch
     end
 
     cd (git_worktree_root)/$branch
@@ -60,30 +56,30 @@ function git_worktree_select
     set root (git_worktree_root)
 
     git worktree list |
-    awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' |
-    begin
-	if test -n "$root"
-	    sed "s:$root:󰾛 :"
-	else
-	    cat
-	end
-    end |
-    sed "/ (root)*/d" |
-    column -t |
-    fzf --ansi --query "$argv[1]" |
-    begin
-	if test -n "$root"
-	    sed "s:󰾛  :$root:"
-	else
-	    cat
-	end
-    end
+        awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' |
+        begin
+            if test -n "$root"
+                sed "s:$root:󰾛 :"
+            else
+                cat
+            end
+        end |
+        sed "/ (root)*/d" |
+        column -t |
+        fzf --ansi --query "$argv[1]" |
+        begin
+            if test -n "$root"
+                sed "s:󰾛  :$root:"
+            else
+                cat
+            end
+        end
 end
 
 function git_worktree_switch
     set worktree_path (git_worktree_select $argv[1] | awk '{print $3}')
     if test -z "$worktree_path"
-      return
+        return
     end
     cd "$worktree_path"
 end
@@ -133,4 +129,3 @@ mise activate fish | source
 # NOTE: Add direnv
 
 direnv hook fish | source
-
