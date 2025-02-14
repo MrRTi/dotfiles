@@ -32,22 +32,22 @@ config.enable_tab_bar = false
 config.window_decorations = "RESIZE"
 
 config.window_padding = {
-	left = "20px",
-	right = "20px",
-	top = "20px",
-	bottom = "10px",
+	left = "30px",
+	right = "30px",
+	top = "35px",
+	bottom = "15px",
 }
 
 config.window_background_opacity = 0.85
 config.text_background_opacity = 1.0
 
-config.font_size = 15.0
+config.line_height = 1.0
+config.font_size = 15.5
 config.font = wezterm.font({
-	family = "JetBrains Mono",
-	harfbuzz_features = { "calt=0", "clig=0", "liga=0" },
-	weight = "DemiBold",
+	family = "Fira Code",
+	-- harfbuzz_features = { "calt=0", "clig=0", "liga=0" },
+	weight = "Medium",
 })
--- config.font = wezterm.font('JetBrains Mono', { weight = 'Bold', italic = true })
 
 config.keys = {
   -- Turn off the default CMD-m Hide action, allowing CMD-m to
