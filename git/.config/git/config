@@ -23,6 +23,9 @@
 [include]
   path = ~/.config/git/if-config
 
+; [includeIf "gitdir:~/..."]
+;     path = ~/.config/git/file-name
+
 [pull]
 	rebase = true
 
