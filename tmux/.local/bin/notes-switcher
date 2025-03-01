@@ -11,8 +11,7 @@ __select_path() {
     fzf \
       --print-query \
       --ansi \
-      --preview-window up,80% \
-      --height=80% \
+      --preview-window up,75% \
       --layout=reverse  \
       --preview "bat --color=always $NOTES_FOLDER/{}" | \
     tail -n 1
