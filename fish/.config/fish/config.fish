@@ -133,7 +133,10 @@ set -g fish_cursor_insert line
 set -g fish_cursor_replace_one underscore
 set -g fish_cursor_visual block
 
+# NOTE: Add local bin
 set -U fish_user_paths ~/.local/bin $fish_user_paths
+
+# NOTE: Add Orbstack
 set -U fish_user_paths ~/.orbstack/bin $fish_user_paths
 
 # NOTE: Add brew
@@ -152,3 +155,6 @@ mise activate fish | source
 # NOTE: Add direnv
 
 direnv hook fish | source
+
+# NOTE: Add yc
+set -U fish_user_paths ~/yandex-cloud/bin $fish_user_paths
