@@ -1,11 +1,3 @@
-set -g TERM_COLS (tput cols)
-tmux set-environment -g TERM_COLS "$TERM_COLS"
-
-function update_var_on_resize --on-signal SIGWINCH
-    set -g TERM_COLS (tput cols)
-    tmux set-environment -g TERM_COLS "$TERM_COLS"
-end
-
 # NOTE: Abbreviations
 abbr --add b bundle
 abbr --add be "bundle exec"
