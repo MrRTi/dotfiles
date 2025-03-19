@@ -10,19 +10,21 @@
   ControlLeft   AltLeft   MetaLeft          Space            MetaRight  AltRight
 )
 
-
 (defvar
   ;; Note: consider using different time values for your different fingers.
   ;; For example, your pinkies might be slower to release keys and index
   ;; fingers faster.
   tap-time 200
-  fast-tap 100
   hold-time 200 
   hold-time-slow 300 
-  fast-hold 100
 )
 
 (defalias
+  l_base (layer-toggle base)
+  l_num (layer-toggle numbers)
+  l_sym (layer-toggle symbols)
+  l_cmd (layer-toggle cmd)
+
   a (tap-hold $tap-time $hold-time-slow   a ShiftLeft)
   s (tap-hold $tap-time $hold-time        s AltLeft)
   d (tap-hold $tap-time $hold-time        d ControlLeft)
@@ -43,17 +45,19 @@
   h_9 (tap-hold $tap-time $hold-time      9 AltRight)
   h_0 (tap-hold $tap-time $hold-time-slow 0 ShiftRight)
 
-
-  spc (tap-hold $tap-time $hold-time      Space (layer-while-held arrows))
-  m_esc (tap-hold $tap-time $hold-time    Escape (layer-while-held backspace))
-  nums (tap-hold $fast-tap $fast-hold     MetaRight (layer-while-held numbers))
-  syms (tap-hold $fast-tap $fast-hold     MetaLeft (layer-while-held symbols))
-  arrs (tap-hold $tap-time $hold-time     XX (layer-while-held arrows))
+  spc (tap-hold $tap-time $hold-time        Space     @l_cmd)
+  m_esc (tap-hold $tap-time $hold-time      Escape    @l_cmd)
+  nums (tap-hold $tap-time $hold-time-slow  MetaRight @l_num)
+  syms (tap-hold $tap-time $hold-time-slow  MetaLeft  @l_sym)
+  cmd (tap-hold $tap-time $hold-time        XX        @l_cmd)
 
   ch_e (chord c_esc e)
   ch_r (chord c_esc r)
   ch_u (chord c_esc u)
   ch_i (chord c_esc i)
+
+  ch_ml (chord c_meta MetaLeft)
+  ch_mr (chord c_meta MetaRight)
 
   mc C-up ;; Mission Control
   sls M-spc ;; Spotlight Search
@@ -69,22 +73,28 @@
   (e r u i) Escape 
 )
 
-(deflayer base
-  Escape              🔅    🔆    @mc   @sls  @dtn  @dnd  ◀◀    ▶⏸    ▶▶    🔇    🔉    🔊
-  IntlBackslash       1     2     3     4     5     6     7     8     9     0     -     =     Backspace
-  Tab                 q     w     @ch_e @ch_r t     y     @ch_u @ch_i o     p     [     ]     Enter
-  @m_esc              @a    @s    @d    @f    g     h     @j    @k    @l    @;     '     \ 
-  ShiftLeft       `   z     x     c     v     b     n     m     ,     .     /      ShiftRight  
-  ControlLeft   AltLeft   @syms               @spc              @nums     AltRight
+(defchords c_meta 50
+  (MetaLeft MetaRight) @cmd
+  (MetaLeft          ) @syms
+  (         MetaRight) @nums
 )
 
-(deflayer arrows
-  _                   _     _     _     _     _     _     _     _     _     _     _     _
-  _                   XX    XX    XX    XX    XX    XX    XX    XX    XX    XX    XX    XX     _
-  _                   XX    XX    XX    XX    XX    XX    XX    XX    XX    XX    XX    XX     _
-  _                   XX    XX    XX    XX    XX    left  down  up    right XX    XX    XX 
-  _               XX  XX    XX    XX    XX    XX    XX    XX    XX    XX    XX                 _ 
-  _             _         _                   _                  _          _
+(deflayer base
+  Escape                  🔅    🔆    @mc   @sls  @dtn  @dnd  ◀◀    ▶⏸    ▶▶    🔇    🔉    🔊
+  IntlBackslash           1     2     3     4     5     6     7     8     9     0     -     =     Backspace
+  Tab                     q     w     @ch_e @ch_r t     y     @ch_u @ch_i o     p     [     ]     Enter
+  @m_esc                  @a    @s    @d    @f    g     h     @j    @k    @l    @;     '     \ 
+  ShiftLeft       z       x     c     v     b     `     n     m     ,     .     /                 ShiftRight
+  ControlLeft   AltLeft   @ch_ml               @spc              @ch_mr         AltRight
+)
+
+(deflayer cmd
+  _                   _       _     _     _     _     _     _     _     _     _       _     _
+  _                   XX      XX    XX    XX    XX    XX    XX    XX    XX    XX      XX    XX     _
+  _                   XX      XX    XX    XX    XX    XX    XX    XX    XX    XX      XX    XX     _
+  _                   Escape  XX    XX    XX    XX    left  down  up    right Enter   XX    XX 
+  _          XX       XX      XX    XX    XX    XX    XX    XX    XX    XX    XX                 _ 
+  _             _         _                         _        _          _
 )
 
 (deflayer numbers
@@ -92,25 +102,16 @@
   _                   XX    XX    XX    XX    XX    XX    XX    XX    XX    XX    XX    XX      _
   _                   S-1   S-2   S-3   S-4   S-5   S-6   S-7   S-8   S-9   S-0   XX    XX      _
   _                   @h_1  @h_2  @h_3  @h_4  5     6     @h_7  @h_8  @h_9  @h_0  XX    XX
-  _               XX  XX    XX    XX    XX    XX    XX    XX    XX    XX    XX                  _
-  _             _         @arrs               Tab                  _          _
+  _          XX       XX    XX    XX    XX    XX    XX    XX    XX    XX    XX                  _
+  _             _          @l_cmd                   Tab                  _          _
 )
 
 (deflayer symbols
-  _                   _     _     _     _     _     _     _     _     _     _     _     _
-  _                   XX    XX    XX    XX    XX    XX    XX    XX    XX    XX    XX    XX     _
-  _                   XX    S-=   S-`   S-[   S-\   S-/   S-]   S-'   S--   XX    XX    XX     _
-  _                   XX    =     `     [     \     /     ]     '     -     XX    XX    XX
-  _               XX  XX    XX    S-,   S-9   ;    S-;    S-0   S-.   XX    XX                 _
-  _             _         _                   Delete                  @arrs          _
+  _                   _       _     _     _     _     _     _     _     _     _       _     _
+  _                   XX      XX    XX    XX    XX    XX    XX    XX    XX    XX      XX    XX     _
+  _                   XX      S-=   S-`   S-[   S-\   S-/   S-]   S-'   S--   XX      XX    XX     _
+  _                   Escape  =     `     [     \     /     ]     '     -     Enter   XX    XX
+  _          XX       XX      XX    S-,   S-9   ;    S-;    S-0   S-.   XX    XX                   _
+  _             _         _                   Backspace                  @l_cmd       _
 )
 
-
-(deflayer backspace
-  _                   _     _     _     _     _     _     _     _     _     _     _     _
-  _                   _     _     _     _     _     _     _     _     _     _     _     _     _
-  _                   _     _     _     _     _     _     _     _     _     _     _     _     _
-  _                   _     _     _     _     _     _     _     _     _     _     _     _ 
-  _             _     _     _     _     _     _     _     _     _     _     _                 _
-  _             _         _                   Backspace                  _          _
-)
