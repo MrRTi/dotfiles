@@ -126,27 +126,41 @@ set -g fish_cursor_replace_one underscore
 set -g fish_cursor_visual block
 
 # NOTE: Add local bin
-set -U fish_user_paths ~/.local/bin $fish_user_paths
+fish_add_path ~/.local/bin
 
 # NOTE: Add Orbstack
-set -U fish_user_paths ~/.orbstack/bin $fish_user_paths
+fish_add_path ~/.orbstack/bin
+
+# NOTE: Add yc
+fish_add_path ~/yandex-cloud/bin
 
 # NOTE: Add brew
-eval "$(/opt/homebrew/bin/brew shellenv)"
+if type -q /opt/homebrew/bin/brew
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+end
 
 # NOTE: Add fzf
-fzf --fish | source
+if type -q fzf
+    fzf --fish | source
+end
 
 # NOTE: Add starship
-starship init fish | source
+if type -q starship
+    starship init fish | source
+end
 
 # NOTE: Add mise
 
-mise activate fish | source
+if type -q mise
+    mise activate fish | source
+end
 
 # NOTE: Add direnv
 
-direnv hook fish | source
+if type -q direnv
+    direnv hook fish | source
+end
 
-# NOTE: Add yc
-set -U fish_user_paths ~/yandex-cloud/bin $fish_user_paths
+if type -q k9s
+    k9s completion fish | source
+end
