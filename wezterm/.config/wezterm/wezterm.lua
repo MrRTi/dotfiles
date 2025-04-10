@@ -7,22 +7,22 @@ local config = {}
 -- In newer versions of wezterm, use the config_builder which will
 -- help provide clearer error messages
 if wezterm.config_builder then
-	config = wezterm.config_builder()
+  config = wezterm.config_builder()
 end
 
 local function get_appearance()
-	if wezterm.gui then
-		return wezterm.gui.get_appearance()
-	end
-	return "Dark"
+  if wezterm.gui then
+    return wezterm.gui.get_appearance()
+  end
+  return "Dark"
 end
 
 local function scheme_for_appearance(appearance)
-	if appearance:find("Dark") then
-		return "Tokyo Night Moon"
-	else
-		return "Tokyo Night Day"
-	end
+  if appearance:find("Dark") then
+    return "Tokyo Night Moon"
+  else
+    return "Tokyo Night Day"
+  end
 end
 
 config.color_scheme = scheme_for_appearance(get_appearance())
@@ -32,21 +32,21 @@ config.enable_tab_bar = false
 config.window_decorations = "RESIZE"
 
 config.window_padding = {
-	left = "30px",
-	right = "30px",
-	top = "35px",
-	bottom = "15px",
+  left = "30px",
+  right = "30px",
+  top = "35px",
+  bottom = "15px",
 }
 
 config.window_background_opacity = 0.85
 config.text_background_opacity = 1.0
 
 config.line_height = 1.1
-config.font_size = 15.5
+config.font_size = 20
 config.font = wezterm.font({
-	family = "Fira Code",
-	-- harfbuzz_features = { "calt=0", "clig=0", "liga=0" },
-	weight = "Medium",
+  family = "Fira Code",
+  -- harfbuzz_features = { "calt=0", "clig=0", "liga=0" },
+  weight = "Medium",
 })
 
 config.keys = {
