@@ -54,7 +54,6 @@
   h_9 (tap-hold $tap-time $hold-time      9 AltRight)
   h_0 (tap-hold $tap-time $hold-time-slow 0 ShiftRight)
 
-  spc (tap-hold $tap-time $hold-time        Space     @l_cmd)
   m_esc (tap-hold $tap-time $hold-time      Escape    @l_cmd)
   nums (tap-hold $tap-time $hold-time-slow  MetaRight @l_num)
   syms (tap-hold $tap-time $hold-time-slow  MetaLeft  @l_sym)
@@ -68,7 +67,7 @@
   ch_mr (chord c_meta MetaRight)
 
   mc C-up ;; Mission Control
-  sls M-spc ;; Spotlight Search
+  sls M-Space ;; Spotlight Search
   dtn S-C-A-M-f5 ;; Dictation
   dnd S-C-A-M-f6 ;; Do Not Disturb
 )
@@ -93,7 +92,7 @@
   Tab                     q     w     @ch_e @ch_r t     y     @ch_u @ch_i o     p     [     ]     Enter
   @m_esc                  @a    @s    @d    @f    g     h     @j    @k    @l    @;     '     \ 
   ShiftLeft       `       z     x     c     v     b     n     m     ,     .     /                 ShiftRight
-  ControlLeft   AltLeft   @ch_ml               @spc              @ch_mr         AltRight
+  ControlLeft   AltLeft   @ch_ml               Space                @ch_mr         AltRight
 )
 
 (deflayer cmd
