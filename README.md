@@ -60,13 +60,13 @@ To see all possible options
 For specific package
 
 ```sh
-./stow.sh -a -p nvim
+./link.sh -a -p nvim
 ```
 
 For all configs
 
 ```sh
-./stow.sh -a
+./link.sh -a
 ```
 
 #### Unlink
@@ -74,13 +74,13 @@ For all configs
 For specific package
 
 ```sh
-./stow.sh -d -p nvim
+./link.sh -d -p nvim
 ```
 
 For all configs
 
 ```sh
-./stow.sh -d
+./link.sh -d
 ```
 
 #### Help
@@ -88,7 +88,7 @@ For all configs
 To see all possible options
 
 ```sh
-./stow.sh -h
+./link.sh -h
 ```
 
 
