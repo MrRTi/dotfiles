@@ -23,16 +23,15 @@ DRY_RUN=0
 AUTO_CONFIRM=0
 
 link-folder() {
-	mkdir -p ~/.config
+	mkdir -p "$HOME/.config"
 
-	files=$(find "./$1/" -mindepth 1 -type f)
-	for file in ${files[@]}; do
+	find "./$1/" -mindepth 1 -type f | while IFS= read -r file; do
 		file_full_path=$(echo "$file" | sed -E "s|^\./|$(pwd)/|")
 		result_file_path=$(echo "$file" | sed -E "s|^\./[a-zA-Z0-9_]+/?|$HOME/|")
-		result_folder="$(dirname $result_file_path)"
+		result_folder=$(dirname "$result_file_path")
 
 		if [ "$DRY_RUN" != 1 ] && [ ! -d "${result_folder}" ]; then
-			echo "Creating folder ${result_folder}"
+			echo "CREATING FOLDER: ${result_folder}"
 			mkdir -pv "${result_folder}"
 		fi
 
