@@ -103,15 +103,21 @@ end
 alias :q=exit
 alias re-fish="source ~/.config/fish/config.fish"
 
-alias cat="bat -pp"
-alias less="bat -p"
-alias lessl="bat -pl"
+if type -q bat
+    alias cat="bat -pp"
+    alias less="bat -p"
+    alias lessl="bat -pl"
+end
 
-alias ls="eza"
+if type -q eza
+    alias ls="eza"
+end
 
-alias em="emacs --tty"
-alias emd="emacs --daemon"
-alias emc="emacsclient -c -a \"\" --tty"
+if type -q emacs
+    alias em="emacs --tty"
+    alias emd="emacs --daemon"
+    alias emc="emacsclient -c -a \"\" --tty"
+end
 
 alias gwaq="git_worktree_add_query"
 alias gws="git_worktree_switch"
@@ -137,6 +143,11 @@ fish_add_path ~/yandex-cloud/bin
 # NOTE: Add brew
 if type -q /opt/homebrew/bin/brew
     eval "$(/opt/homebrew/bin/brew shellenv)"
+end
+
+# NOTE: Add linuxbrew
+if type -q /home/linuxbrew/.linuxbrew/bin/brew
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 end
 
 # NOTE: Add fzf
