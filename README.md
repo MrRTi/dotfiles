@@ -1,25 +1,22 @@
 # Dotfiles
 
-This config based on usage of the [Stow](#stow) to link config files to the needed places.
-
-[Nix package manager and darwin-modules](#nix-packages) mostly used as package manager.
+This config based on usage of the 'ln' to link config files to the needed places.
 
 ## How to clone
 
 ```sh
-git clone --recurse-submodules https://github.com/MrRTi/dotfiles.git
+git clone -b link https://github.com/MrRTi/dotfiles.git
 cd dotfiles
 ```
 
 ```sh
-git clone --recurse-submodules git@github.com:MrRTi/dotfiles.git
+git clone -b link git@github.com:MrRTi/dotfiles.git
 cd dotfiles
 ```
 
 ## Required
 
 - [brew](https://brew.sh/)
-- [GNU Stow](https://www.gnu.org/software/stow/) (included in Brewfile)
 
 ## Brew
 
@@ -54,15 +51,11 @@ To see all possible options
 ```sh
 ./brew.sh -h
 ```
-## Stow
-
-### Requirements
-
-- [GNU Stow](https://www.gnu.org/software/stow/)
+## Link
 
 ### Usage
 
-#### Add
+#### Link
 
 For specific package
 
@@ -76,7 +69,7 @@ For all configs
 ./stow.sh -a
 ```
 
-#### Delete
+#### Unlink
 
 For specific package
 
