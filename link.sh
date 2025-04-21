@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 
 help() {
 	echo "This script help you link and unlink configs from this repository"
