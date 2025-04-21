@@ -2,8 +2,12 @@
 # For help with configuration see https://github.com/rszyma/kanata-tray/blob/main/README.md
 "$schema" = "https://raw.githubusercontent.com/rszyma/kanata-tray/main/doc/config_schema.json"
 
-general.allow_concurrent_presets = false
-defaults.tcp_port = 4444
+[defaults]
+allow_concurrent_presets = false
+kanata_executable = '/opt/homebrew/bin/kanata'
+kanata_config = '' # if empty or not omitted, kanata default config locations will be used.
+tcp_port = 4444 # if not specified, defaults to 5829
+autorestart_on_crash = true # default: false
 
 [defaults.hooks]
 # Hooks allow running custom commands on specific events (e.g. when starting preset).
@@ -16,11 +20,9 @@ numbers="num.png"
 cmd="lock.png"
 
 [presets.'M1']
-kanata_executable = '/opt/homebrew/bin/kanata'
 kanata_config = '~/.config/kanata/macbook-air-m1.kbd'
 autorun = true
 
 [presets.'M4']
-kanata_executable = '/opt/homebrew/bin/kanata'
 kanata_config = '~/.config/kanata/macbook-air-m4.kbd'
-autorun = true
+autorun = false
