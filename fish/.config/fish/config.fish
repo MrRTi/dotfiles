@@ -90,6 +90,10 @@ function git_worktree_switch
     cd "$worktree_path"
 end
 
+function find_signing_key
+    ssh-add -L | grep "$(git config --get user.email)" | head -n 1
+end
+
 function fish_greeting
     echo "🐟 Welcome back, captain!"
 end
@@ -102,6 +106,11 @@ end
 # NOTE: Aliases
 alias :q=exit
 alias re-fish="source ~/.config/fish/config.fish"
+
+if [ -S "$HOME/.1password/agent.sock" ]
+    set -gx SSH_AUTH_SOCK_PREV $SSH_AUTH_SOCK
+    set -gx SSH_AUTH_SOCK "$HOME/.1password/agent.sock"
+end
 
 if type -q bat
     alias cat="bat -pp"
