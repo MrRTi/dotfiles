@@ -182,5 +182,6 @@ if type -q direnv
 end
 
 if type -q k9s
+    set -gx K9S_CONFIG_DIR $HOME/.config/k9s
     k9s completion fish | source
 end
