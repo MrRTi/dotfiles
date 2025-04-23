@@ -20,6 +20,9 @@ install-brew() {
 			curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
 		elif type -q wget; then
 			wget -qO- https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+		else
+			echo "curl or wget is required"
+			exit 1
 		fi
 	)"
 }
