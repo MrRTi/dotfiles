@@ -49,6 +49,10 @@ link-folder() {
 			fi
 		fi
 	done
+
+	if [ "$DRY_RUN" == 1 ]; then
+		echo "You selected dry run. Changes not applied"
+	fi
 }
 
 link-all() {
