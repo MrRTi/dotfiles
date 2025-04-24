@@ -36,7 +36,7 @@ chsh -s $(which fish)
 DEV_FOLDER="$HOME/Developer/personal"
 
 if [ ! -d "$HOME/.config/nvim" ]; then
-	git clone -b lazyvim https://github.com:MrRTi/nvim-config.git "$DEV_FOLDER/nvim-config"
+	git clone -b lazyvim https://github.com/MrRTi/nvim-config.git "$DEV_FOLDER/nvim-config"
 	ln -s "$DEV_FOLDER/nvim-config" "$HOME/.config/nvim"
 
 	cd "$DEV_FOLDER/nvim-config"
