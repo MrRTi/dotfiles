@@ -16,9 +16,9 @@ help() {
 
 install-brew() {
 	/bin/bash -c "$(
-		if type -q curl; then
+		if type curl; then
 			curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-		elif type -q wget; then
+		elif type wget; then
 			wget -qO- https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
 		else
 			echo "curl or wget is required"
