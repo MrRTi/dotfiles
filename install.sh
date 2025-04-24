@@ -15,7 +15,7 @@ else
 	BREW_PATH="/use/local"
 fi
 
-eval "$($BREW_PATH/bin/brew)"
+eval "$($BREW_PATH/bin/brew shellenv)"
 
 ./brew.sh -r
 
@@ -29,7 +29,7 @@ fi
 
 export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 
-sudo echo $(which fish) >>/etc/shells
+echo $(which fish) | sudo tee -a /etc/shells
 chsh -s $(which fish)
 
 ./link.sh -a -y
