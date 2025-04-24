@@ -1,3 +1,5 @@
+# https://developer.1password.com/docs/ssh/get-started/#step-4-configure-your-ssh-or-git-client
+#
 # This is the 1Password SSH agent config file, which allows you to customize the
 # behavior of the SSH agent running on this machine.
 #
