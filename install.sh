@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-./brew.sh -i
-
 # NOTE: Use brew in next commands
 # /opt/homebrew for macOS on Apple Silicon,
 # /usr/local for macOS on Intel, and
@@ -13,6 +11,10 @@ elif [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
 	BREW_PATH="/home/linuxbrew/.linuxbrew"
 else
 	BREW_PATH="/use/local"
+fi
+
+if [ ! -f $BREW_PATH/bin/brew ]; then
+	./brew.sh -i
 fi
 
 eval "$($BREW_PATH/bin/brew shellenv)"
@@ -29,8 +31,8 @@ fi
 
 export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 
-echo $(which fish) | sudo tee -a /etc/shells
-chsh -s $(which fish)
+echo "$(which fish)" | sudo tee -a /etc/shells
+chsh -s "$(which fish)" "$USER"
 
 ./link.sh -a -y
 
