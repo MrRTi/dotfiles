@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 ./brew.sh -i
-./brew.sh -r
 
 # NOTE: Use brew in next commands
 # /opt/homebrew for macOS on Apple Silicon,
@@ -17,6 +16,8 @@ else
 fi
 
 eval "$($BREW_PATH/bin/brew)"
+
+./brew.sh -r
 
 mkdir -p "$HOME/.1password"
 
