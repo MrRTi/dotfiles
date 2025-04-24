@@ -36,7 +36,16 @@ brew-dump() {
 
 rebrew() {
 	echo "Installing packages from Brewfile"
-	brew bundle install --file=./Brewfile
+
+	if [ -f "/opt/homebrew/bin/brew" ]; then
+		BREW_PATH="/opt/homebrew"
+	elif [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+		BREW_PATH="/home/linuxbrew/.linuxbrew"
+	else
+		BREW_PATH="/use/local"
+	fi
+
+	"$BREW_PATH"/bin/brew bundle install --file=./Brewfile
 }
 
 while getopts "hidr" option; do
