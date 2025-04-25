@@ -21,6 +21,9 @@ abbr --add tn tmux-sessionizer
 abbr --add v nvim
 abbr --add vf "nvim ."
 
+abbr --add k-m1 "sudo kanata -c \"$HOME/.config/kanata/macbook-air-m1.kbd\" -p 4444"
+abbr --add k-mon kanata-layer-monitor
+
 abbr --add g git
 abbr --add ga "git add"
 abbr --add gb "git branch"
