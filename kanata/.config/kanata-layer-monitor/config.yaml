@@ -1,0 +1,29 @@
+# https://github.com/MrRTi/kanata-layer-monitor
+host: 127.0.0.1
+port: 4444
+
+layers:
+  base:
+    label:
+      text: BASE
+      # hidden: true
+    # icon:
+    #   path: icons/base.png
+  numbers:
+    label:
+      text: NUM
+      # hidden: true
+    # icon:
+    #   path: icons/num.png
+  symbols:
+    label:
+      text: SYM
+      # hidden: true
+    # icon:
+    #   path: icons/sym.png
+  cmd:
+    label:
+      text: CMD
+      # hidden: true
+    # icon:
+    #   path: icons/lock.png
