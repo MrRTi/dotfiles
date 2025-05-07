@@ -7,10 +7,6 @@ abbr --add betest "RAILS_ENV=test bundle exec rspec"
 
 abbr --add c "clear && printf '\e[999B'"
 
-abbr --add dpuraw "devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug"
-abbr --add dpu "devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug --devcontainer-path tmp/.devcontainer.json "
-abbr --add dpd "devpod delete "$(basename $(git_worktree_root))--$(basename $(pwd))""
-
 abbr --add d docker
 abbr --add dc "docker compose"
 abbr --add dcr "docker compose run --rm --use-aliases"
@@ -100,6 +96,10 @@ end
 function find_signing_key
     ssh-add -L | grep "$(git config --get user.email)" | head -n 1
 end
+
+abbr --add dpuraw "devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug"
+abbr --add dpu "devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug --devcontainer-path tmp/.devcontainer.json "
+abbr --add dpd "devpod delete "$(basename $(git_worktree_root))--$(basename $(pwd))""
 
 function fish_greeting
     echo "🐟 Welcome back, captain!"
