@@ -97,9 +97,23 @@ function find_signing_key
     ssh-add -L | grep "$(git config --get user.email)" | head -n 1
 end
 
-abbr --add dpuraw "devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug"
-abbr --add dpu "devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug --devcontainer-path tmp/.devcontainer.json "
-abbr --add dpd "devpod delete "$(basename $(git_worktree_root))--$(basename $(pwd))""
+function devpod_up_raw
+    devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug
+end
+
+abbr --add dpuraw devpod_up_raw
+
+function devpod_up
+    devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug --devcontainer-path tmp/.devcontainer.json
+end
+
+abbr --add dpu devpod_up
+
+function devpod_delete
+    devpod delete "$(basename $(git_worktree_root))--$(basename $(pwd))"
+end
+
+abbr --add dpd devpod_delete
 
 function fish_greeting
     echo "🐟 Welcome back, captain!"
