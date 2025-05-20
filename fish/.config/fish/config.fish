@@ -26,10 +26,12 @@ abbr --add k-mon kanata-layer-monitor
 
 abbr --add g git
 abbr --add ga "git add"
+abbr --add gap "git add --patch"
 abbr --add gb "git branch"
 abbr --add gc "git commit"
 abbr --add gcm "git commit -m "
 abbr --add gco "git checkout"
+abbr --add gcl "git clone"
 abbr --add gd "git diff"
 abbr --add glol "git log-pretty"
 abbr --add gpu "git push -u origin (git rev-parse --abbrev-ref HEAD)"
@@ -108,6 +110,12 @@ function devpod_up
 end
 
 abbr --add dpu devpod_up
+
+function devpod_recreate
+    devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug --devcontainer-path tmp/.devcontainer.json --recreate
+end
+
+abbr --add dpr devpod_recreate
 
 function devpod_delete
     devpod delete "$(basename $(git_worktree_root))--$(basename $(pwd))"

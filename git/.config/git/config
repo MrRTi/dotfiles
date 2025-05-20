@@ -3,6 +3,9 @@
 	email = artem@musalitin.me
 	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOGiOKXJVCNkbMY0oKSl0ZqaXsXfGDL//wKZ4KP9ZtCP
 
+[url "git@github.com:MrRTi/"]
+  insteadOf = "rti:"
+
 [gpg]
 	format = ssh
 
@@ -19,6 +22,19 @@
 	editor = nvim
 	pager = delta
 	autocrlf = "input"
+  compression = 9
+  whitespace = error
+  preloadindex = true
+
+[status]
+  branch = true
+  showStash = true
+  showUntrackedFiles = all
+
+; [advice]
+;   addEmptyPathspec = false
+;   pushNonFastForward = false
+;   statusHints = false
 
 [include]
   path = ~/.config/git/if-config
@@ -27,13 +43,23 @@
 ;     path = ~/.config/git/file-name
 
 [pull]
+	default = current
 	rebase = true
 
 [push]
 	default = current
+  followTags = true
+  autoSetupRemote = true
 
 [rebase]
 	autoStash = true
+  missingCommitsCheck = warn
+
+[branch]
+  sort = -commiterdate
+
+[tag]
+  sort = -taggerdate
 
 [credential]
 	helper = cache --timeout=3600
