@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+echo "Requesting sudo access for kanata..."
+sudo -v || exit 1
+
+sudo /opt/homebrew/bin/kanata -q -c "$HOME/.config/kanata/macbook-air-m1.kbd" -p 4444 >/tmp/kanata.log 2>&1 &
+
+echo "waiting 3 seconds for kanata to start"
+sleep 3
+
+$HOME/.local/bin/kanata-layer-monitor >/tmp/kanata-layer-monitor.log 2>&1 &
