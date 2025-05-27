@@ -95,33 +95,21 @@ function git_worktree_switch
     cd "$worktree_path"
 end
 
+function git_worktree_remove
+    git worktree list | awk '{print $1}' | fzf --multi | while read line
+        git worktree remove --force $line
+    end
+end
+
+abbr --add gwrfzf git_worktree_remove
+
 function find_signing_key
     ssh-add -L | grep "$(git config --get user.email)" | head -n 1
 end
 
-function devpod_up_raw
-    devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug
-end
-
-abbr --add dpuraw devpod_up_raw
-
 function devpod_up
-    devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug --devcontainer-path tmp/.devcontainer.json
+    devpod up . --id $(echo "$argv[1]" | tr "_" "-") --debug --devcontainer-path "$argv[2]" --dotfiles https://github.com/MrRTi/dotfiles
 end
-
-abbr --add dpu devpod_up
-
-function devpod_recreate
-    devpod up . --id "$(basename $(git_worktree_root))--$(basename $(pwd))" --provider kubernetes --debug --devcontainer-path tmp/.devcontainer.json --recreate
-end
-
-abbr --add dpr devpod_recreate
-
-function devpod_delete
-    devpod delete "$(basename $(git_worktree_root))--$(basename $(pwd))"
-end
-
-abbr --add dpd devpod_delete
 
 function fish_greeting
     echo "🐟 Welcome back, captain!"
