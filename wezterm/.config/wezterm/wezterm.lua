@@ -33,17 +33,17 @@ config.enable_tab_bar = false
 config.window_decorations = "RESIZE"
 
 config.window_padding = {
-  left = "30px",
-  right = "30px",
-  top = "35px",
-  bottom = "15px",
+  left = "20px",
+  right = "20px",
+  top = "40px",
+  bottom = "10px",
 }
 
 config.window_background_opacity = 0.85
 config.text_background_opacity = 1.0
 
 config.line_height = 1.1
-config.font_size = 17
+config.font_size = 18
 config.font = wezterm.font({
   family = "Fira Code",
   -- harfbuzz_features = { "calt=0", "clig=0", "liga=0" },
