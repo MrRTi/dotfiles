@@ -112,7 +112,7 @@ function devpod_up
 end
 
 function fish_greeting
-    echo "🐟 Welcome back, captain!"
+    echo "󰈺  Welcome back, captain!"
 end
 
 if status is-interactive; and not set -q skip_init_command
