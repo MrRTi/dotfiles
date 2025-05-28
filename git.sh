@@ -8,7 +8,7 @@ for line in $parts; do
 	folder="$(cut -d ':' -f1 <<<$line)"
 	email="$(cut -d ':' -f2 <<<$line)"
 
-	path="$HOME/Developer/$folder"
+	path="$HOME/dev/$folder"
 	gitconfig_path="$path/.gitconfig"
 
 	mkdir -pv "$path"
