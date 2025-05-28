@@ -28,9 +28,11 @@ end
 
 config.color_scheme = scheme_for_appearance(get_appearance())
 
-config.enable_tab_bar = false
+local window_decorations = 'RESIZE'
+local enable_tab_bar = false
 
-config.window_decorations = "RESIZE"
+config.enable_tab_bar = enable_tab_bar
+config.window_decorations = window_decorations
 
 config.window_padding = {
   left = "20px",
@@ -59,11 +61,14 @@ config.keys = {
     action = wezterm.action_callback(function(window, pane)
       if window_decorations == 'RESIZE' then
         window_decorations = 'TITLE | RESIZE'
+        enable_tab_bar = true
       else
         window_decorations = 'RESIZE'
+        enable_tab_bar = false
       end
       window:set_config_overrides({
         window_decorations = window_decorations,
+        enable_tab_bar = enable_tab_bar
       })
     end),
   },
