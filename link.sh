@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
+SCRIPT_PATH=$(dirname "${BASH_SOURCE[0]}")
 
 help() {
 	echo "This script help you link and unlink configs from this repository"
@@ -27,7 +27,7 @@ AUTO_CONFIRM=0
 link-folder() {
 	mkdir -p "$HOME/.config"
 
-	find "./$1/" -mindepth 1 -type f | while IFS= read -r file; do
+	find "$SCRIPT_PATH/$1/" -mindepth 1 -type f | while IFS= read -r file; do
 		file_full_path=$(echo "$file" | sed -E "s|^\./|$(pwd)/|")
 		result_file_path=$(echo "$file" | sed -E "s|^\./[a-zA-Z0-9_]+/?|$HOME/|")
 		result_folder=$(dirname "$result_file_path")
@@ -59,7 +59,7 @@ link-folder() {
 
 link-all() {
 	configs=$(
-		find ./* -mindepth 0 -maxdepth 0 -type d \( ! -iname ".*" \) |
+		find $SCRIPT_PATH/* -mindepth 0 -maxdepth 0 -type d \( ! -iname ".*" \) |
 			sort
 	)
 
