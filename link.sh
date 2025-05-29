@@ -28,8 +28,8 @@ link-folder() {
 	mkdir -p "$HOME/.config"
 
 	find "$SCRIPT_PATH/$1/" -mindepth 1 -type f | while IFS= read -r file; do
-		file_full_path=$(echo "$file" | sed -E "s|^\./|$(pwd)/|")
-		result_file_path=$(echo "$file" | sed -E "s|^\./[a-zA-Z0-9_]+/?|$HOME/|")
+		file_full_path=$file
+		result_file_path=$(echo "$file" | sed -E "s|^$SCRIPT_PATH/$1|$HOME|")
 		result_folder=$(dirname "$result_file_path")
 
 		if [ "$DRY_RUN" != 1 ] && [ ! -d "${result_folder}" ]; then
