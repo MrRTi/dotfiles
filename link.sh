@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SCRIPT_PATH="$HOME/$(dirname "${BASH_SOURCE[0]}")"
+SCRIPT_PATH="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 help() {
 	echo "This script help you link and unlink configs from this repository"
