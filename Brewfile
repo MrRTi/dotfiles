@@ -39,9 +39,11 @@ brew "tmux"
 brew "wget"
 brew "xcodegen"
 brew "yq"
+cask "1password-cli"
 cask "amethyst"
 cask "bruno"
 cask "font-fira-code"
+cask "jordanbaird-ice"
 cask "karabiner-elements"
 cask "keycastr"
 cask "orbstack"
@@ -60,6 +62,7 @@ mas "Owly", id: 882812218
 mas "Pages", id: 409201541
 mas "SocialFocus", id: 1661093205
 mas "Surfingkeys", id: 1609752330
+mas "Tailscale", id: 1475387142
 mas "Telegram", id: 747648890
 mas "UnTrap", id: 1637438059
 mas "Wipr", id: 1662217862
