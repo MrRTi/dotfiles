@@ -21,15 +21,15 @@ eval "$($BREW_PATH/bin/brew shellenv)"
 
 ./brew.sh -r
 
-mkdir -p "$HOME/.1password"
-
 # NOTE: Link macOS specific paths
 if [[ "$(uname)" == "Darwin" ]]; then
+	mkdir -p "$HOME/.1password"
+
 	ln -s "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" "$HOME/.1password/agent.sock"
 	ln -s "$HOME/Library/Mobile Documents/com~apple~CloudDocs" "$HOME/iCloud"
-fi
 
-export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+	export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+fi
 
 echo "$(which fish)" | sudo tee -a /etc/shells
 chsh -s "$(which fish)" "$USER"
