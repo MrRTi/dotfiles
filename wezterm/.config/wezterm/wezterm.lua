@@ -33,7 +33,7 @@ local enable_tab_bar = false
 
 config.enable_tab_bar = enable_tab_bar
 config.window_decorations = window_decorations
-
+config.use_fancy_tab_bar = false
 config.window_padding = {
   left = "20px",
   right = "20px",
