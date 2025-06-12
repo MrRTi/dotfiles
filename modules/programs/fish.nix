@@ -53,6 +53,8 @@ set -g fish_cursor_visual block
 
 set -U fish_user_paths ~/.local/bin $fish_user_paths
 set -U fish_user_paths ~/.orbstack/bin $fish_user_paths
+
+set SSH_AUTH_SOCK ~/.1password/agent.sock
         '';
       };
     };
