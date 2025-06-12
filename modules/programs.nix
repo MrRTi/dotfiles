@@ -9,10 +9,6 @@ let
         (builtins.readDir ./programs)
       )
     );
-
-  fonts = [
-    "JetBrainsMono"
-  ];
 in
 {
   imports = [
@@ -21,7 +17,7 @@ in
   fonts.fontconfig.enable = true;
 
   home.packages = with pkgs; [
-    _1password
+    _1password-cli
     ack
     cmake
     dive
@@ -34,7 +30,7 @@ in
     kitty
     marksman
     neovim
-    (nerdfonts.override { fonts = fonts;})
+    nerd-fonts.jetbrains-mono
     obsidian
     tree-sitter
     wget

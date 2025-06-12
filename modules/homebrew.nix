@@ -77,6 +77,5 @@ in
     # This file is managed be nix-darwin
   '';
 
-  aerospace.enable = true;
   safari-qol.enable = true;
 }

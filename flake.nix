@@ -28,10 +28,6 @@
       url = "github:homebrew/homebrew-cask";
       flake = false;
     };
-    homebrew-aerospace = {
-      url = "github:nikitabobko/homebrew-tap";
-      flake = false;
-    };
   };
 
   outputs = { self, nix-darwin, nixpkgs, ... } @ inputs:
@@ -59,8 +55,6 @@
         # $ darwin-rebuild changelog
         system.stateVersion = 6;
 
-        # Auto upgrade nix package and the daemon service.
-        services.nix-daemon.enable = true;
         nix.package = pkgs.nix;
         nix.settings.sandbox = true;
 
@@ -77,9 +71,9 @@
     in
       {
       # Build darwin flake using:
-      # darwin-rebuild build --flake .#air
+      # sudo darwin-rebuild build --flake .#rti-air-m4
       # To apply updated configuration
-      # darwin-rebuild switch --flake .#air
+      # sudo darwin-rebuild switch --flake .#rti-air-m4
       darwinConfigurations."rti-air-m4" = nix-darwin.lib.darwinSystem {
         specialArgs = {
           inherit inputs;
