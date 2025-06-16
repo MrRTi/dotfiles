@@ -1,6 +1,6 @@
 { config, lib, ... }: {
   options = {
-    wezterm = {
+    tmux = {
       enable = lib.mkOption {
         type = lib.types.bool;
         description = "Enable module";
@@ -11,11 +11,10 @@
 
   config = {
     programs = {
-      wezterm = {
-        enable = config.wezterm.enable;
-        enableBashIntegration = true;
-        enableZshIntegration = true;
-        extraConfig = builtins.readFile ../../home/wezterm/wezterm.lua;
+      tmux = {
+        # https://nix-community.github.io/home-manager/options.xhtml#opt-programs.tmux.enable
+        enable = config.tmux.enable;
+        extraConfig = builtins.readFile ./tmux/tmux.conf;
       };
     };
   };

@@ -1,18 +1,18 @@
 { config, pkgs, lib, ... }:
 with lib;
 let
-  cfg = config.local.dock;
+  cfg = config.macosDock;
   inherit (pkgs) stdenv dockutil;
 in
 {
   options = {
-    local.dock.enable = mkOption {
+    macosDock.enable = mkOption {
       description = "Enable dock";
       default = stdenv.isDarwin;
       example = false;
     };
 
-    local.dock.entries = mkOption
+    macosDock.entries = mkOption
       {
         description = "Entries on the Dock";
         type = with types; listOf (submodule {

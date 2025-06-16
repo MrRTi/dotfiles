@@ -21,7 +21,7 @@
       };
     };
     home = lib.mkIf config.neovim.enable {
-      file.".config/nvim".source = ../../home/nvim;
+      file.".config/nvim".source = ./nvim;
     };
   };
 }

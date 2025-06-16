@@ -18,6 +18,9 @@ in
   homebrew.onActivation.cleanup = "zap";
   homebrew.onActivation.autoUpdate = true;
   homebrew.onActivation.upgrade = true;
+  homebrew.extraConfig = ''
+    # This file is managed be nix-darwin
+  '';
 
   homebrew.brews = [
     "mas"
@@ -44,9 +47,5 @@ in
     "Yubico Authenticator" = 1497506650;
   };
 
-  homebrew.extraConfig = ''
-    # This file is managed be nix-darwin
-  '';
-
-  safari-qol.enable = true;
+    safari-qol.enable = true;
 }

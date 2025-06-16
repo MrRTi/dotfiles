@@ -14,7 +14,7 @@
       packages = with pkgs; [kanata];
       file.macbook-iso-keyboard = {
         target = ".config/kanata/macbook-iso-keyboard.kbd";
-        text = builtins.readFile ../../home/kanata/macbook-iso-keyboard.kbd;
+        text = builtins.readFile ./kanata/macbook-iso-keyboard.kbd;
         executable = false;
       };
     };

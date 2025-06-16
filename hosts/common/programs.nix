@@ -1,3 +1,4 @@
+# Added to home manager users username import
 { pkgs, ... }:
 let
   # Import all nix files from ./programs

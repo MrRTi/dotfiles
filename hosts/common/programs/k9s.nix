@@ -22,7 +22,7 @@
           };
         };
         skins = {
-          transparent = ../../home/k9s/skins/transparent.yaml; 
+          transparent = ./k9s/skins/transparent.yaml; 
         };
         views = {
           views = {

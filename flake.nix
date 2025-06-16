@@ -25,7 +25,7 @@
       inherit (self) outputs;
 
       stateVersion = "25.05";
-      libx = import ./lib { inherit inputs outputs stateVersion self; };
+      libx = import ./lib/setup-darwin.nix { inherit inputs outputs stateVersion self; };
     in
       {
       # Build darwin flake using:
@@ -33,10 +33,7 @@
       # To apply updated configuration
       # sudo darwin-rebuild switch --flake .#rti-air-m4
       darwinConfigurations = {
-        "rti-air-m4" = libx.mkDarwin { hostname = "rti-air-m4"; };
+        "sirius" = libx.mkDarwin { hostname = "sirius"; };
       };
-
-      # Expose the package set, including overlays, for convenience.
-      # darwinPackages = self.darwinConfigurations."rti-air-m4".pkgs;
     };
 }
