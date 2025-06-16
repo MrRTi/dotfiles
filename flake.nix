@@ -81,7 +81,6 @@
         };
         modules = [
           configuration
-          ./modules/macos-system.nix
           ./home.nix
         ];
       };

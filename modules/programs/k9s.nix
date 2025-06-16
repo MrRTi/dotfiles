@@ -16,7 +16,13 @@
         settings = {
           k9s = {
             refreshRate = 2;
+            ui = {
+              skin = "transparent";
+            };
           };
+        };
+        skins = {
+          transparent = ../../home/k9s/skins/transparent.yaml; 
         };
         views = {
           views = {

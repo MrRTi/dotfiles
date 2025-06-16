@@ -1,7 +1,5 @@
-{ config, pkgs, inputs, ... }:
+{ pkgs, inputs, username, ... }:
 let
-
-  username = "rti";
   name = "Artem Musalitin";
 
   homeDirectory = "/Users/${username}";
@@ -18,6 +16,7 @@ in {
   imports = [
     inputs.home-manager.darwinModules.home-manager
     ./modules/homebrew.nix
+    ./modules/macos/system-settings.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -49,7 +48,7 @@ in {
     users.${username} = { pkgs, lib, ... }:  {
       imports = [
         ./modules/programs.nix
-	./modules/dock.nix
+	      ./modules/macos/dock.nix
       ];
 
       home = {
@@ -76,6 +75,7 @@ in {
       git.enable = true;
       git.config = gitConfig;
 
+      vim.enable = false;
       neovim.enable = true;
 
       local = {

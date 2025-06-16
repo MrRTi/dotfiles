@@ -12,7 +12,7 @@
   config = lib.mkIf config.notes-switcher.enable {
     home.file.notes-sessionizer = {
       target = ".local/bin/notes-switcher";
-      text = builtins.readFile ../../sources/scripts/notes-switcher;
+      text = builtins.readFile ../../home/bin/notes-switcher;
       executable = true;
     };
   };

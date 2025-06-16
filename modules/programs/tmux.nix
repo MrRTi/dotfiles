@@ -14,7 +14,7 @@
       tmux = {
         # https://nix-community.github.io/home-manager/options.xhtml#opt-programs.tmux.enable
         enable = config.tmux.enable;
-        extraConfig = builtins.readFile ../../sources/config/tmux/tmux.conf;
+        extraConfig = builtins.readFile ../../home/tmux/tmux.conf;
       };
     };
   };

@@ -1,12 +1,5 @@
-{
-  pkgs,
-  config,
-  username,
-  inputs,
-  ...
-}:
+{ username, inputs, ... }:
 let
-  # Import all nix files from ./programs
   homebrewImports = builtins.map
     (file: ./homebrew + "/${file}")
     (builtins.filter

@@ -12,7 +12,7 @@
   config = lib.mkIf config.tmux-sessionizer.enable {
     home.file.tmux-sessionizer = {
       target = ".local/bin/tmux-sessionizer";
-      text = builtins.readFile ../../sources/scripts/tmux-sessionizer;
+      text = builtins.readFile ../../home/bin/tmux-sessionizer;
       executable = true;
     };
   };

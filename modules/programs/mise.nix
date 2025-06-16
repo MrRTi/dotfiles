@@ -1,15 +1,6 @@
 { config, lib, ... }:
 let
   defaultGems = ''
-solargraph
-solargraph-rails
-rubocop
-rubocop-rails
-rubocop-rspec
-rubocop-performance
-rubocop-factory_bot
-rubocop-rspec_rails
-reek
   '';
 in
 {

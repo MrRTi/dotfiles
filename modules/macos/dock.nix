@@ -44,8 +44,8 @@ in
         (entry: "${entryURI entry.path}\n")
         cfg.entries;
       createEntries = concatMapStrings
-        (entry: "${dockutil}/bin/dockutil --no-restart --add '${entry.path}' --section ${entry.section} ${entry.options}\n")
-        cfg.entries;
+      (entry: "${dockutil}/bin/dockutil --no-restart --add '${entry.path}' --section ${entry.section} ${entry.options}\n")
+      cfg.entries;
     in
     {
       home.activation = {

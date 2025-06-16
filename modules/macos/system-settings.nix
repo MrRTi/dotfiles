@@ -1,4 +1,4 @@
-{ pkgs, config, username, ... }: {
+{ username, ... }: {
   system.primaryUser = username;
   system.defaults.ActivityMonitor.IconType = 6;
 
@@ -11,21 +11,7 @@
   system.defaults.dock.show-recents = false;
   system.defaults.dock.showhidden = true;
   system.defaults.dock.tilesize = 36;
-
-  # system.defaults.dock.persistent-apps = [
-  #   "/Applications/ChatGPT.app/"
-  #   "/System/Applications/Calendar.app"
-  #   "/System/Applications/Reminders.app"
-  #   "/System/Applications/Notes.app"
-  #   "/System/Applications/Mail.app"
-  #   # "/Applications/Proton Mail.app"
-  #   "${pkgs.wezterm}/Applications/WezTerm.app"
-  #   # "/Applications/Arc.app"
-  #   "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app"
-  #   "/Applications/Telegram.app"
-  #   "/Applications/LOOP.app"
-  # ];
-
+ 
   # Hot corner action for bottom left corner.
   # https://daiderd.com/nix-darwin/manual/index.html#opt-system.defaults.dock.wvous-bl-corner
   system.defaults.dock.wvous-bl-corner = 14;
@@ -64,26 +50,4 @@
 
   system.keyboard.enableKeyMapping = true;
   system.keyboard.remapCapsLockToControl = true;
-
-  # Add apps to Spotlight
-  # system.activationScripts.applications.text = let
-  #   env = pkgs.buildEnv {
-  #     name = "system-applications";
-  #     paths = config.environment.systemPackages;
-  #     pathsToLink = "/Applications";
-  #   };
-  # in
-  #   pkgs.lib.mkForce ''
-  #     # Set up applications.
-  #     echo "setting up /Applications..." >&2
-  #     rm -rf /Applications/Nix\ Apps
-  #     mkdir -p /Applications/Nix\ Apps
-  #     find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
-  #     while read -r src; do
-  #       app_name=$(basename "$src")
-  #       echo "copying $src" >&2
-  #       ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/Nix Apps/$app_name"
-  #     done
-  #   '';
-
 }

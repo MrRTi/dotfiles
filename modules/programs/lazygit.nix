@@ -1,6 +1,6 @@
 { config, lib, ... }: {
   options = {
-    wezterm = {
+    lazygit = {
       enable = lib.mkOption {
         type = lib.types.bool;
         description = "Enable module";
@@ -11,11 +11,8 @@
 
   config = {
     programs = {
-      wezterm = {
-        enable = config.wezterm.enable;
-        enableBashIntegration = true;
-        enableZshIntegration = true;
-        extraConfig = builtins.readFile ../../home/wezterm/wezterm.lua;
+      lazygit = {
+        enable = config.lazygit.enable;
       };
     };
   };
