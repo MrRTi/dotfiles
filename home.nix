@@ -46,9 +46,10 @@ in {
     useGlobalPkgs = true;
     useUserPackages = true;
 
-    users.${username} = { pkgs, ... }:  {
+    users.${username} = { pkgs, lib, ... }:  {
       imports = [
         ./modules/programs.nix
+	./modules/dock.nix
       ];
 
       home = {
@@ -77,6 +78,25 @@ in {
 
       # TODO: configure neovim
       neovim.enable = false;
+
+      local = {
+        dock.enable = true;
+        dock.entries = [
+          { path = "${pkgs.chatgpt}/Applications/ChatGPT.app"; }
+          { path = "/System/Applications/Calendar.app"; }
+          { path = "/System/Applications/Reminders.app"; }
+          { path = "/System/Applications/Notes.app"; }
+          { path = "/System/Applications/Mail.app"; }
+          # { path = "/Applications/Proton Mail.app"; }
+          { path = "${pkgs.wezterm}/Applications/WezTerm.app"; }
+          # { path = "/Applications/Arc.app"; }
+          { path = "/System/Volumes/Preboot/Cryptexes/App/System/Applications/Safari.app"; }
+          { path = "/Applications/Telegram.app"; }
+          { path = "/Applications/LOOP.app"; }
+        ];
+      };
     };
   };
+
+
 }

@@ -26,7 +26,7 @@
           b = "bundle";
           be = "bundle exec";
 
-          c = "clear && printf '\e[999B'";
+          c = "clear && printf '\\e[999B'";
 
           d = "docker";
           dc = "docker compose";

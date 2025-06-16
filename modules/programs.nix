@@ -22,6 +22,7 @@ in
     chatgpt
     cmake
     dive
+    dockutil
     du-dust
     gcc
     glow
