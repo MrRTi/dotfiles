@@ -2,15 +2,14 @@
   system.primaryUser = username;
   system.defaults.ActivityMonitor.IconType = 6;
 
-  system.defaults.dock.autohide = false;
+  system.defaults.dock.autohide = true;
   system.defaults.dock.largesize = 16;
-  system.defaults.dock.magnification = false;
   system.defaults.dock.mineffect = "scale";
   system.defaults.dock.mru-spaces = false;
-  system.defaults.dock.orientation = "right";
+  system.defaults.dock.orientation = "bottom";
   system.defaults.dock.show-recents = false;
   system.defaults.dock.showhidden = true;
-  system.defaults.dock.tilesize = 36;
+  system.defaults.dock.tilesize = 48;
  
   # Hot corner action for bottom left corner.
   # https://daiderd.com/nix-darwin/manual/index.html#opt-system.defaults.dock.wvous-bl-corner
