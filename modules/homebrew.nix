@@ -1,4 +1,4 @@
-{ username, inputs, ... }:
+{ ... }:
 let
   homebrewImports = builtins.map
     (file: ./homebrew + "/${file}")
@@ -10,29 +10,7 @@ let
     );
 in
 {
-  imports = [
-    inputs.nix-homebrew.darwinModules.nix-homebrew
-  ] ++ homebrewImports;
-
-  # Install Homebrew under the default prefix
-  nix-homebrew.enable = true;
-  nix-homebrew.autoMigrate = true;
-
-  # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
-  nix-homebrew.enableRosetta = true;
-
-  # User owning the Homebrew prefix
-  nix-homebrew.user = username;
-
-  # Optional: Enable fully-declarative tap management
-  # With mutableTaps disabled, taps can no longer be added imperatively with `brew tap`.
-  nix-homebrew.mutableTaps = false;
-  # Optional: Declarative tap management
-  nix-homebrew.taps = {
-    "homebrew/homebrew-bundle" = inputs.homebrew-bundle;
-    "homebrew/homebrew-cask" = inputs.homebrew-cask;
-    "homebrew/homebrew-core" = inputs.homebrew-core;
-  };
+  imports = [] ++ homebrewImports;
 
   # Manage homebrew
   homebrew.enable = true;
