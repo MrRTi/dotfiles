@@ -7,7 +7,7 @@
   system.defaults.dock.magnification = false;
   system.defaults.dock.mineffect = "scale";
   system.defaults.dock.mru-spaces = false;
-  system.defaults.dock.orientation = "left";
+  system.defaults.dock.orientation = "right";
   system.defaults.dock.show-recents = false;
   system.defaults.dock.showhidden = true;
   system.defaults.dock.tilesize = 36;

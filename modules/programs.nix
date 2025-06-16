@@ -19,6 +19,7 @@ in
   home.packages = with pkgs; [
     _1password-cli
     ack
+    chatgpt
     cmake
     dive
     du-dust
@@ -27,11 +28,11 @@ in
     gnumake
     hledger
     jnv
-    kitty
     marksman
     neovim
     nerd-fonts.jetbrains-mono
     obsidian
+    raycast
     tree-sitter
     wget
     yandex-cloud
