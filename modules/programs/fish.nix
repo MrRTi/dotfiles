@@ -17,13 +17,16 @@
 
         functions = {
           # https://fishshell.com/docs/current/cmds/function.html
+	  fish_greeting = ''
+            echo "󰈺  Welcome back, captain!"
+	  '';
         };
 
         shellAbbrs = {
           b = "bundle";
           be = "bundle exec";
 
-          c = "clear";
+          c = "clear && printf '\e[999B'";
 
           d = "docker";
           dc = "docker compose";
@@ -44,6 +47,11 @@
         };
 
         interactiveShellInit = ''
+if status is-interactive; and not set -q skip_init_command
+    printf '\e[999B'
+    set skip_init_command 1
+end
+
 fish_vi_key_bindings
 
 set -g fish_cursor_default block

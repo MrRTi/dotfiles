@@ -184,6 +184,11 @@
             end
             cd "$worktree_path"
           '';
+	  git_worktree_remove = ''
+	    git worktree list | awk '{print $1}' | fzf --multi | while read line
+		git worktree remove --force $line
+	    end
+	  '';
         };
         shellAbbrs = {
           g = "git";
@@ -206,6 +211,7 @@
         shellAliases = {
           gwaq = "git_worktree_add_query";
           gws = "git_worktree_switch";
+	  gwrfzf = "git_worktree_remove";
         };
       };
     };
