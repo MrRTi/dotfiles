@@ -14,7 +14,14 @@
       neovim = {
         # https://nix-community.github.io/home-manager/options.xhtml#opt-programs.neovim.enable
         enable = config.neovim.enable;
+	defaultEditor = true;
+        viAlias = true;
+        vimAlias = true;
+        vimdiffAlias = true;
       };
+    };
+    home = lib.mkIf config.neovim.enable {
+      file.".config/nvim".source = ../../home/nvim;
     };
   };
 }

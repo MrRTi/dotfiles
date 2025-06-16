@@ -59,7 +59,7 @@ in {
         homeDirectory = "/Users/${username}";
 
         sessionVariables = {
-          EDITOR = "vim";
+          # EDITOR = "vim";
         };
 
         shellAliases = {
@@ -76,8 +76,7 @@ in {
       git.enable = true;
       git.config = gitConfig;
 
-      # TODO: configure neovim
-      neovim.enable = false;
+      neovim.enable = true;
 
       local = {
         dock.enable = true;

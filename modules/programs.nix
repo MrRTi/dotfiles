@@ -19,18 +19,18 @@ in
   home.packages = with pkgs; [
     _1password-cli
     ack
+    binutils
+    cargo
     chatgpt
     cmake
     dive
     dockutil
     du-dust
-    gcc
     glow
     gnumake
     hledger
     jnv
     marksman
-    neovim
     nerd-fonts.jetbrains-mono
     obsidian
     raycast
