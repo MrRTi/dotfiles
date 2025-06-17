@@ -30,6 +30,7 @@ in
     "bruno"
     "logseq"
     "orbstack"
+    "jordanbaird-ice"
   ];
 
   homebrew.masApps = {
