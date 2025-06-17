@@ -22,6 +22,7 @@ in
     _1password-cli
     _1password-gui
     ack
+    arc-browser
     binutils
     cargo
     chatgpt
