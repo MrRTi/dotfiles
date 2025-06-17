@@ -32,5 +32,10 @@
     home = "/Users/${username}";
     isHidden = false;
     shell = pkgs.fish;
+    # NOTE: https://github.com/LnL7/nix-darwin/issues/811#issuecomment-2227415650Add commentMore actions
+    uid = 501;
   };
+
+  # NOTE: https://github.com/LnL7/nix-darwin/issues/811#issuecomment-2227415650Add commentMore actions
+  users.knownUsers = [ username ];
 }

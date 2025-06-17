@@ -1,10 +1,16 @@
-# Install nix-darwin
-install:
-  curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+# Install nix, nix-darwin, apply configuration
+install hostname="":
+  original_user=$USER
 
-# Build system to enable darwin
-build-system hostname="":
-  nix --extra-experimental-features 'nix-command flakes' build ".#darwinConfigurations.{{hostname}}.system"
+  curl -fsSL https://install.determinate.systems/nix | sh -s -- install
+  . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+
+  sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake .
+
+  sudo mkdir -pv /usr/local/Homebrew/Library
+  sudo chown $original_user /usr/local/Homebrew/Library
+
+  sudo ./result/sw/bin/darwin-rebuild switch --flake ".#{{hostname}}"
 
 # Build new revision for flake configuration
 build hostname="":
