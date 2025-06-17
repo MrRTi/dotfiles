@@ -1,37 +1,22 @@
 # Dotfiles
 
-This repos is setup for use with MacOS and nix-darwin.
-
-Previous version of dotfiles using stow is here -> [v.2.1.1](https://github.com/MrRTi/dotfiles/tree/v.2.1.1)
-
-## Requirements
-
-- [Nix package manager](https://nixos.org/download/)
+This repos is setup system configuration and dotfiles using nix / nixpkgs / nix-darwin.
 
 ## Usage
 
-1. Install nix.
+### To install nix, nix-darwin, home manager, etc
 
-Source: [Nix package manager](https://nixos.org/download/)
+See `install` in `justfile`. 
 
-```sh
-sh <(curl -L https://nixos.org/nix/install)
-```
-2. Install nix-darwin and apply configuration.
+Or run `just install hostname` if just is installed.
+Hostname is optional. By default current system hostname will be used
 
-Source: [Install nix-darwin (with flake)](https://github.com/LnL7/nix-darwin?tab=readme-ov-file#step-2-installing-nix-darwin)
+### To apply configuration after change
 
-```sh
-nix run nix-darwin -- switch --flake path_to_folder#air
-```
+See `switch` in `justfile`. 
 
-3. To apply `air` configuration after change.
-
-Source: [Apply flale](https://github.com/LnL7/nix-darwin?tab=readme-ov-file#step-3-using-nix-darwin)
-
-```sh
-darwin-rebuild switch --flake path_to_folder#air
-```
+Or run `just switch hostname` if just is installed.
+Hostname is optional. By default current system hostname will be used
 
 ## Possible issues
 
@@ -39,4 +24,17 @@ darwin-rebuild switch --flake path_to_folder#air
 
 ```sh
 for u in $(sudo dscl . -list /Users | grep _nixbld); do sudo dscl . -delete "/Users/$u"; done
+```
+### curl error: Problem with the SSL CA cert (path? access rights?)
+
+```sh
+sudo rm /etc/ssl/certs/ca-certificates.crt
+sudo ln -s /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
+```
+
+### /usr/local/Homebrew/Library not exists
+
+```sh
+sudo mkdir -pv /usr/local/Homebrew/Library
+sudo chown USERNAME /usr/local/Homebrew/Library
 ```
