@@ -10,6 +10,8 @@
   system.defaults.dock.show-recents = false;
   system.defaults.dock.showhidden = true;
   system.defaults.dock.tilesize = 48;
+  system.defaults.dock.autohide-delay = 0.1;
+  system.defaults.dock.autohide-time-modifier = 0.1;
  
   # Hot corner action for bottom left corner.
   # https://daiderd.com/nix-darwin/manual/index.html#opt-system.defaults.dock.wvous-bl-corner
@@ -33,9 +35,15 @@
   system.defaults.finder.CreateDesktop = false;
   system.defaults.finder.FXEnableExtensionChangeWarning = false;
   system.defaults.finder.FXPreferredViewStyle = "Nlsv";
+  system.defaults.finder._FXShowPosixPathInTitle = true;
   system.defaults.finder.QuitMenuItem = true;
   system.defaults.finder.ShowPathbar = true;
   system.defaults.finder.ShowStatusBar = true;
+
+  system.defaults.finder.ShowExternalHardDrivesOnDesktop = false;
+  system.defaults.finder.ShowHardDrivesOnDesktop = false;
+  system.defaults.finder.ShowMountedServersOnDesktop = false;
+  system.defaults.finder.ShowRemovableMediaOnDesktop = false;
 
   system.defaults.loginwindow.GuestEnabled = false;
 
@@ -49,4 +57,13 @@
 
   system.keyboard.enableKeyMapping = true;
   system.keyboard.remapCapsLockToControl = true;
+  system.defaults.hitoolbox.AppleFnUsageType = "Show Emoji & Symbols";
+
+  system.defaults.iCal."first day of week" = "Monday";
+  system.defaults.iCal."TimeZone support enabled" = true;
+
+  system.defaults.menuExtraClock.FlashDateSeparators = true;
+  system.defaults.menuExtraClock.Show24Hour = true;
+  system.defaults.menuExtraClock.ShowAMPM = false;
+  system.defaults.menuExtraClock.ShowDate = 1;
 }
