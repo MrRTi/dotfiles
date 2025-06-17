@@ -34,6 +34,7 @@
       # sudo darwin-rebuild switch --flake .#rti-air-m4
       darwinConfigurations = {
         "sirius" = libx.mkDarwin { hostname = "sirius"; };
+        "vega" = libx.mkDarwin { hostname = "vega"; };
       };
     };
 }
