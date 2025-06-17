@@ -2,6 +2,7 @@
 { pkgs, ... }:
 let
   # Import all nix files from ./programs
+  # https://nix-community.github.io/home-manager/options.xhtml
   programsImports = builtins.map
     (file: ./programs + "/${file}")
     (builtins.filter
