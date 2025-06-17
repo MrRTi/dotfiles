@@ -32,6 +32,7 @@ in
     gnumake
     hledger
     jnv
+    just
     marksman
     nerd-fonts.jetbrains-mono
     obsidian
