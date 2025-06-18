@@ -28,6 +28,7 @@ in
               show_env = true;
               show_tools = true;
             };
+            idiomatic_version_file_enable_tools = ["ruby"];
           };
         };
       };

@@ -19,8 +19,6 @@ in
   fonts.fontconfig.enable = true;
 
   home.packages = with pkgs; [
-    _1password-cli
-    _1password-gui
     ack
     arc-browser
     binutils
