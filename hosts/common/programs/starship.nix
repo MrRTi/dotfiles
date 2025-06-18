@@ -34,6 +34,8 @@
             "$git_commit"
             "$git_state"
             "$git_status"
+            "$docker_context"
+            "$ruby"
             "$line_break"
             "$shell"
             "$character"
@@ -62,10 +64,18 @@
           character = {
             success_symbol = "[>](bold green)";
             error_symbol = "[x](red)";
-            vimcmd_symbol = "[N](green)";
-            vimcmd_replace_one_symbol = "[R](purple)";
-            vimcmd_replace_symbol = "[R](purple)";
-            vimcmd_visual_symbol = "[V](yellow)";
+            vimcmd_symbol = "[N](blue)";
+            vimcmd_replace_one_symbol = "[R](red)";
+            vimcmd_replace_symbol = "[R](red)";
+            vimcmd_visual_symbol = "[V](purple)";
+          };
+
+          docker_context= {
+            symbol = "󰡨 ";
+          };
+
+          ruby = {
+            symbol = " ";
           };
         };
       };
