@@ -5,10 +5,7 @@
     ./darwin/dock/desktop.nix
   ];
 
-  fish.enable = true;
-  git.enable = true;
-  neovim.enable = true;
-  starship.enable = true;
+  mise.enable = false;
   vim.enable = false;
   zsh.enable = false;
 }
