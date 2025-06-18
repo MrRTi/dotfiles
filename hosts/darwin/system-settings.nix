@@ -36,7 +36,6 @@
 
       NSGlobalDomain = {
         AppleICUForce24HourTime = true;
-        AppleInterfaceStyle = "Dark";
         AppleInterfaceStyleSwitchesAutomatically = true;
         AppleMeasurementUnits = "Centimeters";
         AppleTemperatureUnit = "Celsius";
