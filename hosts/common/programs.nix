@@ -31,6 +31,7 @@ in
     glow
     gnumake
     hledger
+    httpie
     jnv
     just
     marksman
