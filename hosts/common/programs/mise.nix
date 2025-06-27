@@ -1,6 +1,8 @@
 { config, lib, ... }:
 let
   defaultGems = ''
+    ruby-lsp
+    ruby-lsp-rails
   '';
 in
 {
