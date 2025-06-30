@@ -10,6 +10,7 @@
     { path = "/System/Applications/Calendar.app"; }
     { path = "/System/Applications/Reminders.app"; }
     { path = "/System/Applications/Notes.app"; }
+    { path = "${pkgs.obsidian}/Applications/Obsidian.app"; }
     { path = "/System/Applications/Mail.app"; }
     { path = "${pkgs.wezterm}/Applications/WezTerm.app"; }
     { path = "${pkgs.arc-browser}/Applications/Arc.app"; }
