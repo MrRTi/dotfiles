@@ -19,3 +19,6 @@ build hostname="":
 # Switch to flake configuration
 switch hostname="":
   sudo darwin-rebuild switch --flake ".#{{hostname}}"
+
+cleanup:
+  nix-collect-garbage --delete-older-than 5d
