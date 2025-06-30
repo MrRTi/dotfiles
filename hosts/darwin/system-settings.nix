@@ -40,7 +40,7 @@
         AppleMeasurementUnits = "Centimeters";
         AppleTemperatureUnit = "Celsius";
         AppleMetricUnits = 1;
-        AppleShowScrollBars = "Always";
+        AppleShowScrollBars = "Automatic";
         KeyRepeat = 2;
         _HIHideMenuBar = false;
       };

@@ -46,6 +46,7 @@ in
     "Telegram" = 747648890;
     "Wireguard" = 1451685025;
     "Yubico Authenticator" = 1497506650;
+    "Little Snitch Mini" = 1629008763;
   };
 
     safari-qol.enable = true;
