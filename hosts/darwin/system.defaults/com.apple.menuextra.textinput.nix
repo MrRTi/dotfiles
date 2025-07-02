@@ -1,0 +1,3 @@
+{
+  ModeNameVisible = false;
+}

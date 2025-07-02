@@ -2,113 +2,37 @@
   system = {
     primaryUser = username;
 
-    defaults = {
-      ActivityMonitor = {
-        IconType = 6;
-      };
-
-      controlcenter = {
-        BatteryShowPercentage = false;
-      };
-
-      dock = {
-        autohide = true;
-        autohide-delay = 0.1;
-        autohide-time-modifier = 0.1;
-        tilesize = 48;
-        largesize = 16;
-        orientation = "bottom";
-        mineffect = "scale";
-        mru-spaces = false;
-        show-recents = false;
-        showhidden = true;
-
-        # Hot corner action for bottom left corner.
-        # https://daiderd.com/nix-darwin/manual/index.html#opt-defaults.dock.wvous-bl-corner
-        wvous-bl-corner = 14;
-        # Hot corner action for bottom right corner.
-        wvous-br-corner = 1;
-        # Hot corner action for top left corner.
-        wvous-tl-corner = 1;
-        # Hot corner action for top right corner.
-        wvous-tr-corner = 1;
-      };
-
-      NSGlobalDomain = {
-        AppleICUForce24HourTime = true;
-        AppleInterfaceStyleSwitchesAutomatically = true;
-        AppleMeasurementUnits = "Centimeters";
-        AppleTemperatureUnit = "Celsius";
-        AppleMetricUnits = 1;
-        AppleShowScrollBars = "Automatic";
-        KeyRepeat = 2;
-        _HIHideMenuBar = false;
-      };
-
-      finder = {
-        AppleShowAllFiles = true;
-        AppleShowAllExtensions = true;
-        CreateDesktop = false;
-        FXEnableExtensionChangeWarning = false;
-        FXPreferredViewStyle = "Nlsv";
-        _FXShowPosixPathInTitle = true;
-        QuitMenuItem = true;
-        ShowPathbar = true;
-        ShowStatusBar = true;
-
-        ShowExternalHardDrivesOnDesktop = false;
-        ShowHardDrivesOnDesktop = false;
-        ShowMountedServersOnDesktop = false;
-        ShowRemovableMediaOnDesktop = false;
-      };
-
-      loginwindow = {
-        GuestEnabled = false;
-      };
-
-      screensaver = {
-        askForPassword = true;
-        askForPasswordDelay = 1;
-      };
-
-      SoftwareUpdate = {
-        AutomaticallyInstallMacOSUpdates = true;
-      };
-
-      trackpad = {
-        ActuationStrength = 0;
-        Clicking = true;
-        TrackpadRightClick = true;
-        FirstClickThreshold = 1;
-        SecondClickThreshold = 1;
-      };
-
-      hitoolbox = {
-        AppleFnUsageType = "Show Emoji & Symbols";
-      };
-
-      iCal = {
-        "first day of week" = "Monday";
-        "TimeZone support enabled" = true;
-      };
-
-      menuExtraClock = {
-        FlashDateSeparators = true;
-        Show24Hour = true;
-        ShowAMPM = false;
-        ShowDate = 1;
-        ShowDayOfWeek = true;
-      };
-
-      WindowManager = {
-        EnableTiledWindowMargins = true;
-        EnableTilingByEdgeDrag = true;
-      };
-    };
-
     keyboard = {
       enableKeyMapping = true;
       remapCapsLockToControl = true;
+    };
+
+    defaults = {
+      # Use https://github.com/joshryandavis/defaults2nix for system settings dump
+      CustomUserPreferences = {
+        NSGlobalDomain = import ./system.defaults/NSGlobalDomain.nix;
+        "app.loshadki.OpenIn.v4" = import ./system.defaults/app.loshadki.OpenIn.v4.nix;
+        "com.amethyst.Amethyst" = import ./system.defaults/com.amethyst.Amethyst.nix;
+        "com.apple.ActivityMonitor" = import ./system.defaults/com.apple.ActivityMonitor.nix;
+        "com.apple.AppleMultitouchMouse" = import ./system.defaults/com.apple.AppleMultitouchMouse.nix;
+        "com.apple.AppleMultitouchTrackpad" = import ./system.defaults/com.apple.AppleMultitouchTrackpad.nix;
+        "com.apple.HIToolbox" = import ./system.defaults/com.apple.HIToolbox.nix;
+        "com.apple.SoftwareUpdate" = import ./system.defaults/com.apple.SoftwareUpdate.nix;
+        "com.apple.WindowManager" = import ./system.defaults/com.apple.WindowManager.nix;
+        "com.apple.controlcenter" = import ./system.defaults/com.apple.controlcenter.nix;
+        "com.apple.controlstrip" = import ./system.defaults/com.apple.controlstrip.nix;
+        "com.apple.dock" = import ./system.defaults/com.apple.dock.nix;
+        "com.apple.finder" = import ./system.defaults/com.apple.finder.nix;
+        "com.apple.iCal" = import ./system.defaults/com.apple.iCal.nix;
+        "com.apple.loginwindow" = import ./system.defaults/com.apple.loginwindow.nix;
+        "com.apple.menuextra.clock" = import ./system.defaults/com.apple.menuextra.clock.nix;
+        "com.apple.menuextra.textinput" = import ./system.defaults/com.apple.menuextra.textinput.nix;
+        "com.apple.screensaver" = import ./system.defaults/com.apple.screensaver.nix;
+        "com.apple.systempreferences" = import ./system.defaults/com.apple.systempreferences.nix;
+        "com.fiplab.owly" = import ./system.defaults/com.fiplab.owly.nix;
+        "com.raycast.macos" = import ./system.defaults/com.raycast.macos.nix;
+        "io.tailscale.ipn.macos" = import ./system.defaults/io.tailscale.ipn.macos.nix;
+      };
     };
   };
 }

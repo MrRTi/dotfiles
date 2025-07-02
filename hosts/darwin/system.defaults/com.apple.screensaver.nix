@@ -1,0 +1,4 @@
+{
+  askForPassword = true;
+  askForPasswordDelay = true;
+}

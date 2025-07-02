@@ -1,0 +1,3 @@
+{
+  TailscaleStartOnLogin = true;
+}
