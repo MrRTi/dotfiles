@@ -13,7 +13,6 @@
   # home-manager.sharedModules = [ inputs.nixvim.homeManagerModules.nixvim ];
   home-manager.users.${username} = {
     imports = [ 
-      ../../hosts/${hostname}.nix
       (import ../home.nix { inherit username stateVersion; })
       ../home/${hostname}.nix
       (import ../users/${username}.nix { inherit username; })

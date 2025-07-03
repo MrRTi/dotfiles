@@ -28,6 +28,7 @@
       }
 
       ../modules/darwin.nix
+      ../hosts/${hostname}.nix
     ];
   };
 }

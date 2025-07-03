@@ -1,5 +1,7 @@
 { username, stateVersion }: { pkgs, inputs, ... }:
 {
+  fonts.fontconfig.enable = true;
+
   home = {
     stateVersion = stateVersion;
 

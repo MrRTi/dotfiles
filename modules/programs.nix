@@ -16,8 +16,6 @@ in
   imports = [
   ] ++ programsImports;
 
-  fonts.fontconfig.enable = true;
-
   home.packages = with pkgs; [
     ack
     arc-browser
@@ -31,6 +29,7 @@ in
     glow
     gnumake
     hledger
+    hledger-web
     httpie
     jnv
     just
