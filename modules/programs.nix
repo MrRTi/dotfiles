@@ -29,7 +29,6 @@ in
     glow
     gnumake
     hledger
-    hledger-web
     httpie
     jnv
     just
