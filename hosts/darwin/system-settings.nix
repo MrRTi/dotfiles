@@ -30,6 +30,7 @@
         "com.apple.screensaver" = import ./system.defaults/com.apple.screensaver.nix;
         "com.apple.systempreferences" = import ./system.defaults/com.apple.systempreferences.nix;
         "com.fiplab.owly" = import ./system.defaults/com.fiplab.owly.nix;
+        "com.jordanbaird.Ice.nix" = import ./system.defaults/com.jordanbaird.Ice.nix;
         "com.raycast.macos" = import ./system.defaults/com.raycast.macos.nix;
         "io.tailscale.ipn.macos" = import ./system.defaults/io.tailscale.ipn.macos.nix;
       };
