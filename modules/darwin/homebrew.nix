@@ -49,5 +49,5 @@ in
     "Little Snitch Mini" = 1629008763;
   };
 
-    safari-qol.enable = true;
+  safari-qol.enable = true;
 }

@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   imports = [
-    ../dock.nix
+    ../../../darwin/dock.nix
   ];
 
   macosDock.enable = true;

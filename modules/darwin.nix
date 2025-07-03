@@ -2,9 +2,10 @@
 { pkgs, inputs, username, ... }:
 {
   imports = [
-    inputs.home-manager.darwinModules.home-manager
-    ./homebrew.nix
-    ./system-settings.nix
+    ./darwin/home-manager.nix
+    ./darwin/system.defaults.nix
+    ./darwin/nix-homebrew.nix
+    ./darwin/homebrew.nix
   ];
 
   nix.package = pkgs.nix;

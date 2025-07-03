@@ -27,12 +27,7 @@
         ];
       }
 
-      inputs.home-manager.darwinModules.home-manager 
-      inputs.nix-homebrew.darwinModules.nix-homebrew 
-
-      ../hosts/darwin/common.nix
-      ../hosts/darwin/nix-homebrew.nix
-      ../hosts/darwin/home-manager.nix
+      ../modules/darwin.nix
     ];
   };
 }

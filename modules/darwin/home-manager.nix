@@ -1,6 +1,11 @@
 { inputs, username, hostname, stateVersion, ... }:
 {
+  imports = [
+    inputs.home-manager.darwinModules.home-manager
+  ];
+
   networking.hostName = hostname;
+
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.backupFileExtension = "backup";
@@ -8,8 +13,10 @@
   # home-manager.sharedModules = [ inputs.nixvim.homeManagerModules.nixvim ];
   home-manager.users.${username} = {
     imports = [ 
-      ../${hostname}.nix
-      (import ../../users/${username}.nix { inherit username stateVersion; })
+      ../../hosts/${hostname}.nix
+      (import ../home.nix { inherit username stateVersion; })
+      ../home/${hostname}.nix
+      (import ../users/${username}.nix { inherit username; })
     ];
   };
 }

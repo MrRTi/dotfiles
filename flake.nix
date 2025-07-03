@@ -25,7 +25,7 @@
       inherit (self) outputs;
 
       stateVersion = "25.05";
-      libx = import ./lib/setup-darwin.nix { inherit inputs outputs stateVersion self; };
+      libx = import ./lib/make-darwin.nix { inherit inputs outputs stateVersion self; };
     in
       {
       # Build darwin flake using:

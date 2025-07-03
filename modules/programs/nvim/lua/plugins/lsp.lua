@@ -8,5 +8,6 @@ return {
         linters = { "standard" },
       },
     })
+    lspconfig.pyright.setup({})
   end,
 }
