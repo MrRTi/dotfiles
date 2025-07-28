@@ -135,27 +135,56 @@
 
       fish = lib.mkIf (config.git.enable && config.fish.enable) {
         functions = {
-          git_worktree_root = "git worktree list | grep 'bare' | awk '{print $1}'";
-          git_branch_query = ''
-            git branch | \
-            sed -r "s:\+ (.*):\1 [exists]:" | \
-            awk '{printf "\x1b[34m%s\x1b[0m\t\x1b[31m%s\x1b[0m\n", $1, $2}' | \
-            fzf --print-query --ansi --query "$argv[1]" | \
-            tail -n 1
+          # NOTE: Deprecated. Only for bare repos
+          git_worktree_bare = "git worktree list | grep 'bare' | awk '{print $1}'";
+          git_clone_with_worktree = ''
+            git clone "$argv[1]" "$argv[2]"/main
+            cd "$argv[2]"
+            touch .envrc
+            direnv allow
+            cd main
           '';
-          git_worktree_add_query = ''
-            set branch (git_branch_query "$argv[1]")
-            echo "Creating worktree at $branch"
-            if git branch | grep -q $branch
-              git worktree add (git_worktree_root)/$branch $branch
-            else
-              git worktree add (git_worktree_root)/$branch -b $branch
+          git_worktree_base = ''
+            set git_dir (git rev-parse --show-toplevel 2>/dev/null) || if test -d ./main/.git
+              # NOTE: to be able to use git command in root project folder
+              cd main
+              set git_dir (git rev-parse --show-toplevel)
             end
 
-            cd (git_worktree_root)/$branch
+            if test -d "$git_dir/.git"
+              dirname $git_dir
+              return 0
+            end
+
+            if test -f "$git_dir/.git"
+              cat .git | awk '{print $2}' | string split '/.git/worktrees' | head -n1 | xargs dirname
+              return 0
+            end
+
+            echo "Not git repository"
+            return 1
+          '';
+          git_branch_query = ''
+            git branch | \
+            sed -r "s:\* (.*):\1 [exists]:" | \
+            awk '{printf "\x1b[34m%s\x1b[0m\t\x1b[31m%s\x1b[0m\n", $1, $2}' | \
+            fzf --print-query --ansi --query "$argv[1]" | \
+            tail -n 1 | \
+            awk '{print $1}'
+          '';
+          git_worktree_add_query = ''
+            set branch (string trim (git_branch_query "$argv[1]"))
+            echo "Creating worktree at '$branch'"
+            if git branch | grep -q $branch
+              git worktree add (git_worktree_base)/$branch $branch
+            else
+              git worktree add (git_worktree_base)/$branch -b $branch
+            end
+
+            cd (git_worktree_base)/$branch
           '';
           git_worktree_select = ''
-            set root (git_worktree_root)
+            set root (git_worktree_base)
 
             git worktree list |
             awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' |
@@ -184,11 +213,11 @@
             end
             cd "$worktree_path"
           '';
-	  git_worktree_remove = ''
-	    git worktree list | awk '{print $1}' | fzf --multi | while read line
-		git worktree remove --force $line
-	    end
-	  '';
+          git_worktree_remove = ''
+            git worktree list | awk '{print $1}' | fzf --multi | while read line
+            git worktree remove --force $line
+            end
+            '';
         };
         shellAbbrs = {
           g = "git";
@@ -211,7 +240,7 @@
         shellAliases = {
           gwaq = "git_worktree_add_query";
           gws = "git_worktree_switch";
-	  gwrfzf = "git_worktree_remove";
+          gwrfzf = "git_worktree_remove";
         };
       };
     };
