@@ -28,6 +28,7 @@ in
     du-dust
     glow
     gnumake
+    gnupg
     hledger
     httpie
     jnv
