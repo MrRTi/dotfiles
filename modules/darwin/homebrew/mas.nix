@@ -10,6 +10,8 @@
     "Pages" = 409201541;
     "System color picker" = 1545870783;
 
+    "Shadowrocket" = 932747118;
+
     "Endel" = 1346247457;
     "Flow" = 1423210932;
     "Owly" = 882812218;
