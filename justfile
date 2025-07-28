@@ -22,3 +22,7 @@ switch hostname="":
 
 cleanup:
   nix-collect-garbage --delete-older-than 5d
+
+build-git-includes argstring:
+  # NOTE: input format "folder1:email1;folder2:email2"
+  ./git.sh "{{argstring}}"

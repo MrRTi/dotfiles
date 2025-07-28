@@ -6,40 +6,6 @@
         description = "Enable module";
         default = true;
       };
-      config = {
-        name = lib.mkOption {
-          type = lib.types.str;
-          description = "Name for git";
-        };
-        personal = {
-          folderPath = lib.mkOption {
-            type = lib.types.path;
-            description = "Path to personal directory";
-          };
-          email = lib.mkOption {
-            type = lib.types.str;
-            description = "Email for personal git";
-          };
-          signingKey = lib.mkOption {
-            type = lib.types.str;
-            description = "Public key for signing";
-          };
-        };
-        work = {
-          folderPath = lib.mkOption {
-            type = lib.types.path;
-            description = "Path to work directory";
-          };
-          email = lib.mkOption {
-            type = lib.types.str;
-            description = "Email for work git";
-          };
-          signingKey = lib.mkOption {
-            type = lib.types.str;
-            description = "Public key for signing";
-          };
-        };
-      };
     };
   };
 
@@ -48,26 +14,16 @@
       git = {
         enable = config.git.enable;
 
-        userName = config.git.config.name;
-        userEmail = config.git.config.personal.email;
-
         extraConfig = {
           commit.gpgSign = true;
           gpg.format = "ssh";
           gpg.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
-          user.signingKey = config.git.config.personal.signingKey;
         };
 
         includes = [
-        #   {
-        #     contents = {
-        #       user = {
-        #         email = config.git.config.work.email;
-        #         signingKey = config.git.config.work.signingKey;
-        #       };
-        #     };
-        #     condition = "gitdir:${config.git.config.work.folderPath}/**";
-        #   }
+          {
+            path = "~/.git-includes.gitconfig";
+          }
         ];
 
         ignores = [
@@ -141,6 +97,7 @@
             git clone "$argv[1]" "$argv[2]"/main
             cd "$argv[2]"
             touch .envrc
+            echo "source_up" >> .envrc
             direnv allow
             cd main
           '';
