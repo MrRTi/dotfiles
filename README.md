@@ -18,6 +18,22 @@ See `switch` in `justfile`.
 Or run `just switch hostname` if just is installed.
 Hostname is optional. By default current system hostname will be used
 
+### Configuring git using includeIf
+
+```bash
+just build-git-includes "personal-folder-name:personal@email.com;work-folder-name:work@work-email.com"
+```
+
+This command will create `.gitconfig` files in `~/Developer/personal-folder-name` and `~/Developer/work-folder-name` with different emails and signing keys. These files will be included using `includeIf` into `~/.git-includes.gitconfig`
+
+Public keys for signing will be read from ssh-agent using provided email e.g.
+
+```bash
+$ ssh-add -L
+ssh-ed25519 AA*******P personal@email.com # will be used as signing key for personal-folder-name
+ssh-ed25519 AA*******d work@work-email.com # will be used as signing key for work-folder-name
+```
+
 ## Possible issues
 
 ### Remove nix users
