@@ -1,4 +1,4 @@
-{ config, lib, ... }: {
+{ config, lib, inputs, pkgs, ... }: {
   options = {
     neovim = {
       enable = lib.mkOption {
@@ -14,8 +14,10 @@
       neovim = {
         # https://nix-community.github.io/home-manager/options.xhtml#opt-programs.neovim.enable
         enable = config.neovim.enable;
-	defaultEditor = true;
-        viAlias = true;
+		package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
+		defaultEditor = true;
+		withRuby = false;
+		viAlias = true;
         vimAlias = true;
         vimdiffAlias = true;
       };
