@@ -100,4 +100,3 @@ require('tokyonight').setup({
 })
 vim.cmd("colorscheme tokyonight")
 vim.cmd(":hi statusline guibg=NONE")
-
