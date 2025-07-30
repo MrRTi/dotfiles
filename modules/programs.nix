@@ -41,5 +41,9 @@ in
     wget
     yandex-cloud
     yq
+
+	nixd
+	pyright
+	yaml-language-server
   ];
 }

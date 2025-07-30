@@ -30,7 +30,10 @@ vim.pack.add({
 vim.lsp.enable({
 	"lua_ls",
 	"ruby_lsp",
-	"pyright"
+	"pyright",
+	"yamlls",
+	"nixd",
+	"marksman",
 })
 
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -49,7 +52,10 @@ require('nvim-treesitter.configs').setup({
 		"lua",
 		"ruby",
 		"python",
-		"javascript"
+		"javascript",
+		"yaml",
+		"json",
+		"nix"
 	},
 	highlight = { enable = true }
 })
@@ -100,11 +106,11 @@ vim.keymap.set('n', '<leader>gg', ":LazyGit<CR>")
 
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
-vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename, opts)
-vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-vim.keymap.set('n', '<leader>do', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename)
+vim.keymap.set('n', 'gr', vim.lsp.buf.references)
+vim.keymap.set('n', '<leader>do', vim.diagnostic.open_float)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 
 require('tokyonight').setup({
 	transparent = true,
@@ -115,3 +121,17 @@ require('tokyonight').setup({
 })
 vim.cmd("colorscheme tokyonight")
 vim.cmd(":hi statusline guibg=NONE")
+
+-- Function to toggle background color
+vim.o.background = "dark"
+
+function ToggleBackground()
+	local current_bg = vim.o.background
+	if current_bg == "dark" then
+		vim.o.background = "light"
+	else
+		vim.o.background = "dark"
+	end
+end
+
+vim.keymap.set('n', '<leader>tt', ToggleBackground)
