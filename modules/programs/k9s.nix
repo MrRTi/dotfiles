@@ -17,7 +17,7 @@
           k9s = {
             refreshRate = 2;
             ui = {
-              skin = "transparent";
+		      skin = "transparent";
             };
           };
         };

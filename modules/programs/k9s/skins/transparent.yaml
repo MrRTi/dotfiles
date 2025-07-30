@@ -10,27 +10,37 @@ k9s:
   prompt:
     bgColor: default
   info:
-    sectionColor: default
+    sectionColor: default # top-left values
   dialog:
     bgColor: default
     labelFgColor: default
-    fieldFgColor: default
+    fieldFgColor: blue
   frame:
     crumbs:
       bgColor: default
     title:
+      fgColor: default
       bgColor: default
       counterColor: default
     menu:
       fgColor: default
+    status:
+      newColor: default
+      highlightColor: cyan
+  # Specific views styles
   views:
-    charts:
-      bgColor: default
+    # TableView attributes.
     table:
       bgColor: default
+      markColor: red
       header:
         fgColor: default
         bgColor: default
+        sorterColor: orange
+      cursorFgColor: darkorange
+      cursorBgColor: default
+    charts:
+      bgColor: default
     xray:
       bgColor: default
     logs:

@@ -13,16 +13,17 @@ vim.o.langmap =
 "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz"
 
 vim.pack.add({
-	-- { src = "https://github.com/vague2k/vague.nvim" },
 	{ src = "https://github.com/folke/tokyonight.nvim" },
 	{ src = "https://github.com/stevearc/oil.nvim" },
-	{ src = "https://github.com/echasnovski/mini.pick" },
+	{ src = "https://github.com/ibhagwan/fzf-lua" },
 	{ src = "https://github.com/echasnovski/mini.ai" },
 	{ src = "https://github.com/echasnovski/mini.splitjoin" },
 	{ src = "https://github.com/echasnovski/mini.extra" },
+	{ src = "https://github.com/echasnovski/mini.completion" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
 	{ src = "https://github.com/christoomey/vim-tmux-navigator" },
+	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
 	{ src = "https://github.com/kdheepak/lazygit.nvim" },
 })
 
@@ -41,7 +42,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
 	end,
 })
 
-vim.cmd("set completeopt+=noselect")
+-- vim.cmd("set completeopt+=noselect")
 
 require('nvim-treesitter.configs').setup({
 	ensure_installed = {
@@ -53,14 +54,30 @@ require('nvim-treesitter.configs').setup({
 	highlight = { enable = true }
 })
 
-require('mini.pick').setup()
 require('mini.ai').setup()
 require('mini.splitjoin').setup()
+require('mini.extra').setup()
+require('mini.completion').setup()
 
 require('oil').setup({
 	view_options = {
 		show_hidden = true,
 	}
+})
+
+require('fzf-lua').setup({
+	winopts = {
+		preview = {
+			layout = "vertical",
+		}
+	},
+	keymap = {
+		fzf = {
+			true,
+			-- Use <c-q> to select all items and add them to the quickfix list
+			["ctrl-q"] = "select-all+accept",
+		},
+	},
 })
 
 vim.keymap.set('n', '<leader>cf', ':update<CR> :source<CR>')
@@ -70,11 +87,11 @@ vim.keymap.set('n', '<leader>q', ':quit<CR>')
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y<CR>')
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>d', '"+d<CR>')
 
-vim.keymap.set('n', '<leader> ', ":Pick buffers<CR>")
-vim.keymap.set('n', '<leader>sf', ":Pick files<CR>")
-vim.keymap.set('n', '<leader>sg', ":Pick grep_live<CR>")
-vim.keymap.set('n', '<leader>sh', ":Pick help<CR>")
-vim.keymap.set('n', '<leader>sr', ":Pick resume<CR>")
+vim.keymap.set('n', '<leader><space>', ":FzfLua global<CR>")
+vim.keymap.set('n', '<leader>sf', ":FzfLua files<CR>")
+vim.keymap.set('n', '<leader>sg', ":FzfLua live_grep<CR>")
+vim.keymap.set('n', '<leader>sh', ":FzfLua helptags<CR>")
+vim.keymap.set('n', '<leader>sr', ":FzfLua resume<CR>")
 vim.keymap.set('n', '<leader>e', ":Oil<CR>")
 vim.keymap.set('n', '<leader>fp', '<cmd>let @+ = expand("%")<CR>', { desc = "Copy file path to clipboard" })
 vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
@@ -89,8 +106,6 @@ vim.keymap.set('n', '<leader>do', vim.diagnostic.open_float, opts)
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
 
--- require "vague".setup({ transparent = true })
--- vim.cmd("colorscheme vague")
 require('tokyonight').setup({
 	transparent = true,
 	styles = {
