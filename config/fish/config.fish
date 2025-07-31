@@ -76,3 +76,7 @@ status is-interactive; and begin
 
     direnv hook fish | source
 end
+
+# brew related
+set -gx LDFLAGS "-L/opt/homebrew/opt/libpq/lib"
+set -gx CPPFLAGS "-I/opt/homebrew/opt/libpq/include"
