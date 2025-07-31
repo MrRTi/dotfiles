@@ -19,10 +19,10 @@ for line in $parts; do
 	mkdir -pv "$path"
 	touch "$gitconfig_path"
 
-	echo -e "[includeIf \"gitdir:$path/**\"]\n  path = $gitconfig_path" >>"$HOME/.git-includes.gitconfig"
-	git config --file $gitconfig_path user.email "$email"
+	echo -e "[includeIf \"gitdir:$path/**\"]\n  path = \"$gitconfig_path\"" >>"$HOME/.git-includes.gitconfig"
+	git config --file "$gitconfig_path" user.email "$email"
 	key=$(ssh-add -L | grep "$email" | head -n 1)
-	git config --file $gitconfig_path user.signingkey "$key"
+	git config --file "$gitconfig_path" user.signingkey "$key"
 
 	echo "Set git config values for repos at $path"
 	echo -e "\t- email=$email"

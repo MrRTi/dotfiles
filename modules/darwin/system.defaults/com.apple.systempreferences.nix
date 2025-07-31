@@ -1,3 +1,0 @@
-{
-  ThirdPartyCount = true;
-}

@@ -1,3 +1,0 @@
-{
-  AutomaticallyInstallMacOSUpdates = true;
-}
