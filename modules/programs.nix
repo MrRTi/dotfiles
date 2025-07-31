@@ -33,17 +33,18 @@ in
     httpie
     jnv
     just
-    marksman
     nerd-fonts.jetbrains-mono
     obsidian
     raycast
     tree-sitter
+    trivy
     wget
     yandex-cloud
     yq
 
-	nixd
-	pyright
-	yaml-language-server
+    marksman
+    nixd
+    pyright
+    yaml-language-server
   ];
 }
