@@ -31,11 +31,13 @@
             "$hostname"
             "$directory"
             "$git_branch"
+            "$custom"
             "$git_commit"
             "$git_state"
             "$git_status"
             "$docker_context"
             "$ruby"
+            "$python"
             "$line_break"
             "$shell"
             "$character"
@@ -70,12 +72,22 @@
             vimcmd_visual_symbol = "[V](purple)";
           };
 
-          docker_context= {
+          docker_context = {
             symbol = "󰡨 ";
           };
 
           ruby = {
             symbol = " ";
+          };
+
+          custom.git_base = {
+            command = "git_repo_name";
+            require_repo = true;
+            when = true;
+            description = "Show git repository base folder. Helpful when using worktrees and shorten pwd";
+            style = "bold blue";
+            symbol = " ";
+            format = "at [$symbol($output)]($style) ";
           };
         };
       };

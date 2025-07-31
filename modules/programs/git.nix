@@ -91,6 +91,7 @@
 
       fish = lib.mkIf (config.git.enable && config.fish.enable) {
         functions = {
+          git_repo_name = "basename -s .git (git config --get remote.origin.url)";
           # NOTE: Deprecated. Only for bare repos
           git_worktree_bare = "git worktree list | grep 'bare' | awk '{print $1}'";
           git_clone_with_worktree = ''
