@@ -3,11 +3,44 @@ vim.o.relativenumber = false
 vim.o.signcolumn = "yes"
 vim.o.termguicolors = true
 vim.o.wrap = false
-vim.o.tabstop = 4
 vim.o.swapfile = false
 vim.g.mapleader = " "
 vim.o.winborder = "rounded"
 vim.o.clipboard = "unnamedplus"
+
+local indent_settings = {
+  python     = { ts = 4, sw = 4, sts = 4, et = true },
+  go         = { ts = 8, sw = 8, sts = 0, et = false }, -- tabs, no expand
+  dockerfile = { ts = 4, sw = 4, sts = 4, et = true },
+  ["*"]      = { ts = 2, sw = 2, sts = 2, et = true },  -- default: 2 spaces
+}
+
+-- Set specific filetypes
+for ft, opts in pairs(indent_settings) do
+  if ft ~= "*" then
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = ft,
+      callback = function()
+        vim.bo.tabstop     = opts.ts
+        vim.bo.shiftwidth  = opts.sw
+        vim.bo.softtabstop = opts.sts
+        vim.bo.expandtab   = opts.et
+      end,
+    })
+  end
+end
+
+-- Fallback for all other filetypes
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "*",
+  callback = function()
+    local opts = indent_settings["*"]
+    vim.bo.tabstop     = opts.ts
+    vim.bo.shiftwidth  = opts.sw
+    vim.bo.softtabstop = opts.sts
+    vim.bo.expandtab   = opts.et
+  end,
+})
 
 vim.o.langmap =
 "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz"
