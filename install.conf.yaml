@@ -1,0 +1,33 @@
+- plugins:
+    - wren/dotbot-brew
+
+- brewfile:
+    - brew/Brewfile
+
+- defaults:
+    link:
+      create: true
+      relink: true
+
+- link:
+    ~/.config/:
+      glob: true
+      path: config/**
+    ~/.local/bin:
+      glob: true
+      path: bin/**
+      relink: true
+
+- create:
+    ~/Developer/personal:
+    ~/.ssh:
+      mode: 0700
+
+- clean:
+    ~/:
+      force: true
+    ~/.config:
+      recursive: true
+
+- shell:
+  - [git submodule update --init --recursive, Installing submodules]

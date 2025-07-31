@@ -1,0 +1,75 @@
+[alias]
+	cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop\\|main' | xargs -n 1 -r git branch -d"
+	current-branch = "rev-parse --abbrev-ref HEAD"
+	log-pretty = "log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+
+[color]
+	ui = true
+
+[commit]
+	gpgSign = true
+
+[core]
+	autocrlf = "input"
+	editor = "nvim"
+	pager = "delta"
+
+[credential]
+	helper = "helper = cache --timeout=3600\n            "
+
+[delta]
+	features = "side-by-side line-numbers decorations"
+	line-numbers = true
+	navigate = true
+	side-by-side = true
+	whitespace-error-style = "22 reverse"
+
+[delta "decorations"]
+	commit-decoration-style = "bold yellow box ul"
+	file-style = "bold yellow ul"
+	hunk-header-decoration-style = "cyan box"
+
+[diff]
+	colorMoved = "default"
+
+[filter "lfs"]
+	clean = "git-lfs clean -- %f"
+	process = "git-lfs filter-process"
+	required = true
+	smudge = "git-lfs smudge -- %f"
+
+[gpg]
+	format = "ssh"
+
+[gpg "ssh"]
+	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+[help]
+	autocorrect = 1
+
+[init]
+	defaultBranch = "main"
+
+[interactive]
+	diffFilter = "delta --color-only"
+
+[interractive]
+	diffFilter = "delta --color-only"
+
+[maintenance]
+
+
+[merge]
+	conflictstyle = "diff3"
+
+[pull]
+	rebase = true
+
+[push]
+	default = "current"
+
+[rebase]
+	autoStash = true
+
+[include]
+	path = "~/.config/git/includes.gitconfig"

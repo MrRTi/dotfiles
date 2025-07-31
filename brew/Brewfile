@@ -1,0 +1,23 @@
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/core"
+brew "mas"
+cask "bruno"
+cask "logseq"
+cask "orbstack"
+mas "1Password for Safari", id: 1569813296
+mas "Color Picker", id: 1545870783
+mas "Flow", id: 1423210932
+mas "Keynote", id: 409183694
+mas "LanguageTool", id: 1534275760
+mas "Little Snitch Mini", id: 1629008763
+mas "Noir", id: 1592917505
+mas "Numbers", id: 409203825
+mas "OpenIn", id: 1643649331
+mas "Owly", id: 882812218
+mas "Pages", id: 409201541
+mas "Surfingkeys", id: 1609752330
+mas "Tailscale", id: 1475387142
+mas "Telegram", id: 747648890
+mas "Wipr", id: 1662217862
+mas "Yubico Authenticator", id: 1497506650

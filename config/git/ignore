@@ -1,0 +1,8 @@
+.DS_Store
+.envrc
+shell.nix
+#*#
+.#*
+*~
+.mise.toml
+*.swp

@@ -1,0 +1,15 @@
+host: 127.0.0.1
+port: 4444
+layers:
+  base:
+    label:
+      text: BASE
+  symbols:
+    label:
+      text: SYM
+  numbers:
+    label:
+      text: NUM
+  cmd:
+    label:
+      text: CMD
