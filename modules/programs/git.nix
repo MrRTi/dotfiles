@@ -51,6 +51,7 @@
         aliases = {
           cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop\\|main' | xargs -n 1 -r git branch -d";
           log-pretty = "log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'";
+          current-branch = "rev-parse --abbrev-ref HEAD";
         };
 
         delta = {
@@ -185,7 +186,9 @@
           gco = "git checkout";
           gd = "git diff";
           glol = "git log-pretty";
-          gpu = "git push -u origin (git rev-parse --abbrev-ref HEAD)";
+          gpu = "git push -u origin (git current-branch)";
+          gres = "git reset --hard origin/(git current-branch)";
+          gpf = "git push --force origin (git current-branch)";
           grup = "git remote update";
           gs = "git status";
           gw = "git worktree";
