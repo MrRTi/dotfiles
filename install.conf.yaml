@@ -1,9 +1,3 @@
-- plugins:
-    - wren/dotbot-brew
-
-- brewfile:
-    - brew/Brewfile
-
 - defaults:
     link:
       create: true
