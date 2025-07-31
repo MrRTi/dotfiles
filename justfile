@@ -4,7 +4,7 @@ install: install-brew
 
 # install brew using curl
 install-brew:
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  type brew 2>/dev/null 1>&2 || /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # setup git config files per folder in ~/Developer input format "folder1:email1;folder2:email2"
 build-git-includes ARGS:
