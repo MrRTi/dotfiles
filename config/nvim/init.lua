@@ -34,7 +34,7 @@ end
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "*",
   callback = function()
-    local opts = indent_settings["*"]
+    local opts         = indent_settings["*"]
     vim.bo.tabstop     = opts.ts
     vim.bo.shiftwidth  = opts.sw
     vim.bo.softtabstop = opts.sts
@@ -46,49 +46,49 @@ vim.o.langmap =
 "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz"
 
 vim.pack.add({
-	{ src = "https://github.com/folke/tokyonight.nvim" },
-	{ src = "https://github.com/stevearc/oil.nvim" },
-	{ src = "https://github.com/ibhagwan/fzf-lua" },
-	{ src = "https://github.com/echasnovski/mini.ai" },
-	{ src = "https://github.com/echasnovski/mini.splitjoin" },
-	{ src = "https://github.com/echasnovski/mini.extra" },
-	{ src = "https://github.com/echasnovski/mini.completion" },
-	{ src = "https://github.com/nvim-treesitter/nvim-treesitter" },
-	{ src = "https://github.com/neovim/nvim-lspconfig" },
-	{ src = "https://github.com/christoomey/vim-tmux-navigator" },
-	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
-	{ src = "https://github.com/kdheepak/lazygit.nvim" },
+  { src = "https://github.com/folke/tokyonight.nvim" },
+  { src = "https://github.com/stevearc/oil.nvim" },
+  { src = "https://github.com/ibhagwan/fzf-lua" },
+  { src = "https://github.com/echasnovski/mini.ai" },
+  { src = "https://github.com/echasnovski/mini.splitjoin" },
+  { src = "https://github.com/echasnovski/mini.extra" },
+  { src = "https://github.com/echasnovski/mini.completion" },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+  { src = "https://github.com/neovim/nvim-lspconfig" },
+  { src = "https://github.com/christoomey/vim-tmux-navigator" },
+  { src = "https://github.com/lewis6991/gitsigns.nvim" },
+  { src = "https://github.com/kdheepak/lazygit.nvim" },
 })
 
 vim.lsp.enable({
-	"lua_ls",
-	"ruby_lsp",
-	"pyright",
-	"yamlls",
-	"marksman",
+  "lua_ls",
+  "ruby_lsp",
+  "pyright",
+  "yamlls",
+  "marksman",
 })
 
 vim.api.nvim_create_autocmd('LspAttach', {
-	callback = function(ev)
-		local client = vim.lsp.get_client_by_id(ev.data.client_id)
-		if client:supports_method('textDocument/completion') then
-			vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
-		end
-	end,
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client:supports_method('textDocument/completion') then
+      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+    end
+  end,
 })
 
 -- vim.cmd("set completeopt+=noselect")
 
 require('nvim-treesitter.configs').setup({
-	ensure_installed = {
-		"lua",
-		"ruby",
-		"python",
-		"javascript",
-		"yaml",
-		"json",
-	},
-	highlight = { enable = true }
+  ensure_installed = {
+    "lua",
+    "ruby",
+    "python",
+    "javascript",
+    "yaml",
+    "json",
+  },
+  highlight = { enable = true }
 })
 
 require('mini.ai').setup()
@@ -97,24 +97,24 @@ require('mini.extra').setup()
 require('mini.completion').setup()
 
 require('oil').setup({
-	view_options = {
-		show_hidden = true,
-	}
+  view_options = {
+    show_hidden = true,
+  }
 })
 
 require('fzf-lua').setup({
-	winopts = {
-		preview = {
-			layout = "vertical",
-		}
-	},
-	keymap = {
-		fzf = {
-			true,
-			-- Use <c-q> to select all items and add them to the quickfix list
-			["ctrl-q"] = "select-all+accept",
-		},
-	},
+  winopts = {
+    preview = {
+      layout = "vertical",
+    }
+  },
+  keymap = {
+    fzf = {
+      true,
+      -- Use <c-q> to select all items and add them to the quickfix list
+      ["ctrl-q"] = "select-all+accept",
+    },
+  },
 })
 
 vim.keymap.set('n', '<leader>cf', ':update<CR> :source<CR>')
@@ -144,11 +144,11 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
 
 require('tokyonight').setup({
-	transparent = true,
-	styles = {
-		sidebars = "transparent",
-		floats = "transparent",
-	},
+  transparent = true,
+  styles = {
+    sidebars = "transparent",
+    floats = "transparent",
+  },
 })
 vim.cmd("colorscheme tokyonight")
 vim.cmd(":hi statusline guibg=NONE")
@@ -157,12 +157,12 @@ vim.cmd(":hi statusline guibg=NONE")
 vim.o.background = "dark"
 
 function ToggleBackground()
-	local current_bg = vim.o.background
-	if current_bg == "dark" then
-		vim.o.background = "light"
-	else
-		vim.o.background = "dark"
-	end
+  local current_bg = vim.o.background
+  if current_bg == "dark" then
+    vim.o.background = "light"
+  else
+    vim.o.background = "dark"
+  end
 end
 
 vim.keymap.set('n', '<leader>tt', ToggleBackground)
