@@ -1,46 +1,34 @@
 vim.o.number = true
 vim.o.relativenumber = false
 vim.o.signcolumn = "yes"
+
 vim.o.termguicolors = true
 vim.o.wrap = false
 vim.o.swapfile = false
+
 vim.g.mapleader = " "
 vim.o.winborder = "rounded"
 vim.o.clipboard = "unnamedplus"
 
 local indent_settings = {
-  python     = { ts = 4, sw = 4, sts = 4, et = true },
-  go         = { ts = 8, sw = 8, sts = 0, et = false }, -- tabs, no expand
-  dockerfile = { ts = 4, sw = 4, sts = 4, et = true },
-  ["*"]      = { ts = 2, sw = 2, sts = 2, et = true },  -- default: 2 spaces
+  python     = { tabstop = 4, shiftwidth = 4, softtabstop = 4, expandtab = true },
+  go         = { tabstop = 8, shiftwidth = 8, softtabstop = 0, expandtab = false }, -- tabs, no expand
+  make       = { tabstop = 8, shiftwidth = 8, softtabstop = 0, expandtab = false }, -- tabs, no expand
+  dockerfile = { tabstop = 4, shiftwidth = 4, softtabstop = 4, expandtab = true },
+  ["*"]      = { tabstop = 2, shiftwidth = 2, softtabstop = 2, expandtab = true },  -- default: 2 spaces
 }
 
--- Set specific filetypes
-for ft, opts in pairs(indent_settings) do
-  if ft ~= "*" then
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = ft,
-      callback = function()
-        vim.bo.tabstop     = opts.ts
-        vim.bo.shiftwidth  = opts.sw
-        vim.bo.softtabstop = opts.sts
-        vim.bo.expandtab   = opts.et
-      end,
-    })
-  end
+for fyletype, opts in pairs(indent_settings) do
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = fyletype,
+    callback = function()
+      vim.bo.tabstop     = opts.tabstop
+      vim.bo.shiftwidth  = opts.shiftwidth
+      vim.bo.softtabstop = opts.softtabstop
+      vim.bo.expandtab   = opts.expandtab
+    end,
+  })
 end
-
--- Fallback for all other filetypes
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "*",
-  callback = function()
-    local opts         = indent_settings["*"]
-    vim.bo.tabstop     = opts.ts
-    vim.bo.shiftwidth  = opts.sw
-    vim.bo.softtabstop = opts.sts
-    vim.bo.expandtab   = opts.et
-  end,
-})
 
 vim.o.langmap =
 "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz"
@@ -66,6 +54,16 @@ vim.lsp.enable({
   "pyright",
   "yamlls",
   "marksman",
+})
+
+vim.lsp.config("lua_ls", {
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { "vim" }
+      }
+    }
+  }
 })
 
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -117,9 +115,7 @@ require('fzf-lua').setup({
   },
 })
 
-vim.keymap.set('n', '<leader>cf', ':update<CR> :source<CR>')
-vim.keymap.set('n', '<leader>w', ':write<CR')
-vim.keymap.set('n', '<leader>q', ':quit<CR>')
+vim.keymap.set('n', '<leader>bd', ':bdelete<CR>')
 
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y<CR>')
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>d', '"+d<CR>')
@@ -129,29 +125,27 @@ vim.keymap.set('n', '<leader>sf', ":FzfLua files<CR>")
 vim.keymap.set('n', '<leader>sg', ":FzfLua live_grep<CR>")
 vim.keymap.set('n', '<leader>sh', ":FzfLua helptags<CR>")
 vim.keymap.set('n', '<leader>sr', ":FzfLua resume<CR>")
+
 vim.keymap.set('n', '<leader>e', ":Oil<CR>")
+vim.keymap.set('n', '<leader>-', ":Oil<CR>")
+
 vim.keymap.set('n', '<leader>fp', '<cmd>let @+ = expand("%")<CR>', { desc = "Copy file path to clipboard" })
-vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
 
 vim.keymap.set('n', '<leader>gg', ":LazyGit<CR>")
+vim.keymap.set({ 'n', 'v' }, '<leader>gb', ":Gitsigns blame_line<CR>")
+vim.keymap.set({ 'n', 'v' }, '<leader>gp', ":Gitsigns preview_hunk_inline<CR>")
+vim.keymap.set('n', '[h', ":Gitsigns prev_hunk<CR>")
+vim.keymap.set('n', ']h', ":Gitsigns next_hunk<CR>")
 
+vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
+vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename)
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
-vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename)
 vim.keymap.set('n', 'gr', vim.lsp.buf.references)
-vim.keymap.set('n', '<leader>do', vim.diagnostic.open_float)
+
+vim.keymap.set('n', '<leader>do', vim.diagnostic.open_float, { desc = "Open floating diagnostic window" })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
-
-require('tokyonight').setup({
-  transparent = true,
-  styles = {
-    sidebars = "transparent",
-    floats = "transparent",
-  },
-})
-vim.cmd("colorscheme tokyonight")
-vim.cmd(":hi statusline guibg=NONE")
 
 -- Function to toggle background color
 vim.o.background = "dark"
@@ -166,3 +160,13 @@ function ToggleBackground()
 end
 
 vim.keymap.set('n', '<leader>tt', ToggleBackground)
+
+require('tokyonight').setup({
+  transparent = true,
+  styles = {
+    sidebars = "transparent",
+    floats = "transparent",
+  },
+})
+vim.cmd("colorscheme tokyonight")
+vim.cmd(":hi statusline guibg=NONE")
