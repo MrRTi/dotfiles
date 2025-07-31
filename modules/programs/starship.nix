@@ -35,7 +35,6 @@
             "$git_commit"
             "$git_state"
             "$git_status"
-            "$docker_context"
             "$ruby"
             "$python"
             "$line_break"
