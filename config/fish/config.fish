@@ -75,8 +75,6 @@ status is-interactive; and begin
     mise activate fish | source
 
     direnv hook fish | source
-
-    set -x PIP_REQUIRE_VIRTUALENV 1
 end
 
 # brew related
