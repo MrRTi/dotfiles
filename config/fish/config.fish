@@ -75,8 +75,11 @@ status is-interactive; and begin
     mise activate fish | source
 
     direnv hook fish | source
+
+    set -x PIP_REQUIRE_VIRTUALENV 1
 end
 
 # brew related
 set -gx LDFLAGS "-L/opt/homebrew/opt/libpq/lib"
 set -gx CPPFLAGS "-I/opt/homebrew/opt/libpq/include"
+
