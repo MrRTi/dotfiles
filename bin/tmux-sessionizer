@@ -30,6 +30,10 @@ SESSION_PATH=$(__session_path "$1")
 # We will use this conversion to have consistent session names on attach and create
 SESSION_NAME="$(basename "${SESSION_PATH}" | tr . _)"
 
+if [ "${SESSION_NAME}" = "${USER}" ]; then
+    SESSION_NAME="__${SESSION_NAME}"
+fi
+
 if ! tmux has-session -t "${SESSION_NAME}" 2>/dev/null; then
   TMUX='' tmux new -c "${SESSION_PATH}" -s "${SESSION_NAME}" -d
 fi
