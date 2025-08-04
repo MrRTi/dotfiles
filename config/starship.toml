@@ -1,6 +1,21 @@
 add_newline = false
 follow_symlinks = true
-format = "$username$hostname$directory$git_branch$custom$git_commit$git_state$git_status$ruby$python$line_break$shell$character"
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$custom\
+$git_commit\
+$git_state\
+$git_status\
+$direnv\
+$ruby\
+$python\
+$line_break\
+$shell\
+$character\
+"""
 scan_timeout = 30
 
 [character]
@@ -18,7 +33,8 @@ format = "at [$symbol($output)]($style) "
 require_repo = true
 style = "bold blue"
 symbol = " "
-when = true
+when = '''[ -z "$TMUX" ]'''
+
 
 [directory]
 fish_style_pwd_dir_length = 1
@@ -26,6 +42,17 @@ read_only = " "
 repo_root_style = "underline yellow"
 style = "yellow"
 truncation_symbol = ".../"
+
+
+[direnv]
+disabled = false
+allowed_msg = " "
+not_allowed_msg = " "
+denied_msg = " "
+loaded_msg = " "
+unloaded_msg = " "
+symbol = " "
+format = "[$symbol$loaded/$allowed]($style) "
 
 [docker_context]
 symbol = "󰡨 "
