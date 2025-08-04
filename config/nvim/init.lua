@@ -47,6 +47,8 @@ vim.pack.add({
   { src = "https://github.com/lewis6991/gitsigns.nvim" },
   { src = "https://github.com/kdheepak/lazygit.nvim" },
   { src = "https://github.com/stevearc/conform.nvim" },
+  { src = "https://github.com/nvim-lua/plenary.nvim" },
+  { src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
 })
 
 vim.lsp.enable({
@@ -76,7 +78,7 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
--- vim.cmd("set completeopt+=noselect")
+vim.cmd("set completeopt+=noselect")
 
 require('nvim-treesitter.configs').setup({
   ensure_installed = {
@@ -127,9 +129,6 @@ require("conform").setup({
     zsh = { "shfmt" },
     markdown = { "prettier" },
   },
-
-  -- Optional: fallback formatter for unknown filetypes
-  -- formatters_by_ft["*"] = {},
 })
 
 vim.keymap.set('n', '<leader>bd', ':bdelete<CR>')
@@ -166,6 +165,25 @@ vim.keymap.set('n', 'gr', vim.lsp.buf.references)
 vim.keymap.set('n', '<leader>do', vim.diagnostic.open_float, { desc = "Open floating diagnostic window" })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+
+
+local harpoon = require("harpoon")
+harpoon.setup()
+vim.keymap.set("n", "<leader>H", function() harpoon:list():add() end)
+vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+vim.keymap.set("n", "[H", function() harpoon:list():prev() end)
+vim.keymap.set("n", "]H", function() harpoon:list():next() end)
+
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+  pattern = "*",
+  callback = function()
+    vim.highlight.on_yank {
+      higroup = "IncSearch",
+      timeout = 200,
+    }
+  end,
+})
 
 -- Function to toggle background color
 vim.o.background = "dark"
