@@ -46,6 +46,7 @@ vim.pack.add({
   { src = "https://github.com/christoomey/vim-tmux-navigator" },
   { src = "https://github.com/lewis6991/gitsigns.nvim" },
   { src = "https://github.com/kdheepak/lazygit.nvim" },
+  { src = "https://github.com/stevearc/conform.nvim" },
 })
 
 vim.lsp.enable({
@@ -115,6 +116,22 @@ require('fzf-lua').setup({
   },
 })
 
+require("conform").setup({
+  formatters_by_ft = {
+    lua = { "stylua" },
+    python = { "isort", "black" },
+    javascript = { "prettierd", "prettier", stop_after_first = true },
+    typescript = { "prettierd", "prettier", stop_after_first = true },
+    ruby = { "rubocop" },
+    sh = { "shfmt" },
+    zsh = { "shfmt" },
+    markdown = { "prettier" },
+  },
+
+  -- Optional: fallback formatter for unknown filetypes
+  -- formatters_by_ft["*"] = {},
+})
+
 vim.keymap.set('n', '<leader>bd', ':bdelete<CR>')
 
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y<CR>')
@@ -137,7 +154,10 @@ vim.keymap.set({ 'n', 'v' }, '<leader>gp', ":Gitsigns preview_hunk_inline<CR>")
 vim.keymap.set('n', '[h', ":Gitsigns prev_hunk<CR>")
 vim.keymap.set('n', ']h', ":Gitsigns next_hunk<CR>")
 
-vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
+-- vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
+vim.keymap.set({ 'n', 'v' }, '<leader>lf', function()
+  require("conform").format({ async = true, lsp_fallback = true })
+end, { desc = "Format file or selection" })
 vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename)
 vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
