@@ -69,3 +69,6 @@ style = "red"
 
 [ruby]
 symbol = " "
+
+[python]
+symbol = " "
