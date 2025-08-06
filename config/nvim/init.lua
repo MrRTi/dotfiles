@@ -138,6 +138,7 @@ vim.keymap.set({ 'n', 'v', 'x' }, '<leader>d', '"+d<CR>')
 
 vim.keymap.set('n', '<leader><space>', ":FzfLua global<CR>")
 vim.keymap.set('n', '<leader>sf', ":FzfLua files<CR>")
+vim.keymap.set('n', '<leader>sw', ":FzfLua grep_cword<CR>")
 vim.keymap.set('n', '<leader>sg', ":FzfLua live_grep<CR>")
 vim.keymap.set('n', '<leader>sh', ":FzfLua helptags<CR>")
 vim.keymap.set('n', '<leader>sr', ":FzfLua resume<CR>")
