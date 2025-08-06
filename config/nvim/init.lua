@@ -30,8 +30,12 @@ for fyletype, opts in pairs(indent_settings) do
   })
 end
 
+-- Add abbility to use йцукен letters same as qwerty. (symbols like :, $ etc won't work as expected)
 vim.o.langmap =
-"ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;ABCDEFGHIJKLMNOPQRSTUVWXYZ,фисвуапршолдьтщзйкыегмцчня;abcdefghijklmnopqrstuvwxyz"
+    "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;" ..
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ," ..
+    "фисвуапршолдьтщзйкыегмцчня;" ..
+    "abcdefghijklmnopqrstuvwxyz"
 
 vim.pack.add({
   { src = "https://github.com/folke/tokyonight.nvim" },
@@ -48,7 +52,10 @@ vim.pack.add({
   { src = "https://github.com/kdheepak/lazygit.nvim" },
   { src = "https://github.com/stevearc/conform.nvim" },
   { src = "https://github.com/nvim-lua/plenary.nvim" },
-  { src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
+  {
+    src = "https://github.com/ThePrimeagen/harpoon",
+    version = "harpoon2"
+  },
 })
 
 vim.lsp.enable({
@@ -72,7 +79,7 @@ vim.lsp.config("lua_ls", {
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    if client:supports_method('textDocument/completion') then
+    if client and client:supports_method('textDocument/completion') then
       vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
     end
   end,
