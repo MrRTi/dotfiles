@@ -35,7 +35,12 @@ vim.o.langmap =
     "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;" ..
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ," ..
     "фисвуапршолдьтщзйкыегмцчня;" ..
-    "abcdefghijklmnopqrstuvwxyz"
+    "abcdefghijklmnopqrstuvwxyz," ..
+    "х[,Х{,ъ],Ъ}," ..
+    -- "ж;" ; symbol can't be used here
+    "<0436><003a>," ..
+    "Ж:,э',Э\",Ё|," ..
+    "Б<,ю.,Ю>"
 
 vim.pack.add({
   { src = "https://github.com/folke/tokyonight.nvim" },
