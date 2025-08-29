@@ -35,12 +35,7 @@ vim.o.langmap =
     "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;" ..
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ," ..
     "фисвуапршолдьтщзйкыегмцчня;" ..
-    "abcdefghijklmnopqrstuvwxyz," ..
-    "х[,Х{,ъ],Ъ}," ..
-    -- "ж;" ; symbol can't be used here
-    "<0436><003a>," ..
-    "Ж:,э',Э\",Ё|," ..
-    "Б<,ю.,Ю>"
+    "abcdefghijklmnopqrstuvwxyz,"
 
 vim.pack.add({
   { src = "https://github.com/folke/tokyonight.nvim" },
@@ -61,12 +56,14 @@ vim.pack.add({
     src = "https://github.com/ThePrimeagen/harpoon",
     version = "harpoon2"
   },
+  { src = "https://github.com/nvimtools/none-ls.nvim" },
 })
 
 vim.lsp.enable({
   "lua_ls",
   "ruby_lsp",
   "pyright",
+  "ruff",
   "yamlls",
   "marksman",
 })
@@ -91,6 +88,45 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 vim.cmd("set completeopt+=noselect")
+
+
+local null_ls = require("null-ls")
+
+null_ls.setup({
+    sources = {
+        null_ls.builtins.formatting.stylua,
+        null_ls.builtins.completion.spell,
+        -- Python
+        null_ls.builtins.formatting.black,
+        null_ls.builtins.formatting.isort,
+        null_ls.builtins.diagnostics.flake8,
+        -- Ruby
+        null_ls.builtins.formatting.rubocop,
+        null_ls.builtins.diagnostics.rubocop,
+        -- Docker
+        -- null_ls.builtins.formatting.dockerfile_lint,
+        -- JSON
+        null_ls.builtins.formatting.jq,
+        -- YAML
+        null_ls.builtins.formatting.yamlfmt,
+        -- Shell
+        null_ls.builtins.formatting.shfmt,
+        null_ls.builtins.diagnostics.shellcheck,
+    },
+    on_attach = function(client, bufnr)
+        if client.supports_method("textDocument/formatting") then
+            -- Format on save
+            vim.api.nvim_clear_autocmds({ group = 0, buffer = bufnr })
+            vim.api.nvim_create_autocmd("BufWritePre", {
+                group = 0,
+                buffer = bufnr,
+                callback = function()
+                    vim.lsp.buf.format({ bufnr = bufnr })
+                end,
+            })
+        end
+    end,
+})
 
 require('nvim-treesitter.configs').setup({
   ensure_installed = {
