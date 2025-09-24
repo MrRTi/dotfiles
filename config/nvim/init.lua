@@ -52,12 +52,15 @@ vim.pack.add({
   { src = "https://github.com/kdheepak/lazygit.nvim" },
   { src = "https://github.com/stevearc/conform.nvim" },
   { src = "https://github.com/nvim-lua/plenary.nvim" },
+  { src = "https://github.com/folke/todo-comments.nvim" },
   {
     src = "https://github.com/ThePrimeagen/harpoon",
     version = "harpoon2"
   },
   { src = "https://github.com/nvimtools/none-ls.nvim" },
 })
+
+require("todo-comments").setup()
 
 vim.lsp.enable({
   "lua_ls",
@@ -81,7 +84,7 @@ vim.lsp.config("lua_ls", {
 vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(ev)
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    if client and client:supports_method('textDocument/completion') then
+    if client and client.server_capabilities.completionProvider then
       vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
     end
   end,
@@ -93,39 +96,38 @@ vim.cmd("set completeopt+=noselect")
 local null_ls = require("null-ls")
 
 null_ls.setup({
-    sources = {
-        null_ls.builtins.formatting.stylua,
-        null_ls.builtins.completion.spell,
-        -- Python
-        null_ls.builtins.formatting.black,
-        null_ls.builtins.formatting.isort,
-        null_ls.builtins.diagnostics.flake8,
-        -- Ruby
-        null_ls.builtins.formatting.rubocop,
-        null_ls.builtins.diagnostics.rubocop,
-        -- Docker
-        -- null_ls.builtins.formatting.dockerfile_lint,
-        -- JSON
-        null_ls.builtins.formatting.jq,
-        -- YAML
-        null_ls.builtins.formatting.yamlfmt,
-        -- Shell
-        null_ls.builtins.formatting.shfmt,
-        null_ls.builtins.diagnostics.shellcheck,
-    },
-    on_attach = function(client, bufnr)
-        if client.supports_method("textDocument/formatting") then
-            -- Format on save
-            vim.api.nvim_clear_autocmds({ group = 0, buffer = bufnr })
-            vim.api.nvim_create_autocmd("BufWritePre", {
-                group = 0,
-                buffer = bufnr,
-                callback = function()
-                    vim.lsp.buf.format({ bufnr = bufnr })
-                end,
-            })
-        end
-    end,
+  sources = {
+    null_ls.builtins.formatting.stylua,
+    null_ls.builtins.completion.spell,
+    -- Python
+    null_ls.builtins.formatting.black,
+    null_ls.builtins.formatting.isort,
+    null_ls.builtins.diagnostics.flake8,
+    -- Ruby
+    null_ls.builtins.formatting.rubocop,
+    null_ls.builtins.diagnostics.rubocop,
+    -- Docker
+    -- null_ls.builtins.formatting.dockerfile_lint,
+    -- JSON
+    null_ls.builtins.formatting.jq,
+    -- YAML
+    null_ls.builtins.formatting.yamlfmt,
+    -- Shell
+    null_ls.builtins.formatting.shfmt,
+    null_ls.builtins.diagnostics.shellcheck,
+  },
+  on_attach = function(client, bufnr)
+    if client.server_capabilities.documentFormattingProvider then
+      vim.api.nvim_clear_autocmds({ group = augroup_format, buffer = bufnr })
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        group = augroup_format,
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format({ bufnr = bufnr })
+        end,
+      })
+    end
+  end,
 })
 
 require('nvim-treesitter.configs').setup({
