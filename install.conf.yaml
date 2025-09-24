@@ -7,10 +7,13 @@
     ~/.config/:
       glob: true
       path: config/**
+      exclude: [ config/k9s ]
+    ~/Library/Application Support/k9s/:
+      glob: true
+      path: config/k9s/**
     ~/.local/bin:
       glob: true
       path: bin/**
-      relink: true
 
 - create:
     ~/Developer/personal:
