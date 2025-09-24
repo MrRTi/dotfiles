@@ -19,13 +19,25 @@ end
 
 local function scheme_for_appearance(appearance)
   if appearance:find("Dark") then
-    return "Tokyo Night Moon"
+    return {
+      set_environment_variables = {
+        TERM_BG = "dark"
+      },
+      color_scheme = "carbonfox"
+    }
   else
-    return "Tokyo Night Day"
+    return {
+      set_environment_variables = {
+        TERM_BG = "light"
+      },
+      color_scheme = "dayfox"
+    }
   end
 end
 
-config.color_scheme = scheme_for_appearance(get_appearance())
+for k, v in pairs(scheme_for_appearance(get_appearance())) do
+  config[k] = v
+end
 
 local window_decorations = 'RESIZE'
 local enable_tab_bar = false
@@ -40,7 +52,7 @@ config.window_padding = {
   bottom = "10px",
 }
 
-config.window_background_opacity = 0.9
+config.window_background_opacity = 1.0
 config.text_background_opacity = 1.0
 
 config.line_height = 1.1
@@ -75,4 +87,3 @@ config.keys = {
 
 -- and finally, return the configuration to wezterm
 return config
-

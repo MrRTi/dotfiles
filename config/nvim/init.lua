@@ -58,6 +58,7 @@ vim.pack.add({
     version = "harpoon2"
   },
   { src = "https://github.com/nvimtools/none-ls.nvim" },
+  { src = "https://github.com/EdenEast/nightfox.nvim" },
 })
 
 require("todo-comments").setup()
@@ -239,23 +240,39 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 -- Function to toggle background color
 vim.o.background = "dark"
 
-function ToggleBackground()
-  local current_bg = vim.o.background
-  if current_bg == "dark" then
+local function is_dark_local()
+  local handle = io.popen(
+    [[osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode']])
+  if not handle then return false end
+  local result = handle:read("*a")
+  handle:close()
+  result = result:lower():gsub("%s+", "")
+  return result == "true"
+end
+
+_G.is_dark_term = function()
+  return print(is_dark_local())
+end
+
+require('nightfox').setup()
+
+function ToggleAppearence(toggle_to)
+  toggle_to = toggle_to or (vim.o.background == "light" and "dark" or "light")
+  if toggle_to == "light" then
     vim.o.background = "light"
+    vim.cmd("colorscheme dayfox")
   else
     vim.o.background = "dark"
+    vim.cmd("colorscheme carbonfox")
   end
 end
 
-vim.keymap.set('n', '<leader>tt', ToggleBackground)
+if is_dark_local() then
+  ToggleAppearence("dark")
+else
+  ToggleAppearence("light")
+end
 
-require('tokyonight').setup({
-  transparent = true,
-  styles = {
-    sidebars = "transparent",
-    floats = "transparent",
-  },
-})
-vim.cmd("colorscheme tokyonight")
+vim.keymap.set('n', '<leader>tt', ToggleAppearence)
+
 vim.cmd(":hi statusline guibg=NONE")
