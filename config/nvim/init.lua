@@ -62,6 +62,10 @@ vim.pack.add({
 })
 
 require("todo-comments").setup()
+require('mini.ai').setup()
+require('mini.completion').setup()
+require('mini.extra').setup()
+require('mini.splitjoin').setup()
 
 vim.lsp.enable({
   "lua_ls",
@@ -142,11 +146,6 @@ require('nvim-treesitter.configs').setup({
   },
   highlight = { enable = true }
 })
-
-require('mini.ai').setup()
-require('mini.splitjoin').setup()
-require('mini.extra').setup()
-require('mini.completion').setup()
 
 require('oil').setup({
   view_options = {
