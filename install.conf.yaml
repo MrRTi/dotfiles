@@ -25,6 +25,8 @@
       force: true
     ~/.config:
       recursive: true
+    ~/Library/Application Support/k9s/:
+      recursive: true
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
