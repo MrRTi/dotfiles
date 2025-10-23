@@ -69,7 +69,7 @@
 	default = "current"
 
 [rebase]
-	autoStash = true
+	autoStash = false
 
 [include]
 	path = "~/.config/git/includes.gitconfig"
