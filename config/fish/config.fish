@@ -2,7 +2,7 @@ status is-interactive; and begin
     # Abbreviations
     abbr --add -- b bundle
     abbr --add -- be 'bundle exec'
-    abbr --add -- c 'clear && printf '\''\e[999B'\'''
+    abbr --add -- c 'clear'
     abbr --add -- d docker
     abbr --add -- dc 'docker compose'
     abbr --add -- dcr 'docker compose run --rm --use-aliases'
@@ -49,11 +49,6 @@ status is-interactive; and begin
     alias vimdiff 'nvim -d'
 
     fzf --fish | source
-
-    if status is-interactive; and not set -q skip_init_command
-        printf '\e[999B'
-        set skip_init_command 1
-    end
 
     fish_vi_key_bindings
 
