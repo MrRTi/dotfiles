@@ -10,6 +10,9 @@ vim.g.mapleader = " "
 vim.o.winborder = "rounded"
 vim.o.clipboard = "unnamedplus"
 
+vim.opt.scrolloff = 999
+vim.opt.sidescrolloff = 999
+
 local indent_settings = {
   python     = { tabstop = 4, shiftwidth = 4, softtabstop = 4, expandtab = true },
   go         = { tabstop = 8, shiftwidth = 8, softtabstop = 0, expandtab = false }, -- tabs, no expand
@@ -38,7 +41,6 @@ vim.o.langmap =
     "abcdefghijklmnopqrstuvwxyz,"
 
 vim.pack.add({
-  { src = "https://github.com/folke/tokyonight.nvim" },
   { src = "https://github.com/stevearc/oil.nvim" },
   { src = "https://github.com/ibhagwan/fzf-lua" },
   { src = "https://github.com/echasnovski/mini.ai" },
@@ -59,6 +61,13 @@ vim.pack.add({
   },
   { src = "https://github.com/nvimtools/none-ls.nvim" },
   { src = "https://github.com/EdenEast/nightfox.nvim" },
+  { src = "https://github.com/nvim-neotest/neotest" },
+  -- deps
+  { src = "https://github.com/nvim-neotest/nvim-nio" },
+  { src = "https://github.com/antoinemadec/FixCursorHold.nvim" },
+  { src = "https://github.com/olimorris/neotest-rspec" },
+  --
+  { src = "https://github.com/andythigpen/nvim-coverage" },
 })
 
 require("todo-comments").setup()
@@ -66,6 +75,15 @@ require('mini.ai').setup()
 require('mini.completion').setup()
 require('mini.extra').setup()
 require('mini.splitjoin').setup()
+require("coverage").setup({
+  auto_reload = true,
+})
+require("neotest").setup({
+  ...,
+  adapters = {
+    require("neotest-rspec")
+  },
+})
 
 vim.lsp.enable({
   "lua_ls",
