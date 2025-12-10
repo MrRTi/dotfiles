@@ -13,6 +13,8 @@ vim.o.clipboard = "unnamedplus"
 vim.opt.scrolloff = 999
 vim.opt.sidescrolloff = 999
 
+vim.opt.cursorline = true
+
 local indent_settings = {
   python     = { tabstop = 4, shiftwidth = 4, softtabstop = 4, expandtab = true },
   go         = { tabstop = 8, shiftwidth = 8, softtabstop = 0, expandtab = false }, -- tabs, no expand
@@ -272,10 +274,23 @@ _G.is_dark_term = function()
   return print(is_dark_local())
 end
 
+local colors = require('ayu.colors')
+colors.generate()
+
 require('ayu').setup({
   mirage = false,   -- Set to `true` to use `mirage` variant instead of `dark` for dark background.
   terminal = false, -- Set to `false` to let terminal manage its own colors.
-  overrides = {},   -- A dictionary of group names, each associated with a dictionary of parameters (`bg`, `fg`, `sp` and `style`) and colors in hex.
+  overrides = {
+    Normal       = { bg = "None" },
+    NormalFloat  = { bg = "none" },
+    ColorColumn  = { bg = "None" },
+    SignColumn   = { bg = "None" },
+    Folded       = { bg = "None" },
+    FoldColumn   = { bg = "None" },
+    CursorColumn = { bg = "None" },
+    VertSplit    = { bg = "None" },
+    LineNr       = { fg = colors.fg },
+  },
 })
 
 vim.cmd("colorscheme ayu")
