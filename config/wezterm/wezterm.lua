@@ -23,14 +23,16 @@ local function scheme_for_appearance(appearance)
       set_environment_variables = {
         TERM_BG = "dark"
       },
-      color_scheme = "carbonfox"
+      -- color_scheme = "carbonfox"
+      color_scheme = 'Ayu Dark (Gogh)'
     }
   else
     return {
       set_environment_variables = {
         TERM_BG = "light"
       },
-      color_scheme = "dayfox"
+      -- color_scheme = "dayfox"
+      color_scheme = 'Ayu Light (Gogh)'
     }
   end
 end

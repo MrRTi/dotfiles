@@ -60,7 +60,6 @@ vim.pack.add({
     version = "harpoon2"
   },
   { src = "https://github.com/nvimtools/none-ls.nvim" },
-  { src = "https://github.com/EdenEast/nightfox.nvim" },
   { src = "https://github.com/nvim-neotest/neotest" },
   -- deps
   { src = "https://github.com/nvim-neotest/nvim-nio" },
@@ -68,6 +67,8 @@ vim.pack.add({
   { src = "https://github.com/olimorris/neotest-rspec" },
   --
   { src = "https://github.com/andythigpen/nvim-coverage" },
+  -- Theme
+  { src = "https://github.com/Shatur/neovim-ayu" },
 })
 
 require("todo-comments").setup()
@@ -271,16 +272,20 @@ _G.is_dark_term = function()
   return print(is_dark_local())
 end
 
-require('nightfox').setup()
+require('ayu').setup({
+  mirage = false,   -- Set to `true` to use `mirage` variant instead of `dark` for dark background.
+  terminal = false, -- Set to `false` to let terminal manage its own colors.
+  overrides = {},   -- A dictionary of group names, each associated with a dictionary of parameters (`bg`, `fg`, `sp` and `style`) and colors in hex.
+})
+
+vim.cmd("colorscheme ayu")
 
 function ToggleAppearence(toggle_to)
   toggle_to = toggle_to or (vim.o.background == "light" and "dark" or "light")
   if toggle_to == "light" then
     vim.o.background = "light"
-    vim.cmd("colorscheme dayfox")
   else
     vim.o.background = "dark"
-    vim.cmd("colorscheme carbonfox")
   end
 end
 
