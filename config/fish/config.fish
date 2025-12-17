@@ -28,6 +28,7 @@ status is-interactive; and begin
     abbr --add -- tn tmux-sessionizer
     abbr --add -- v nvim
     abbr --add -- vf 'nvim .'
+    abbr --add -- da 'direnv allow'
 
     # Aliases
     alias ... 'cd ../..'
@@ -59,6 +60,7 @@ status is-interactive; and begin
 
     set -U fish_user_paths ~/.local/bin $fish_user_paths
     set -U fish_user_paths ~/.orbstack/bin $fish_user_paths
+    set -U fish_user_paths ~/.cargo/bin $fish_user_paths
 
     set SSH_AUTH_SOCK ~/.1password/agent.sock
 
