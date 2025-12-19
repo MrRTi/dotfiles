@@ -1,3 +1,92 @@
+# Functions
+git_worktree_base(){
+	git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
+
+	if [ -z "$git_dir" ] && [ -d ./main/.git ]; then
+		# NOTE: to be able to use git command in root project folder
+		cd main || return 1
+		git_dir=$(git rev-parse --show-toplevel)
+	fi
+
+	# NOTE: If we are in folder with .git repo folder
+	if [ -d "$git_dir/.git" ]; then
+	# NOTE: Return project root like in PROJECT_ROOT/main
+	# FIXME: Wil it work with regular repo?
+		dirname "$git_dir"
+		return 0
+	fi
+
+	# NOTE: If we are in worktree
+	if [ -f "$git_dir/.git" ]; then
+		dirname "$(awk -F': ' '/^gitdir:/ { sub(/\.git\/worktrees\/.*/, "", $2); print $2; exit }' .git)"
+		return 0
+	fi
+
+	echo "Not git repository"
+	return 1
+}
+
+git_worktree_select() {
+	root=$(git_worktree_base)
+	cd "$root/main" || return 1
+
+	git worktree list | \
+		awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' |
+		sed "s:$root:󰾛 :" |
+		sed "/ (root)*/d" |
+		column -t |
+		fzf --ansi --query "$1" |
+		sed "s:󰾛  :$root:" |
+		awk '{print $3}'
+}
+
+git_worktree_switch(){
+	worktree_path=$(git_worktree_select "$1")
+
+	if [ -z "$worktree_path" ]; then
+    echo "Worktree path is not set"
+		return 1
+	fi
+
+	cd "$worktree_path" || return 1
+}
+
+git_branch_query() {
+  git branch | \
+    sed -r "s:\* (.*):\1 [exists]:" | \
+    awk '{printf "\x1b[34m%s\x1b[0m\t\x1b[31m%s\x1b[0m\n", $1, $2}' | \
+    fzf --print-query --ansi --query "$1" | \
+    tail -n 1 | \
+    awk '{print $1}'
+}
+
+git_worktree_add_query() {
+  root=$(git_worktree_base)
+	cd "$root/main" || return 1
+
+  branch=$(git_branch_query "$1" | xargs)
+
+  if git branch | grep -q "$branch"; then
+    git worktree add "$root/$branch" "$branch"
+  else
+    git worktree add "$root/$branch" -b "$branch"
+  fi
+
+  cd "$root/$branch" || return 1
+}
+
+git_worktree_remove() {
+  root=$(git_worktree_base)
+	cd "$root/main" || return 1
+
+  git worktree list | \
+    awk '{print $1}' | \
+    fzf --multi | \
+    while read -r line; do
+      git worktree remove --force "$line"
+    done
+}
+
 # Aliases
 # NOTE: to sort in nvim use `sort /.*=/` on visual selection
 alias less='bat -p'
@@ -59,90 +148,4 @@ if command -v direnv >/dev/null 2>&1; then
     eval "$(direnv hook bash)"
 fi
 
-git_worktree_base(){
-	git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
 
-	if [ -z "$git_dir" ] && [ -d ./main/.git ]; then
-		# NOTE: to be able to use git command in root project folder
-		cd main || exit
-		git_dir=$(git rev-parse --show-toplevel)
-	fi
-
-	# NOTE: If we are in folder with .git repo folder
-	if [ -d "$git_dir/.git" ]; then
-	# NOTE: Return project root like in PROJECT_ROOT/main
-	# FIXME: Wil it work with regular repo?
-		dirname "$git_dir"
-		exit 0
-	fi
-
-	# NOTE: If we are in worktree
-	if [ -f "$git_dir/.git" ]; then
-		dirname $(awk -F': ' '/^gitdir:/ { sub(/\.git\/worktrees\/.*/, "", $2); print $2; exit }' .git)
-		exit 0
-	fi
-
-	echo "Not git repository"
-	exit 1
-}
-
-git_worktree_select() {
-	root=$(git_worktree_base)
-	cd "$root/main"
-
-	git worktree list | \
-		awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' |
-		sed "s:$root:󰾛 :" |
-		sed "/ (root)*/d" |
-		column -t |
-		fzf --ansi --query "$1" |
-		sed "s:󰾛  :$root:" |
-		awk '{print $3}'
-}
-
-git_worktree_switch(){
-	worktree_path=$(git_worktree_select $1)
-
-	if [ -z "$worktree_path" ]; then
-    echo "Worktree path is not set"
-		exit 1
-	fi
-
-	cd "$worktree_path"
-}
-
-git_branch_query() {
-  git branch | \
-    sed -r "s:\* (.*):\1 [exists]:" | \
-    awk '{printf "\x1b[34m%s\x1b[0m\t\x1b[31m%s\x1b[0m\n", $1, $2}' | \
-    fzf --print-query --ansi --query "$1" | \
-    tail -n 1 | \
-    awk '{print $1}'
-}
-
-git_worktree_add_query() {
-  root=$(git_worktree_base)
-	cd "$root/main"
-
-  branch=$(git_branch_query "$1" | xargs)
-
-  if git branch | grep -q "$branch"; then
-    git worktree add "$root/$branch" "$branch"
-  else
-    git worktree add "$root/$branch" -b "$branch"
-  fi
-
-  cd "$root/$branch"
-}
-
-git_worktree_remove() {
-  root=$(git_worktree_base)
-	cd "$root/main"
-
-  git worktree list | \
-    awk '{print $1}' | \
-    fzf --multi | \
-    while read -r line; do
-      git worktree remove --force "$line"
-    done
-}
