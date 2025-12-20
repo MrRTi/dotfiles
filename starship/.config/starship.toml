@@ -1,22 +1,22 @@
 add_newline = false
+scan_timeout = 30
 follow_symlinks = true
+
 format = """
 $username\
 $hostname\
 $directory\
 $git_branch\
-$custom\
 $git_commit\
 $git_state\
 $git_status\
-$direnv\
 $ruby\
 $python\
 $line_break\
 $shell\
 $character\
 """
-scan_timeout = 30
+
 
 [character]
 error_symbol = "[x](red)"
@@ -26,36 +26,12 @@ vimcmd_replace_symbol = "[R](red)"
 vimcmd_symbol = "[N](blue)"
 vimcmd_visual_symbol = "[V](purple)"
 
-[custom.git_base]
-command = "git_repo_name"
-description = "Show git repository base folder. Helpful when using worktrees and shorten pwd"
-format = "at [$symbol($output)]($style) "
-require_repo = true
-style = "bold blue"
-symbol = " "
-when = '''[ -z "$TMUX" ]'''
-
-
 [directory]
 fish_style_pwd_dir_length = 1
 read_only = " "
 repo_root_style = "underline yellow"
 style = "yellow"
-truncation_symbol = ".../"
-
-
-[direnv]
-disabled = false
-allowed_msg = " "
-not_allowed_msg = " "
-denied_msg = " "
-loaded_msg = " "
-unloaded_msg = " "
-symbol = " "
-format = "[$symbol$loaded/$allowed]($style) "
-
-[docker_context]
-symbol = "󰡨 "
+truncation_symbol = "…/"
 
 [git_branch]
 style = "blue"

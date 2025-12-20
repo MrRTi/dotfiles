@@ -10,8 +10,7 @@ git_worktree_base(){
 
 	# NOTE: If we are in folder with .git repo folder
 	if [ -d "$git_dir/.git" ]; then
-	# NOTE: Return project root like in PROJECT_ROOT/main
-	# FIXME: Wil it work with regular repo?
+	  # NOTE: Return project root like in PROJECT_ROOT/main
 		dirname "$git_dir"
 		return 0
 	fi
@@ -159,7 +158,7 @@ alias gws='git_worktree_switch'
 alias tn='tmux-sessionizer'
 
 # Environment Variables
-export PATH="$HOME/.local/bin:$HOME/.orbstack/bin:$HOME/.cargo/bin:$PATH"
+export PATH="/opt/homebrew/bin:$HOME/.local/bin:$HOME/.orbstack/bin:$HOME/.cargo/bin:$PATH"
 export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 export LDFLAGS="-L/opt/homebrew/opt/libpq/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/libpq/include"

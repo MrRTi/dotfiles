@@ -1,8 +1,9 @@
 quit-after-last-window-closed = true
 
-font-family = "Fira Code"
+font-family = "JetBrains Mono"
 font-size = 16
 font-thicken = true
+font-feature = -calt, -liga, -dlig
 
 maximize = true
 window-padding-x = 10
