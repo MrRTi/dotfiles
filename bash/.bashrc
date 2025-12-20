@@ -98,7 +98,7 @@ brew_receipt() {
     return 1
   fi
 
-  brew bundle dump --force --file="$1"
+  brew bundle dump --force --describe --file="$1"
 }
 
 rebrew() {
