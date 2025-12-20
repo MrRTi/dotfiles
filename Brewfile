@@ -5,6 +5,8 @@ brew "ack"
 brew "autoconf"
 # Library for command-line editing
 brew "readline"
+# Bourne-Again SHell, a UNIX command interpreter
+brew "bash"
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
 # Clone of cat(1) with syntax highlighting and Git integration
@@ -35,7 +37,7 @@ brew "git-delta"
 brew "glow"
 # GNU multiple precision arithmetic library
 brew "gmp"
-# GNU Pretty Good Privacy (PGP) package
+# GNU Privacy Guard (OpenPGP)
 brew "gnupg"
 # Easy plain text accounting with command-line, terminal and web UIs
 brew "hledger"
@@ -83,6 +85,8 @@ brew "shellcheck"
 brew "shfmt"
 # Cross-shell prompt for astronauts
 brew "starship"
+# Organize software neatly under a single directory tree (e.g. /usr/local)
+brew "stow"
 # Very fast implementation of tldr in Rust
 brew "tealdeer"
 # Terminal multiplexer
@@ -109,7 +113,11 @@ cask "amethyst"
 cask "arc"
 # OpenAI's official ChatGPT desktop app
 cask "chatgpt"
+# Text editor
+cask "emacs-app"
 cask "font-jetbrains-mono-nerd-font"
+# Terminal emulator that uses platform-native UI and GPU acceleration
+cask "ghostty"
 # Privacy-first, open-source platform for knowledge sharing and management
 cask "logseq"
 # Netbird UI Client
@@ -127,6 +135,7 @@ mas "Color Picker", id: 1545870783
 mas "Keynote", id: 409183694
 mas "LanguageTool", id: 1534275760
 mas "Little Snitch Mini", id: 1629008763
+mas "Magnet", id: 441258766
 mas "Mattermost", id: 1614666244
 mas "Noir", id: 1592917505
 mas "Numbers", id: 409203825
