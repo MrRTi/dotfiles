@@ -175,4 +175,12 @@ if command -v direnv >/dev/null 2>&1; then
     eval "$(direnv hook bash)"
 fi
 
+set -o vi
 
+HISTCONROL=ignoreboth:erasedups
+HISTSIZE=10000
+HISTFILESIZE=20000
+
+shopt -s histappend
+
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
