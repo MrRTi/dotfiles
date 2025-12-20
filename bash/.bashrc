@@ -87,6 +87,34 @@ git_worktree_remove() {
     done
 }
 
+brew_receipt() {
+  if !command -v brew >/dev/null 2>&1; then
+    echo "Brew not found"
+    return 1
+  fi
+
+  if [ -z "$1" ]; then
+    echo "Provide filepath for brew receipt(dumpfile) as argument"
+    return 1
+  fi
+
+  brew bundle dump --force --file="$1"
+}
+
+rebrew() {
+  if !command -v brew >/dev/null 2>&1; then
+    echo "Brew not found"
+    return 1
+  fi
+
+  if [ -z "$1" ]; then
+    echo "Provide filepath for brew receipt(dumpfile) as argument"
+    return 1
+  fi
+
+  brew bundle install --file="$1"
+}
+
 # Aliases
 # NOTE: to sort in nvim use `sort /.*=/` on visual selection
 alias less='bat -p'
