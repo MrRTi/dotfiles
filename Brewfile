@@ -85,8 +85,6 @@ brew "shellcheck"
 brew "shfmt"
 # Cross-shell prompt for astronauts
 brew "starship"
-# Organize software neatly under a single directory tree (e.g. /usr/local)
-brew "stow"
 # Very fast implementation of tldr in Rust
 brew "tealdeer"
 # Terminal multiplexer
@@ -148,6 +146,3 @@ mas "Tailscale", id: 1475387142
 mas "Telegram", id: 747648890
 mas "Wipr", id: 1662217862
 mas "Yubico Authenticator", id: 1497506650
-go "github.com/bootdotdev/bootdev"
-go "cmd/go"
-go "cmd/gofmt"
