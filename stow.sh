@@ -5,6 +5,7 @@ COMMON_PACKAGES=(
   bat
   fish
   git
+  k9s
   mise
   nvim
   starship
