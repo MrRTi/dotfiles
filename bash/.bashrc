@@ -151,6 +151,8 @@ alias v='nvim'
 alias clean_desktop='rm ~/Desktop/*.png'
 alias tldrf='tldr --list | fzf --preview "tldr {1} --color=always" --preview-window=right,70% | xargs tldr'
 
+alias hl='rg --passthru'
+
 # Aliases to custom scripts
 alias gwa='git_worktree_add_query'
 alias gwr='git_worktree_remove'
