@@ -1,4 +1,5 @@
 quit-after-last-window-closed = true
+macos-option-as-alt = true
 
 font-family = "JetBrains Mono"
 font-size = 16
