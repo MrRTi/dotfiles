@@ -15,7 +15,7 @@
 	pager = "delta"
 
 [credential]
-	helper = "helper = cache --timeout=3600\n            "
+	helper = "cache --timeout=3600"
 
 [delta]
 	features = "side-by-side line-numbers decorations"
@@ -52,12 +52,6 @@
 
 [interactive]
 	diffFilter = "delta --color-only"
-
-[interractive]
-	diffFilter = "delta --color-only"
-
-[maintenance]
-
 
 [merge]
 	conflictstyle = "diff3"

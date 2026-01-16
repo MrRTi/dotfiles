@@ -9,8 +9,8 @@ fi
 
 SESSION_NAME="zzz-$1"
 
-if ! tmux has-session -t $SESSION_NAME 2>/dev/null; then
-    tmux new-session -d -s $SESSION_NAME "$PROGRAM"
+if ! tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+    tmux new-session -d -s "$SESSION_NAME" "$PROGRAM"
 fi
 
-tmux display-popup -w 95% -h 95% -E "tmux attach-session -t $SESSION_NAME"
+tmux display-popup -w 95% -h 95% -E "tmux attach-session -t '$SESSION_NAME'"

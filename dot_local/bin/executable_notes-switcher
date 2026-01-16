@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-NOTES_FOLDER=${NOTES_FODLER:-"$HOME/notes"}
+NOTES_FOLDER=${NOTES_FOLDER:-"$HOME/notes"}
 
-mkdir -pv $NOTES_FOLDER
+mkdir -pv "$NOTES_FOLDER"
 
 __select_path() {
-  fd --type f . $NOTES_FOLDER | \
+  fd --type f . "$NOTES_FOLDER" | \
     awk '{printf "\x1b[35m%s\x1b[0m\n", $1}' | \
     sed "s:$NOTES_FOLDER/::" | \
     fzf \
@@ -21,24 +21,24 @@ __select_path() {
 FILE_PATH=$(__select_path)
 
 # Exit if nothing returned
-if [ -z $FILE_PATH ]; then exit 1; fi
+if [ -z "$FILE_PATH" ]; then exit 1; fi
 
 if [ ! -f "$NOTES_FOLDER/$FILE_PATH" ]; then
   FILE_DIRNAME="$NOTES_FOLDER"
-  ORIGINAL_FILE_PATH=$FILE_PATH
-  FILE_PATH=$(echo $FILE_PATH | sed 's/ /-/g')
+  ORIGINAL_FILE_PATH="$FILE_PATH"
+  FILE_PATH=$(echo "$FILE_PATH" | sed 's/ /-/g')
 
   if [ ! "${FILE_PATH}" = "${FILE_PATH##*/}" ]; then
-    FILE_DIRNAME="$FILE_DIRNAME/$(dirname $FILE_PATH)"
+    FILE_DIRNAME="$FILE_DIRNAME/$(dirname "$FILE_PATH")"
   fi
 
-  FILE_NAME="$(basename $FILE_PATH | tr '[:upper:]' '[:lower:]')"
+  FILE_NAME="$(basename "$FILE_PATH" | tr '[:upper:]' '[:lower:]')"
   DATE=$(date '+%Y-%m-%d-%H-%M-%S')
   FILE_NAME="$DATE-$FILE_NAME.md"
   FILE_PATH="$FILE_DIRNAME/$FILE_NAME"
 
   mkdir -pv "${FILE_DIRNAME}"
-  touch $FILE_PATH
+  touch "$FILE_PATH"
 
   echo "---
   aliases:
@@ -49,7 +49,7 @@ if [ ! -f "$NOTES_FOLDER/$FILE_PATH" ]; then
 ---
 
 # $ORIGINAL_FILE_PATH
-" >> $FILE_PATH
+" >> "$FILE_PATH"
 else
   FILE_PATH="$NOTES_FOLDER/$FILE_PATH"
 fi

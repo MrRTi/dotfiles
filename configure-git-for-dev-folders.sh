@@ -5,8 +5,8 @@
 parts=$(echo "$1" | tr ";" "\n")
 
 for line in $parts; do
-	folder="$(cut -d ':' -f1 <<<$line)"
-	email="$(cut -d ':' -f2 <<<$line)"
+	folder="$(cut -d ':' -f1 <<<"$line")"
+	email="$(cut -d ':' -f2 <<<"$line")"
 
 	if [[ -z "$folder" || -z "$email" ]]; then
 		echo "Error: Missing folder or email" >&2
