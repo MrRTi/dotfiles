@@ -6,6 +6,7 @@ packages:
       - ack
       - readline
       - bash
+      - bash-completion@2
       - openssl@3
       - bat
       - cmake
@@ -16,6 +17,7 @@ packages:
       - fd
       - fzf
       - zstd
+      - git
       - git-delta
       - glow
       - gnupg
