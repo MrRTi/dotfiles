@@ -87,7 +87,7 @@ git_worktree_remove() {
 }
 
 chezmoi-cd() {
-    cd $(chezmoi source-path)
+    cd "$(chezmoi source-path)"
 }
 
 _short_path() {
@@ -123,6 +123,7 @@ alias dcr='docker compose run --rm --use-aliases'
 alias dc='docker compose'
 alias d='docker'
 alias ':q'='exit'
+alias -- -='cd -'
 alias eza='eza --git'
 alias lt='eza --tree'
 alias la='eza -a'
@@ -159,6 +160,8 @@ export PATH="/opt/homebrew/bin:$HOME/.local/bin:$HOME/.orbstack/bin:$HOME/.cargo
 export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
 export LDFLAGS="-L/opt/homebrew/opt/libpq/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/libpq/include"
+export EDITOR=nvim
+export VISUAL=nvim
 
 # if [ "$TERM" != "dumb" ] && command -v starship >/dev/null 2>&1; then
 #     eval "$(starship init bash)"
@@ -174,13 +177,24 @@ fi
 
 set -o vi
 
-HISTCONROL=ignoreboth:erasedups
+HISTCONTROL=ignoreboth:erasedups
 HISTSIZE=10000
 HISTFILESIZE=20000
 
 shopt -s histappend
+shopt -s histverify
+shopt -s cdspell
+shopt -s direxpand
 
 PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
+# Source bash completion
+for f in /opt/homebrew/etc/profile.d/bash_completion.sh \
+         /usr/local/etc/profile.d/bash_completion.sh \
+         /usr/share/bash-completion/bash_completion \
+         /etc/bash_completion; do
+    [ -f "$f" ] && source "$f" && break
+done
 
 # Source git prompt if available (check common paths first for speed)
 for f in /opt/homebrew/etc/bash_completion.d/git-prompt.sh \
