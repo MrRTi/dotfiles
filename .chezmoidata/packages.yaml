@@ -1,0 +1,97 @@
+packages:
+  darwin:
+    taps:
+      - netbirdio/tap
+    brews:
+      - ack
+      - readline
+      - bash
+      - openssl@3
+      - bat
+      - cmake
+      - direnv
+      - dive
+      - dust
+      - eza
+      - fd
+      - fzf
+      - zstd
+      - gemini-cli
+      - git-delta
+      - glow
+      - gnupg
+      - hledger
+      - htop
+      - httpie
+      - jnv
+      - jq
+      - just
+      - k9s
+      - lazygit
+      - libpq
+      - libyaml
+      - mas
+      - mise
+      - mongocli
+      - mongosh
+      - mysql
+      - mysql@8.4
+      - pipx
+      - ripgrep
+      - rust
+      - shellcheck
+      - shfmt
+      - starship
+      - tealdeer
+      - tmux
+      - tree
+      - tree-sitter
+      - tree-sitter-cli
+      - trivy
+      - wget
+      - yamlfmt
+      - yq
+      - netbirdio/tap/netbird
+    casks:
+      - chatgpt
+      - font-jetbrains-mono-nerd-font
+      - ngrok
+      - orbstack
+      - yandex-cloud-cli
+    mas:
+      - name: 1Password for Safari
+        id: 1569813296
+      - name: Color Picker
+        id: 1545870783
+      - name: Keynote
+        id: 409183694
+      - name: LanguageTool
+        id: 1534275760
+      - name: Little Snitch Mini
+        id: 1629008763
+      - name: Magnet
+        id: 441258766
+      - name: Mattermost
+        id: 1614666244
+      - name: Noir
+        id: 1592917505
+      - name: Numbers
+        id: 409203825
+      - name: OpenIn
+        id: 1643649331
+      - name: Owly
+        id: 882812218
+      - name: Pages
+        id: 409201541
+      - name: Shadowrocket
+        id: 932747118
+      - name: Surfingkeys
+        id: 1609752330
+      - name: Tailscale
+        id: 1475387142
+      - name: Telegram
+        id: 747648890
+      - name: Wipr
+        id: 1662217862
+      - name: Yubico Authenticator
+        id: 1497506650
