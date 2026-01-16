@@ -16,7 +16,6 @@ packages:
       - fd
       - fzf
       - zstd
-      - gemini-cli
       - git-delta
       - glow
       - gnupg
@@ -52,6 +51,9 @@ packages:
       - yamlfmt
       - yq
       - netbirdio/tap/netbird
+    brews_with_options:
+      - name: gemini-cli
+        options: "link: false"
     casks:
       - chatgpt
       - font-jetbrains-mono-nerd-font
@@ -65,8 +67,6 @@ packages:
         id: 1545870783
       - name: Keynote
         id: 409183694
-      - name: LanguageTool
-        id: 1534275760
       - name: Little Snitch Mini
         id: 1629008763
       - name: Magnet
