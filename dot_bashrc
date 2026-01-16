@@ -86,32 +86,8 @@ git_worktree_remove() {
     done
 }
 
-brew_receipt() {
-  if !command -v brew >/dev/null 2>&1; then
-    echo "Brew not found"
-    return 1
-  fi
-
-  if [ -z "$1" ]; then
-    echo "Provide filepath for brew receipt(dumpfile) as argument"
-    return 1
-  fi
-
-  brew bundle dump --force --describe --file="$1"
-}
-
-rebrew() {
-  if !command -v brew >/dev/null 2>&1; then
-    echo "Brew not found"
-    return 1
-  fi
-
-  if [ -z "$1" ]; then
-    echo "Provide filepath for brew receipt(dumpfile) as argument"
-    return 1
-  fi
-
-  brew bundle install --file="$1"
+chezmoi-cd() {
+    cd $(chezmoi source-path)
 }
 
 # Aliases
@@ -122,6 +98,7 @@ alias cat='bat -pp'
 alias be='bundle exec'
 alias b='bundle'
 alias c='clear'
+alias cz='chezmoi'
 alias da='direnv allow'
 alias dcrs='docker compose run --rm --use-aliases --service-ports'
 alias dcr='docker compose run --rm --use-aliases'
