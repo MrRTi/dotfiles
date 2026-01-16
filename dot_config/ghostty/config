@@ -1,0 +1,16 @@
+quit-after-last-window-closed = true
+macos-option-as-alt = true
+
+font-family = "JetBrains Mono"
+font-size = 16
+font-thicken = true
+font-feature = -calt, -liga, -dlig
+
+maximize = true
+window-padding-x = 10
+window-padding-y = 5
+
+theme = light:Ayu Light,dark:Ayu
+background-opacity = 0.93
+background-blur = 10
+

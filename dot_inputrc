@@ -1,0 +1,8 @@
+set show-mode-in-prompt on
+
+set vi-cmd-mode-string "[N]\1\e[2 q\2"
+set vi-ins-mode-string "[I]\1\e[6 q\2"
+
+set completion-ignore-case on
+set mark-directories on
+set colored-stats on

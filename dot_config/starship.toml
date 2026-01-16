@@ -1,0 +1,50 @@
+add_newline = false
+scan_timeout = 30
+follow_symlinks = true
+
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$ruby\
+$python\
+$line_break\
+$shell\
+$character\
+"""
+
+
+[character]
+error_symbol = "[x](red)"
+success_symbol = "[>](bold green)"
+vimcmd_replace_one_symbol = "[R](red)"
+vimcmd_replace_symbol = "[R](red)"
+vimcmd_symbol = "[N](blue)"
+vimcmd_visual_symbol = "[V](purple)"
+
+[directory]
+fish_style_pwd_dir_length = 1
+read_only = " "
+repo_root_style = "underline yellow"
+style = "yellow"
+truncation_symbol = "…/"
+
+[git_branch]
+style = "blue"
+symbol = " "
+
+[git_status]
+ahead = "⇡$count"
+behind = "⇣$count"
+diverged = "⇕⇡$ahead_count⇣$behind_count"
+style = "red"
+
+[ruby]
+symbol = " "
+
+[python]
+symbol = " "

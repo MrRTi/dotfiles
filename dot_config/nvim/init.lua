@@ -1,0 +1,315 @@
+vim.o.number = true
+vim.o.relativenumber = false
+vim.o.signcolumn = "yes"
+
+vim.o.termguicolors = true
+vim.o.wrap = false
+vim.o.swapfile = false
+
+vim.g.mapleader = " "
+vim.o.winborder = "rounded"
+vim.o.clipboard = "unnamedplus"
+
+vim.opt.scrolloff = 999
+vim.opt.sidescrolloff = 999
+
+vim.opt.cursorline = true
+
+local indent_settings = {
+  python     = { tabstop = 4, shiftwidth = 4, softtabstop = 4, expandtab = true },
+  go         = { tabstop = 8, shiftwidth = 8, softtabstop = 0, expandtab = false }, -- tabs, no expand
+  make       = { tabstop = 8, shiftwidth = 8, softtabstop = 0, expandtab = false }, -- tabs, no expand
+  dockerfile = { tabstop = 4, shiftwidth = 4, softtabstop = 4, expandtab = true },
+  ["*"]      = { tabstop = 2, shiftwidth = 2, softtabstop = 2, expandtab = true },  -- default: 2 spaces
+}
+
+for fyletype, opts in pairs(indent_settings) do
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = fyletype,
+    callback = function()
+      vim.bo.tabstop     = opts.tabstop
+      vim.bo.shiftwidth  = opts.shiftwidth
+      vim.bo.softtabstop = opts.softtabstop
+      vim.bo.expandtab   = opts.expandtab
+    end,
+  })
+end
+
+-- Add abbility to use йцукен letters same as qwerty. (symbols like :, $ etc won't work as expected)
+vim.o.langmap =
+    "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;" ..
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ," ..
+    "фисвуапршолдьтщзйкыегмцчня;" ..
+    "abcdefghijklmnopqrstuvwxyz,"
+
+vim.pack.add({
+  { src = "https://github.com/stevearc/oil.nvim" },
+  { src = "https://github.com/ibhagwan/fzf-lua" },
+  { src = "https://github.com/echasnovski/mini.ai" },
+  { src = "https://github.com/echasnovski/mini.splitjoin" },
+  { src = "https://github.com/echasnovski/mini.extra" },
+  { src = "https://github.com/echasnovski/mini.completion" },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+  { src = "https://github.com/neovim/nvim-lspconfig" },
+  { src = "https://github.com/christoomey/vim-tmux-navigator" },
+  { src = "https://github.com/lewis6991/gitsigns.nvim" },
+  { src = "https://github.com/kdheepak/lazygit.nvim" },
+  { src = "https://github.com/stevearc/conform.nvim" },
+  { src = "https://github.com/nvim-lua/plenary.nvim" },
+  { src = "https://github.com/folke/todo-comments.nvim" },
+  {
+    src = "https://github.com/ThePrimeagen/harpoon",
+    version = "harpoon2"
+  },
+  { src = "https://github.com/nvimtools/none-ls.nvim" },
+  { src = "https://github.com/nvim-neotest/neotest" },
+  -- deps
+  { src = "https://github.com/nvim-neotest/nvim-nio" },
+  { src = "https://github.com/antoinemadec/FixCursorHold.nvim" },
+  { src = "https://github.com/olimorris/neotest-rspec" },
+  --
+  { src = "https://github.com/andythigpen/nvim-coverage" },
+  -- Theme
+  { src = "https://github.com/Shatur/neovim-ayu" },
+})
+
+require("todo-comments").setup()
+require('mini.ai').setup()
+require('mini.completion').setup()
+require('mini.extra').setup()
+require('mini.splitjoin').setup()
+require("coverage").setup({
+  auto_reload = true,
+})
+require("neotest").setup({
+  ...,
+  adapters = {
+    require("neotest-rspec")
+  },
+})
+
+vim.lsp.enable({
+  "lua_ls",
+  "ruby_lsp",
+  "pyright",
+  "ruff",
+  "yamlls",
+  "marksman",
+})
+
+vim.lsp.config("lua_ls", {
+  settings = {
+    Lua = {
+      workspace = {
+        library = vim.api.nvim_get_runtime_file("", true),
+      }
+    }
+  }
+})
+
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client and client.server_capabilities.completionProvider then
+      vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+    end
+  end,
+})
+
+vim.cmd("set completeopt+=noselect")
+
+
+local null_ls = require("null-ls")
+
+null_ls.setup({
+  sources = {
+    null_ls.builtins.formatting.stylua,
+    null_ls.builtins.completion.spell,
+    -- Python
+    null_ls.builtins.formatting.black,
+    null_ls.builtins.formatting.isort,
+    null_ls.builtins.diagnostics.flake8,
+    -- Ruby
+    null_ls.builtins.formatting.rubocop,
+    null_ls.builtins.diagnostics.rubocop,
+    -- Docker
+    -- null_ls.builtins.formatting.dockerfile_lint,
+    -- JSON
+    null_ls.builtins.formatting.jq,
+    -- YAML
+    null_ls.builtins.formatting.yamlfmt,
+    -- Shell
+    null_ls.builtins.formatting.shfmt,
+    null_ls.builtins.diagnostics.shellcheck,
+  },
+  on_attach = function(client, bufnr)
+    if client.server_capabilities.documentFormattingProvider then
+      vim.api.nvim_clear_autocmds({ group = augroup_format, buffer = bufnr })
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        group = augroup_format,
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format({ bufnr = bufnr })
+        end,
+      })
+    end
+  end,
+})
+
+require('nvim-treesitter.configs').setup({
+  ensure_installed = {
+    "lua",
+    "ruby",
+    "python",
+    "javascript",
+    "yaml",
+    "json",
+  },
+  highlight = { enable = true }
+})
+
+require('oil').setup({
+  view_options = {
+    show_hidden = true,
+  }
+})
+
+require('fzf-lua').setup({
+  winopts = {
+    preview = {
+      layout = "vertical",
+    }
+  },
+  keymap = {
+    fzf = {
+      true,
+      -- Use <c-q> to select all items and add them to the quickfix list
+      ["ctrl-q"] = "select-all+accept",
+    },
+  },
+})
+
+require("conform").setup({
+  formatters_by_ft = {
+    lua = { "stylua" },
+    python = { "isort", "black" },
+    javascript = { "prettierd", "prettier", stop_after_first = true },
+    typescript = { "prettierd", "prettier", stop_after_first = true },
+    ruby = { "rubocop" },
+    sh = { "shfmt" },
+    zsh = { "shfmt" },
+    markdown = { "prettier" },
+  },
+})
+
+vim.keymap.set('n', '<leader>bd', ':bdelete<CR>')
+
+vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y<CR>')
+vim.keymap.set({ 'n', 'v', 'x' }, '<leader>d', '"+d<CR>')
+
+vim.keymap.set('n', '<leader><space>', ":FzfLua global<CR>")
+vim.keymap.set('n', '<leader>sf', ":FzfLua files<CR>")
+vim.keymap.set('n', '<leader>sw', ":FzfLua grep_cword<CR>")
+vim.keymap.set('n', '<leader>sg', ":FzfLua live_grep<CR>")
+vim.keymap.set('n', '<leader>sh', ":FzfLua helptags<CR>")
+vim.keymap.set('n', '<leader>sr', ":FzfLua resume<CR>")
+
+vim.keymap.set('n', '<leader>e', ":Oil<CR>")
+vim.keymap.set('n', '<leader>-', ":Oil<CR>")
+
+vim.keymap.set('n', '<leader>fp', '<cmd>let @+ = expand("%")<CR>', { desc = "Copy file path to clipboard" })
+
+vim.keymap.set('n', '<leader>gg', ":LazyGit<CR>")
+vim.keymap.set({ 'n', 'v' }, '<leader>gb', ":Gitsigns blame_line<CR>")
+vim.keymap.set({ 'n', 'v' }, '<leader>gp', ":Gitsigns preview_hunk_inline<CR>")
+vim.keymap.set('n', '[h', ":Gitsigns prev_hunk<CR>")
+vim.keymap.set('n', ']h', ":Gitsigns next_hunk<CR>")
+
+-- vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
+vim.keymap.set({ 'n', 'v' }, '<leader>lf', function()
+  require("conform").format({ async = true, lsp_fallback = true })
+end, { desc = "Format file or selection" })
+vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename)
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
+vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
+vim.keymap.set('n', 'gr', vim.lsp.buf.references)
+
+vim.keymap.set('n', '<leader>do', vim.diagnostic.open_float, { desc = "Open floating diagnostic window" })
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+
+
+local harpoon = require("harpoon")
+harpoon.setup()
+vim.keymap.set("n", "<leader>H", function() harpoon:list():add() end)
+vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+vim.keymap.set("n", "[H", function() harpoon:list():prev() end)
+vim.keymap.set("n", "]H", function() harpoon:list():next() end)
+
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+  pattern = "*",
+  callback = function()
+    vim.highlight.on_yank {
+      higroup = "IncSearch",
+      timeout = 200,
+    }
+  end,
+})
+
+-- Function to toggle background color
+vim.o.background = "dark"
+
+local function is_dark_local()
+  local handle = io.popen(
+    [[osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode']])
+  if not handle then return false end
+  local result = handle:read("*a")
+  handle:close()
+  result = result:lower():gsub("%s+", "")
+  return result == "true"
+end
+
+_G.is_dark_term = function()
+  return print(is_dark_local())
+end
+
+local colors = require('ayu.colors')
+colors.generate()
+
+require('ayu').setup({
+  mirage = false,   -- Set to `true` to use `mirage` variant instead of `dark` for dark background.
+  terminal = false, -- Set to `false` to let terminal manage its own colors.
+  overrides = {
+    Normal       = { bg = "None" },
+    NormalFloat  = { bg = "none" },
+    ColorColumn  = { bg = "None" },
+    SignColumn   = { bg = "None" },
+    Folded       = { bg = "None" },
+    FoldColumn   = { bg = "None" },
+    CursorColumn = { bg = "None" },
+    VertSplit    = { bg = "None" },
+    LineNr       = { fg = colors.fg },
+  },
+})
+
+vim.cmd("colorscheme ayu")
+
+function ToggleAppearence(toggle_to)
+  toggle_to = toggle_to or (vim.o.background == "light" and "dark" or "light")
+  if toggle_to == "light" then
+    vim.o.background = "light"
+  else
+    vim.o.background = "dark"
+  end
+end
+
+if is_dark_local() then
+  ToggleAppearence("dark")
+else
+  ToggleAppearence("light")
+end
+
+vim.keymap.set('n', '<leader>tt', ToggleAppearence)
+
+vim.cmd(":hi statusline guibg=NONE")

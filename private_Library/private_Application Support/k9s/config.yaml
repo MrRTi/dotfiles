@@ -1,0 +1,12 @@
+k9s:
+  refreshRate: 2
+  maxConnRetry: 5
+  readOnly: false
+  ui:
+    enableMouse: false
+    headless: true
+    logoless: true
+    crumbsless: true
+    noIcons: true
+    reactive: false
+    skin: transparent
