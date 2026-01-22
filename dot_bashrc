@@ -1,4 +1,19 @@
+# vim: set ft=sh :
 # Functions
+git_clone_to_worktree(){
+  git clone "$1" "${2:-$1}/main"
+  cd "${2:-$1}"
+
+  touch .envrc
+  echo source_up >>.envrc
+
+  if command -v direnv >/dev/null 2>&1; then
+    direnv allow
+  fi
+
+  cd main
+}
+
 git_worktree_base(){
 	git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
 
