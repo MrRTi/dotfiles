@@ -1,8 +1,11 @@
 # vim: set ft=sh :
 # Functions
 git_clone_to_worktree(){
-  git clone "$1" "${2:-$1}/main"
-  cd "${2:-$1}"
+  repo_name=$(basename "$1" .git)
+  target="${2:-$repo_name}"
+
+  git clone "$1" "$target/main"
+  cd "$target"
 
   touch .envrc
   echo source_up >>.envrc
