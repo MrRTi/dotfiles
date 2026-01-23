@@ -70,7 +70,7 @@ vim.pack.add({
   --
   { src = "https://github.com/andythigpen/nvim-coverage" },
   -- Theme
-  { src = "https://github.com/Shatur/neovim-ayu" },
+  { src = "https://github.com/catppuccin/nvim" },
 })
 
 require("todo-comments").setup()
@@ -274,26 +274,11 @@ _G.is_dark_term = function()
   return print(is_dark_local())
 end
 
-local colors = require('ayu.colors')
-colors.generate()
-
-require('ayu').setup({
-  mirage = false,   -- Set to `true` to use `mirage` variant instead of `dark` for dark background.
-  terminal = false, -- Set to `false` to let terminal manage its own colors.
-  overrides = {
-    Normal       = { bg = "None" },
-    NormalFloat  = { bg = "none" },
-    ColorColumn  = { bg = "None" },
-    SignColumn   = { bg = "None" },
-    Folded       = { bg = "None" },
-    FoldColumn   = { bg = "None" },
-    CursorColumn = { bg = "None" },
-    VertSplit    = { bg = "None" },
-    LineNr       = { fg = colors.fg },
-  },
+require("catppuccin").setup({
+  transparent_background = true
 })
 
-vim.cmd("colorscheme ayu")
+vim.cmd("colorscheme catppuccin")
 
 function ToggleAppearence(toggle_to)
   toggle_to = toggle_to or (vim.o.background == "light" and "dark" or "light")
