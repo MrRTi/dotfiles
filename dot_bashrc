@@ -101,6 +101,7 @@ git_worktree_remove() {
     fzf --multi | \
     while read -r line; do
       git worktree remove --force "$line"
+      echo "Worktree '${line}' removed"
     done
 }
 
