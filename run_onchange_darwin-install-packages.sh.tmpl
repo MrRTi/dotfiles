@@ -1,5 +1,6 @@
-{{ if eq .chezmoi.os "darwin" -}}
 #!/usr/bin/env bash
+
+{{ if eq .chezmoi.os "darwin" -}}
 
 brew bundle --file=/dev/stdin <<EOF
 {{ range .packages.darwin.taps -}}
@@ -19,3 +20,4 @@ mas {{ .name | quote }}, id: {{ .id }}
 {{ end -}}
 EOF
 {{ end -}}
+# vim: set ft=sh :

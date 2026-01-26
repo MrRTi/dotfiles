@@ -1,3 +1,4 @@
+# vim: set ft=sh :
 #!/usr/bin/env bash
 
 NOTES_FOLDER=${NOTES_FOLDER:-"$HOME/notes"}
