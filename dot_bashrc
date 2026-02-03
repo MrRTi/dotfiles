@@ -69,12 +69,18 @@ git_worktree_switch(){
 }
 
 git_branch_query() {
-  git branch | \
-    sed -r "s:\* (.*):\1 [exists]:" | \
-    awk '{printf "\x1b[34m%s\x1b[0m\t\x1b[31m%s\x1b[0m\n", $1, $2}' | \
-    fzf --print-query --ansi --query "$1" | \
-    tail -n 1 | \
-    awk '{print $1}'
+  git branch | awk '{
+      if ($1 == "*") {
+          printf "\x1b[31m%s [default]\x1b[0m\n", $2
+      } else if ($1 == "+") {
+          printf "\x1b[31m%s %s\x1b[0m\n", $2, $1
+      } else {
+          printf "\x1b[34m%s\x1b[0m\n", $1
+      }
+  }' | \
+  fzf --print-query --ansi --query "$1" | \
+  tail -n 1 | \
+  awk '{print $1}'
 }
 
 git_worktree_add_query() {
