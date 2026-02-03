@@ -35,7 +35,7 @@ if [ "${SESSION_NAME}" = "${USER}" ]; then
     SESSION_NAME="__${SESSION_NAME}"
 fi
 
-if ! tmux has-session -t "${SESSION_NAME}" 2>/dev/null; then
+if ! tmux has-session -t ="${SESSION_NAME}" 2>/dev/null; then
   TMUX='' tmux new -c "${SESSION_PATH}" -s "${SESSION_NAME}" -d
 fi
 
