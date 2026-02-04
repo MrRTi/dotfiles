@@ -1,59 +1,77 @@
-# vim: set ft=sh :
 #!/usr/bin/env bash
+# vim: set ft=sh :
+#
 
-NOTES_FOLDER=${NOTES_FOLDER:-"$HOME/notes"}
-
-mkdir -pv "$NOTES_FOLDER"
+NOTES_FOLDER="${NOTES_FOLDER:-"$HOME/notes"}"
 
 __select_path() {
-  fd --type f . "$NOTES_FOLDER" | \
-    awk '{printf "\x1b[35m%s\x1b[0m\n", $1}' | \
-    sed "s:$NOTES_FOLDER/::" | \
+  fd --type f . "${NOTES_FOLDER}" |
+    awk '{printf "\x1b[35m%s\x1b[0m\n", $1}' |
+    sed "s:${NOTES_FOLDER}/::" |
     fzf \
       --print-query \
       --ansi \
       --preview-window up,80% \
       --height=80% \
-      --layout=reverse  \
-      --preview "bat --color=always $NOTES_FOLDER/{}" | \
+      --layout=reverse \
+      --preview "bat --color=always ${NOTES_FOLDER}/{}" |
     tail -n 1
 }
 
-FILE_PATH=$(__select_path)
+__create_note() {
+  local query="$1"
+  local file_dirname="${NOTES_FOLDER}"
+  local original_query="${query}"
 
-# Exit if nothing returned
-if [ -z "$FILE_PATH" ]; then exit 1; fi
+  # NOTE: Replace spaces with hyphens for use as a filename
+  query="${query// /-}"
 
-if [ ! -f "$NOTES_FOLDER/$FILE_PATH" ]; then
-  FILE_DIRNAME="$NOTES_FOLDER"
-  ORIGINAL_FILE_PATH="$FILE_PATH"
-  FILE_PATH=$(echo "$FILE_PATH" | sed 's/ /-/g')
-
-  if [ ! "${FILE_PATH}" = "${FILE_PATH##*/}" ]; then
-    FILE_DIRNAME="$FILE_DIRNAME/$(dirname "$FILE_PATH")"
+  # NOTE: If query contains a slash, extract subdirectory from it
+  if [ ! "${query}" = "${query##*/}" ]; then
+    file_dirname="${file_dirname}/$(dirname "${query}")"
   fi
 
-  FILE_NAME="$(basename "$FILE_PATH" | tr '[:upper:]' '[:lower:]')"
-  DATE=$(date '+%Y-%m-%d-%H-%M-%S')
-  FILE_NAME="$DATE-$FILE_NAME.md"
-  FILE_PATH="$FILE_DIRNAME/$FILE_NAME"
+  local file_name
+  file_name="$(basename "${query}" | tr '[:upper:]' '[:lower:]')"
+  local date
+  date="$(date '+%Y-%m-%d-%H-%M-%S')"
+  file_name="${date}-${file_name}.md"
 
-  mkdir -pv "${FILE_DIRNAME}"
-  touch "$FILE_PATH"
+  local file_path="${file_dirname}/${file_name}"
+
+  mkdir -pv "${file_dirname}"
+  touch "${file_path}"
 
   echo "---
   aliases:
-    - $ORIGINAL_FILE_PATH
+    - ${original_query}
   tags:
     - created-from-shell
-  created_at: $DATE
+  created_at: ${date}
 ---
 
-# $ORIGINAL_FILE_PATH
-" >> "$FILE_PATH"
-else
-  FILE_PATH="$NOTES_FOLDER/$FILE_PATH"
-fi
+# ${original_query}
+" >> "${file_path}"
 
-nvim "$FILE_PATH"
+  echo "${file_path}"
+}
 
+__resolve_path() {
+  local selection="$1"
+
+  if [ -f "${NOTES_FOLDER}/${selection}" ]; then
+    echo "${NOTES_FOLDER}/${selection}"
+  else
+    __create_note "${selection}"
+  fi
+}
+
+mkdir -pv "${NOTES_FOLDER}"
+
+selection="$(__select_path)"
+
+if [ -z "${selection}" ]; then exit 1; fi
+
+file_path="$(__resolve_path "${selection}")"
+
+nvim "${file_path}"
