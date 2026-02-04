@@ -7,3 +7,4 @@ shell.nix
 .mise.toml
 *.swp
 CLAUDE.md
+**/.claude/settings.local.json
