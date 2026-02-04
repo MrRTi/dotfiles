@@ -1,11 +1,74 @@
 # vim: set ft=sh :
+
+# Non-interactive guard — prevents SCP and non-interactive shells from running interactive setup
+[[ $- != *i* ]] && return
+
+# Shell options and history
+set -o vi
+
+shopt -s histappend
+shopt -s histverify
+shopt -s cdspell
+shopt -s direxpand
+shopt -s checkwinsize
+
+HISTCONTROL=ignoreboth:erasedups
+HISTSIZE=10000
+HISTFILESIZE=20000
+HISTTIMEFORMAT='%F %T '
+
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
+# Environment variables and PATH
+export PATH="/opt/homebrew/bin:$HOME/.local/bin:$HOME/.orbstack/bin:$HOME/.cargo/bin:$PATH"
+export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
+export LDFLAGS="-L/opt/homebrew/opt/libpq/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/libpq/include"
+export EDITOR=nvim
+export VISUAL=nvim
+
+# Tool integrations
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate bash)"
+fi
+
+if command -v direnv >/dev/null 2>&1; then
+  eval "$(direnv hook bash)"
+fi
+
+# Bash completion
+for f in /opt/homebrew/etc/profile.d/bash_completion.sh \
+         /usr/local/etc/profile.d/bash_completion.sh \
+         /usr/share/bash-completion/bash_completion \
+         /etc/bash_completion; do
+  [ -f "$f" ] && source "$f" && break
+done
+
+# Git prompt
+for f in /opt/homebrew/etc/bash_completion.d/git-prompt.sh \
+         /usr/local/etc/bash_completion.d/git-prompt.sh \
+         /usr/share/git-core/contrib/completion/git-prompt.sh; do
+  [ -f "$f" ] && source "$f" && break
+done
+
+# Fallback no-op if git-prompt.sh was not found
+if ! type -t __git_ps1 >/dev/null 2>&1; then
+  __git_ps1() { :; }
+fi
+
+# Git status options
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWUNTRACKEDFILES=1
+GIT_PS1_SHOWUPSTREAM="auto"
+
 # Functions
-git_clone_to_worktree(){
+git_clone_to_worktree() {
+  local repo_name target
   repo_name=$(basename "$1" .git)
   target="${2:-$repo_name}"
 
-  git clone "$1" "$target/main"
-  cd "$target"
+  git clone "$1" "$target/main" || return 1
+  cd "$target" || return 1
 
   touch .envrc
   echo source_up >>.envrc
@@ -14,82 +77,81 @@ git_clone_to_worktree(){
     direnv allow
   fi
 
-  cd main
+  cd main || return 1
 }
 
-git_worktree_base(){
-	git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
+git_worktree_base() {
+  local git_dir
+  git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
 
-	if [ -z "$git_dir" ] && [ -d ./main/.git ]; then
-		# NOTE: to be able to use git command in root project folder
-		cd main || return 1
-		git_dir=$(git rev-parse --show-toplevel)
-	fi
+  if [ -z "$git_dir" ] && [ -d ./main/.git ]; then
+    cd main || return 1
+    git_dir=$(git rev-parse --show-toplevel)
+  fi
 
-	# NOTE: If we are in folder with .git repo folder
-	if [ -d "$git_dir/.git" ]; then
-	  # NOTE: Return project root like in PROJECT_ROOT/main
-		dirname "$git_dir"
-		return 0
-	fi
+  if [ -d "$git_dir/.git" ]; then
+    dirname "$git_dir"
+    return 0
+  fi
 
-	# NOTE: If we are in worktree
-	if [ -f "$git_dir/.git" ]; then
-		dirname "$(awk -F': ' '/^gitdir:/ { sub(/\.git\/worktrees\/.*/, "", $2); print $2; exit }' .git)"
-		return 0
-	fi
+  if [ -f "$git_dir/.git" ]; then
+    dirname "$(awk -F': ' '/^gitdir:/ { sub(/\.git\/worktrees\/.*/, "", $2); print $2; exit }' "$git_dir/.git")"
+    return 0
+  fi
 
-	echo "Not git repository"
-	return 1
+  echo "Not git repository"
+  return 1
 }
 
 git_worktree_select() {
-	root=$(git_worktree_base)
-	cd "$root/main" || return 1
+  local root
+  root=$(git_worktree_base)
+  cd "$root/main" || return 1
 
-	git worktree list | \
-		awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' |
-		sed "s:$root:󰾛 :" |
-		sed "/ (root)*/d" |
-		column -t |
-		fzf --ansi --query "$1" |
-		sed "s:󰾛  :$root:" |
-		awk '{print $3}'
+  git worktree list | \
+    awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' |
+    sed "s:$root:󰾛 :" |
+    sed "/ (root)*/d" |
+    column -t |
+    fzf --ansi --query "$1" |
+    sed "s:.*󰾛 *:$root:"
 }
 
-git_worktree_switch(){
-	worktree_path=$(git_worktree_select "$1")
+git_worktree_switch() {
+  local worktree_path
+  worktree_path=$(git_worktree_select "$1")
 
-	if [ -z "$worktree_path" ]; then
+  if [ -z "$worktree_path" ]; then
     echo "Worktree path is not set"
-		return 1
-	fi
+    return 1
+  fi
 
-	cd "$worktree_path" || return 1
+  cd "$worktree_path" || return 1
 }
 
 git_branch_query() {
   git branch | awk '{
-      if ($1 == "*") {
-          printf "\x1b[31m%s [default]\x1b[0m\n", $2
-      } else if ($1 == "+") {
-          printf "\x1b[31m%s %s\x1b[0m\n", $2, $1
-      } else {
-          printf "\x1b[34m%s\x1b[0m\n", $1
-      }
+    if ($1 == "*") {
+      printf "\x1b[31m%s [default]\x1b[0m\n", $2
+    } else if ($1 == "+") {
+      printf "\x1b[31m%s %s\x1b[0m\n", $2, $1
+    } else {
+      printf "\x1b[34m%s\x1b[0m\n", $1
+    }
   }' | \
-  fzf --print-query --ansi --query "$1" | \
-  tail -n 1 | \
-  awk '{print $1}'
+    fzf --print-query --ansi --query "$1" | \
+    tail -n 1 | \
+    awk '{print $1}'
 }
 
 git_worktree_add_query() {
+  local root branch
   root=$(git_worktree_base)
-	cd "$root/main" || return 1
+  cd "$root/main" || return 1
 
   branch=$(git_branch_query "$1" | xargs)
 
-  if git branch | grep -q "$branch"; then
+  if git branch --list "$branch" | grep -q .; then
     git worktree add "$root/$branch" "$branch"
   else
     git worktree add "$root/$branch" -b "$branch"
@@ -99,8 +161,9 @@ git_worktree_add_query() {
 }
 
 git_worktree_remove() {
+  local root
   root=$(git_worktree_base)
-	cd "$root/main" || return 1
+  cd "$root/main" || return 1
 
   git worktree list | \
     awk '{print $1}' | \
@@ -112,29 +175,35 @@ git_worktree_remove() {
 }
 
 chezmoi-cd() {
-    cd "$(chezmoi source-path)"
+  cd "$(chezmoi source-path)" || return 1
 }
 
-_short_path() {
-    local path="${PWD/#$HOME/\~}"
-    local result="" dir
-    local IFS='/'
-    read -ra parts <<< "$path"
-    local last=$((${#parts[@]} - 1))
+__short_path() {
+  local path="${PWD/#$HOME/\~}"
+  local result="" dir
+  local IFS='/'
+  read -ra parts <<< "$path"
+  local last=$((${#parts[@]} - 1))
 
-    for i in "${!parts[@]}"; do
-        dir="${parts[i]}"
-        if [[ $i -eq $last || -z "$dir" ]]; then
-            result+="$dir"
-        else
-            result+="${dir:0:1}/"
-        fi
-    done
-    printf '%s' "$result"
+  for i in "${!parts[@]}"; do
+    dir="${parts[i]}"
+    if [[ $i -eq $last || -z "$dir" ]]; then
+      result+="$dir"
+    else
+      result+="${dir:0:1}/"
+    fi
+  done
+  printf '%s' "$result"
 }
 
 # Aliases
 # NOTE: to sort in nvim use `sort /.*=/` on visual selection
+alias eza='eza --git'
+alias ls='eza'
+alias la='ls -a'
+alias lt='ls --tree'
+alias ll='ls -la'
+
 alias less='bat -p'
 alias lessl='bat -pl'
 alias cat='bat -pp'
@@ -149,10 +218,6 @@ alias dc='docker compose'
 alias d='docker'
 alias ':q'='exit'
 alias -- -='cd -'
-alias eza='eza --git'
-alias lt='eza --tree'
-alias la='eza -a'
-alias ls='eza'
 alias ga='git add'
 alias gb='git branch'
 alias gco='git checkout'
@@ -165,7 +230,6 @@ alias gres='git reset --hard origin/$(git current-branch)'
 alias gs='git status'
 alias gw='git worktree'
 alias g='git'
-alias ll='ls -la'
 alias md='mkdir -pv'
 alias vf='nvim .'
 alias v='nvim'
@@ -180,67 +244,14 @@ alias gwr='git_worktree_remove'
 alias gws='git_worktree_switch'
 alias tn='tmux-sessionizer'
 
-# Environment Variables
-export PATH="/opt/homebrew/bin:$HOME/.local/bin:$HOME/.orbstack/bin:$HOME/.cargo/bin:$PATH"
-export SSH_AUTH_SOCK="$HOME/.1password/agent.sock"
-export LDFLAGS="-L/opt/homebrew/opt/libpq/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/libpq/include"
-export EDITOR=nvim
-export VISUAL=nvim
-
-# if [ "$TERM" != "dumb" ] && command -v starship >/dev/null 2>&1; then
-#     eval "$(starship init bash)"
-# fi
-
-if command -v mise >/dev/null 2>&1; then
-    eval "$(mise activate bash)"
-fi
-
-if command -v direnv >/dev/null 2>&1; then
-    eval "$(direnv hook bash)"
-fi
-
-set -o vi
-
-HISTCONTROL=ignoreboth:erasedups
-HISTSIZE=10000
-HISTFILESIZE=20000
-
-shopt -s histappend
-shopt -s histverify
-shopt -s cdspell
-shopt -s direxpand
-
-PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
-
-# Source bash completion
-for f in /opt/homebrew/etc/profile.d/bash_completion.sh \
-         /usr/local/etc/profile.d/bash_completion.sh \
-         /usr/share/bash-completion/bash_completion \
-         /etc/bash_completion; do
-    [ -f "$f" ] && source "$f" && break
-done
-
-# Source git prompt if available (check common paths first for speed)
-for f in /opt/homebrew/etc/bash_completion.d/git-prompt.sh \
-         /usr/local/etc/bash_completion.d/git-prompt.sh \
-         /usr/share/git-core/contrib/completion/git-prompt.sh; do
-    [ -f "$f" ] && source "$f" && break
-done
-
-# Git status options
-GIT_PS1_SHOWDIRTYSTATE=1        # * = unstaged, + = staged
-GIT_PS1_SHOWUNTRACKEDFILES=1    # % = untracked files
-GIT_PS1_SHOWUPSTREAM="auto"     # < = behind, > = ahead, <> = diverged, = = equal
-
+# Prompt (PS1)
 # Colors
 C_RESET='\[\e[0m\]'
 C_PATH='\[\e[34m\]'      # blue
 C_GIT='\[\e[33m\]'       # yellow
 C_USER='\[\e[32m\]'      # green
 
-# Prepend user@host only in SSH sessions
 SSH_INFO=""
 [ -n "$SSH_TTY" ] && SSH_INFO="${C_USER}\u@\h${C_RESET}:"
 
-PS1="${SSH_INFO}${C_PATH}\$(_short_path)${C_RESET}${C_GIT}\$(__git_ps1 \" (%s)\")${C_RESET} \n\$ "
+PS1="${SSH_INFO}${C_PATH}\$(__short_path)${C_RESET}${C_GIT}\$(__git_ps1 \" (%s)\")${C_RESET} \n\$ "
