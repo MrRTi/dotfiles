@@ -9,3 +9,4 @@ show_tools = true
 [tools]
 go = "latest"
 python = "latest"
+shellcheck = "latest"
