@@ -54,7 +54,6 @@ vim.pack.add({
   { src = "https://github.com/christoomey/vim-tmux-navigator" },
   { src = "https://github.com/lewis6991/gitsigns.nvim" },
   { src = "https://github.com/kdheepak/lazygit.nvim" },
-  { src = "https://github.com/stevearc/conform.nvim" },
   { src = "https://github.com/nvim-lua/plenary.nvim" },
   { src = "https://github.com/folke/todo-comments.nvim" },
   {
@@ -82,7 +81,6 @@ require("coverage").setup({
   auto_reload = true,
 })
 require("neotest").setup({
-  ...,
   adapters = {
     require("neotest-rspec")
   },
@@ -116,10 +114,11 @@ vim.api.nvim_create_autocmd('LspAttach', {
   end,
 })
 
-vim.cmd("set completeopt+=noselect")
+vim.opt.completeopt:append("noselect")
 
 
 local null_ls = require("null-ls")
+local augroup_format = vim.api.nvim_create_augroup("NullLsFormat", { clear = true })
 
 null_ls.setup({
   sources = {
@@ -189,62 +188,62 @@ require('fzf-lua').setup({
   },
 })
 
-require("conform").setup({
-  formatters_by_ft = {
-    lua = { "stylua" },
-    python = { "isort", "black" },
-    javascript = { "prettierd", "prettier", stop_after_first = true },
-    typescript = { "prettierd", "prettier", stop_after_first = true },
-    ruby = { "rubocop" },
-    sh = { "shfmt" },
-    zsh = { "shfmt" },
-    markdown = { "prettier" },
-  },
-})
 
-vim.keymap.set('n', '<leader>bd', ':bdelete<CR>')
+vim.keymap.set('n', '<leader>bd', '<cmd>bdelete<CR>', { desc = "Delete buffer" })
 
-vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y<CR>')
-vim.keymap.set({ 'n', 'v', 'x' }, '<leader>d', '"+d<CR>')
+vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y', { desc = "Yank to system clipboard" })
+vim.keymap.set({ 'n', 'v', 'x' }, '<leader>d', '"+d', { desc = "Delete to system clipboard" })
 
-vim.keymap.set('n', '<leader><space>', ":FzfLua global<CR>")
-vim.keymap.set('n', '<leader>sf', ":FzfLua files<CR>")
-vim.keymap.set('n', '<leader>sw', ":FzfLua grep_cword<CR>")
-vim.keymap.set('n', '<leader>sg', ":FzfLua live_grep<CR>")
-vim.keymap.set('n', '<leader>sh', ":FzfLua helptags<CR>")
-vim.keymap.set('n', '<leader>sr', ":FzfLua resume<CR>")
+vim.keymap.set('n', '<leader><space>', '<cmd>FzfLua<CR>', { desc = "Open FzfLua picker" })
+vim.keymap.set('n', '<leader>sf', '<cmd>FzfLua files<CR>', { desc = "Search files" })
+vim.keymap.set('n', '<leader>sw', '<cmd>FzfLua grep_cword<CR>', { desc = "Search word under cursor" })
+vim.keymap.set('n', '<leader>sg', '<cmd>FzfLua live_grep<CR>', { desc = "Live grep" })
+vim.keymap.set('n', '<leader>sh', '<cmd>FzfLua helptags<CR>', { desc = "Search help tags" })
+vim.keymap.set('n', '<leader>sr', '<cmd>FzfLua resume<CR>', { desc = "Resume last search" })
 
-vim.keymap.set('n', '<leader>e', ":Oil<CR>")
-vim.keymap.set('n', '<leader>-', ":Oil<CR>")
+vim.keymap.set('n', '<leader>e', '<cmd>Oil<CR>', { desc = "Open file explorer" })
+vim.keymap.set('n', '<leader>-', '<cmd>Oil<CR>', { desc = "Open file explorer" })
 
 vim.keymap.set('n', '<leader>fp', '<cmd>let @+ = expand("%")<CR>', { desc = "Copy file path to clipboard" })
 
-vim.keymap.set('n', '<leader>gg', ":LazyGit<CR>")
-vim.keymap.set({ 'n', 'v' }, '<leader>gb', ":Gitsigns blame_line<CR>")
-vim.keymap.set({ 'n', 'v' }, '<leader>gp', ":Gitsigns preview_hunk_inline<CR>")
-vim.keymap.set('n', '[h', ":Gitsigns prev_hunk<CR>")
-vim.keymap.set('n', ']h', ":Gitsigns next_hunk<CR>")
+vim.keymap.set('n', '<leader>gg', '<cmd>LazyGit<CR>', { desc = "Open LazyGit" })
+vim.keymap.set({ 'n', 'v' }, '<leader>gb', '<cmd>Gitsigns blame_line<CR>', { desc = "Git blame line" })
+vim.keymap.set({ 'n', 'v' }, '<leader>gp', '<cmd>Gitsigns preview_hunk_inline<CR>', { desc = "Preview hunk inline" })
+vim.keymap.set('n', '[h', '<cmd>Gitsigns prev_hunk<CR>', { desc = "Previous git hunk" })
+vim.keymap.set('n', ']h', '<cmd>Gitsigns next_hunk<CR>', { desc = "Next git hunk" })
 
--- vim.keymap.set('n', '<leader>lf', vim.lsp.buf.format)
 vim.keymap.set({ 'n', 'v' }, '<leader>lf', function()
-  require("conform").format({ async = true, lsp_fallback = true })
+  vim.lsp.buf.format({ async = true })
 end, { desc = "Format file or selection" })
-vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename)
-vim.keymap.set('n', 'gd', vim.lsp.buf.definition)
-vim.keymap.set('n', 'gD', vim.lsp.buf.declaration)
-vim.keymap.set('n', 'gr', vim.lsp.buf.references)
+
+vim.keymap.set('n', '<leader>lr', vim.lsp.buf.rename, { desc = "LSP rename" })
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = "Go to definition" })
+vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = "Go to declaration" })
+vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = "Go to references" })
 
 vim.keymap.set('n', '<leader>do', vim.diagnostic.open_float, { desc = "Open floating diagnostic window" })
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Next diagnostic" })
 
 
 local harpoon = require("harpoon")
 harpoon.setup()
-vim.keymap.set("n", "<leader>H", function() harpoon:list():add() end)
-vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-vim.keymap.set("n", "[H", function() harpoon:list():prev() end)
-vim.keymap.set("n", "]H", function() harpoon:list():next() end)
+
+vim.keymap.set("n", "<leader>H", function()
+  harpoon:list():add()
+end, { desc = "Add file to harpoon" })
+
+vim.keymap.set("n", "<leader>h", function()
+  harpoon.ui:toggle_quick_menu(harpoon:list())
+end, { desc = "Toggle harpoon menu" })
+
+vim.keymap.set("n", "[H", function()
+  harpoon:list():prev()
+end, { desc = "Previous harpoon file" })
+
+vim.keymap.set("n", "]H", function()
+  harpoon:list():next()
+end, { desc = "Next harpoon file" })
 
 
 vim.api.nvim_create_autocmd("TextYankPost", {
@@ -270,7 +269,7 @@ local function is_dark_local()
   return result == "true"
 end
 
-_G.is_dark_term = function()
+local function is_dark_term()
   return print(is_dark_local())
 end
 
@@ -280,7 +279,7 @@ require("catppuccin").setup({
 
 vim.cmd("colorscheme catppuccin")
 
-function ToggleAppearence(toggle_to)
+local function toggle_appearance(toggle_to)
   toggle_to = toggle_to or (vim.o.background == "light" and "dark" or "light")
   if toggle_to == "light" then
     vim.o.background = "light"
@@ -290,11 +289,11 @@ function ToggleAppearence(toggle_to)
 end
 
 if is_dark_local() then
-  ToggleAppearence("dark")
+  toggle_appearance("dark")
 else
-  ToggleAppearence("light")
+  toggle_appearance("light")
 end
 
-vim.keymap.set('n', '<leader>tt', ToggleAppearence)
+vim.keymap.set('n', '<leader>tt', toggle_appearance, { desc = "Toggle light/dark appearance" })
 
-vim.cmd(":hi statusline guibg=NONE")
+vim.cmd("hi statusline guibg=NONE")
