@@ -61,6 +61,8 @@ vim.pack.add({
     version = "harpoon2"
   },
   { src = "https://github.com/nvimtools/none-ls.nvim" },
+  { src = "https://github.com/nvimtools/none-ls-extras.nvim" },
+  { src = "https://github.com/gbprod/none-ls-shellcheck.nvim" },
   { src = "https://github.com/nvim-neotest/neotest" },
   -- deps
   { src = "https://github.com/nvim-neotest/nvim-nio" },
@@ -127,19 +129,17 @@ null_ls.setup({
     -- Python
     null_ls.builtins.formatting.black,
     null_ls.builtins.formatting.isort,
-    null_ls.builtins.diagnostics.flake8,
+    require("none-ls.diagnostics.flake8"),
     -- Ruby
     null_ls.builtins.formatting.rubocop,
     null_ls.builtins.diagnostics.rubocop,
-    -- Docker
-    -- null_ls.builtins.formatting.dockerfile_lint,
     -- JSON
-    null_ls.builtins.formatting.jq,
+    require("none-ls.formatting.jq"),
     -- YAML
     null_ls.builtins.formatting.yamlfmt,
     -- Shell
     null_ls.builtins.formatting.shfmt,
-    null_ls.builtins.diagnostics.shellcheck,
+    require("none-ls-shellcheck.diagnostics"),
   },
   on_attach = function(client, bufnr)
     if client.server_capabilities.documentFormattingProvider then
@@ -194,7 +194,7 @@ vim.keymap.set('n', '<leader>bd', '<cmd>bdelete<CR>', { desc = "Delete buffer" }
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>y', '"+y', { desc = "Yank to system clipboard" })
 vim.keymap.set({ 'n', 'v', 'x' }, '<leader>d', '"+d', { desc = "Delete to system clipboard" })
 
-vim.keymap.set('n', '<leader><space>', '<cmd>FzfLua<CR>', { desc = "Open FzfLua picker" })
+vim.keymap.set('n', '<leader><space>', '<cmd>FzfLua global<CR>', { desc = "Search files and buffers" })
 vim.keymap.set('n', '<leader>sf', '<cmd>FzfLua files<CR>', { desc = "Search files" })
 vim.keymap.set('n', '<leader>sw', '<cmd>FzfLua grep_cword<CR>', { desc = "Search word under cursor" })
 vim.keymap.set('n', '<leader>sg', '<cmd>FzfLua live_grep<CR>', { desc = "Live grep" })
