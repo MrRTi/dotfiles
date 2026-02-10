@@ -3,7 +3,6 @@ packages:
     taps:
       - netbirdio/tap
     brews:
-      - ack
       - readline
       - bash
       - bash-completion@2
@@ -24,7 +23,6 @@ packages:
       - hledger
       - htop
       - httpie
-      - jnv
       - just
       - k9s
       - lazygit
@@ -39,7 +37,6 @@ packages:
       - pipx
       - ripgrep
       - rust
-      - tealdeer
       - tmux
       - tree-sitter
       - tree-sitter-cli
