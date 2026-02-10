@@ -38,6 +38,7 @@ packages:
       - ripgrep
       - rust
       - tmux
+      - usql
       - tree-sitter
       - tree-sitter-cli
       - trivy
