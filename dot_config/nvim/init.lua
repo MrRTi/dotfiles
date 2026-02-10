@@ -23,9 +23,9 @@ local indent_settings = {
   ["*"]      = { tabstop = 2, shiftwidth = 2, softtabstop = 2, expandtab = true },  -- default: 2 spaces
 }
 
-for fyletype, opts in pairs(indent_settings) do
+for filetype, opts in pairs(indent_settings) do
   vim.api.nvim_create_autocmd("FileType", {
-    pattern = fyletype,
+    pattern = filetype,
     callback = function()
       vim.bo.tabstop     = opts.tabstop
       vim.bo.shiftwidth  = opts.shiftwidth
@@ -35,7 +35,7 @@ for fyletype, opts in pairs(indent_settings) do
   })
 end
 
--- Add abbility to use йцукен letters same as qwerty. (symbols like :, $ etc won't work as expected)
+-- Add ability to use йцукен letters same as qwerty. (symbols like :, $ etc won't work as expected)
 vim.o.langmap =
     "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;" ..
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ," ..
@@ -267,10 +267,6 @@ local function is_dark_local()
   handle:close()
   result = result:lower():gsub("%s+", "")
   return result == "true"
-end
-
-local function is_dark_term()
-  return print(is_dark_local())
 end
 
 require("catppuccin").setup({
