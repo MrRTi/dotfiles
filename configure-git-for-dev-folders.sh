@@ -26,7 +26,11 @@ for line in $parts; do
 	echo -e "[includeIf \"gitdir:$path/**\"]\n  path = \"$gitconfig_path\"" >>"$include_folder/includes.gitconfig"
 	git config --file "$gitconfig_path" user.email "$email"
 	key=$(ssh-add -L | grep "$email" | head -n 1)
-	git config --file "$gitconfig_path" user.signingkey "$key"
+	if [ -z "$key" ]; then
+		echo "Warning: No SSH key found for $email, skipping signing key setup" >&2
+	else
+		git config --file "$gitconfig_path" user.signingkey "$key"
+	fi
 
 	echo "Set git config values for repos at $path"
 	echo -e "\t- email=$email"
