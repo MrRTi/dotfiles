@@ -1,4 +1,5 @@
 [settings]
+auto_install = true
 idiomatic_version_file_enable_tools = ["ruby"]
 
 [settings.status]
@@ -7,6 +8,20 @@ show_env = true
 show_tools = true
 
 [tools]
-go = "latest"
-python = "latest"
-shellcheck = "latest"
+black = "26.1.0"
+go = "1.25.7"
+jq = "1.8.1"
+lua-language-server = "3.17.1"
+marksman = "2026-02-08"
+node = "22.22.0"
+"npm:yaml-language-server" = "1.19.2"
+"pipx:flake8" = "7.3.0"
+"pipx:isort" = "7.0.0"
+"pipx:pyright" = "1.1.408"
+python = "3.13.12"
+ruby = "3.4.8"
+ruff = "0.15.0"
+shellcheck = "0.11.0"
+shfmt = "3.12.0"
+stylua = "2.3.1"
+yamlfmt = "0.21.0"

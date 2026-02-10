@@ -25,7 +25,6 @@ packages:
       - htop
       - httpie
       - jnv
-      - jq
       - just
       - k9s
       - lazygit
@@ -40,15 +39,12 @@ packages:
       - pipx
       - ripgrep
       - rust
-      - shellcheck
-      - shfmt
       - tealdeer
       - tmux
       - tree-sitter
       - tree-sitter-cli
       - trivy
       - wget
-      - yamlfmt
       - yq
       - netbirdio/tap/netbird
     brews_with_options:
