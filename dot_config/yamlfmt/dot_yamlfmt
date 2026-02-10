@@ -1,4 +1,10 @@
+metadata:
+  enabled_pragmas:
+    - disable
 formatter:
   type: basic
   retain_line_breaks: true
   max_line_length: 0
+  include_document_start: true
+  trim_trailing_whitespace: true
+  scan_folded_as_literal: true
