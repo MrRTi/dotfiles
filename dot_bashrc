@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # vim: set ft=sh :
 
 # Non-interactive guard — prevents SCP and non-interactive shells from running interactive setup
@@ -41,6 +42,7 @@ for f in /opt/homebrew/etc/profile.d/bash_completion.sh \
          /usr/local/etc/profile.d/bash_completion.sh \
          /usr/share/bash-completion/bash_completion \
          /etc/bash_completion; do
+  # shellcheck source=/dev/null
   [ -f "$f" ] && source "$f" && break
 done
 
@@ -48,6 +50,7 @@ done
 for f in /opt/homebrew/etc/bash_completion.d/git-prompt.sh \
          /usr/local/etc/bash_completion.d/git-prompt.sh \
          /usr/share/git-core/contrib/completion/git-prompt.sh; do
+  # shellcheck source=/dev/null
   [ -f "$f" ] && source "$f" && break
 done
 
@@ -56,10 +59,10 @@ if ! type -t __git_ps1 >/dev/null 2>&1; then
   __git_ps1() { :; }
 fi
 
-# Git status options
-GIT_PS1_SHOWDIRTYSTATE=1
-GIT_PS1_SHOWUNTRACKEDFILES=1
-GIT_PS1_SHOWUPSTREAM="auto"
+# Git status options (exported for __git_ps1)
+export GIT_PS1_SHOWDIRTYSTATE=1
+export GIT_PS1_SHOWUNTRACKEDFILES=1
+export GIT_PS1_SHOWUPSTREAM="auto"
 
 # Functions
 git_clone_to_worktree() {
@@ -223,7 +226,7 @@ alias gb='git branch'
 alias gco='git checkout'
 alias gc='git commit'
 alias glol='git log-pretty'
-alias gpf='git push --force origin $(git current-branch)'
+alias gpf='git push --force-with-lease origin $(git current-branch)'
 alias gpu='git push -u origin $(git current-branch)'
 alias grup='git remote update'
 alias gres='git reset --hard origin/$(git current-branch)'
