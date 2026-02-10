@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Returns git branch and remote info for tmux pane border
+
+dir="${1:-.}"
+cd "$dir" 2>/dev/null || exit 0
+
+if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+  exit 0
+fi
+
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+remote=$(basename -s .git "$(git config --get remote.origin.url 2>/dev/null)" 2>/dev/null)
+
+if [ -n "$branch" ] && [ -n "$remote" ]; then
+  echo "  $branch at  $remote"
+fi
