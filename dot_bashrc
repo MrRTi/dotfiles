@@ -30,33 +30,33 @@ export VISUAL=nvim
 
 # Tool integrations
 if command -v mise >/dev/null 2>&1; then
-  eval "$(mise activate bash)"
+	eval "$(mise activate bash)"
 fi
 
 if command -v direnv >/dev/null 2>&1; then
-  eval "$(direnv hook bash)"
+	eval "$(direnv hook bash)"
 fi
 
 # Bash completion
 for f in /opt/homebrew/etc/profile.d/bash_completion.sh \
-         /usr/local/etc/profile.d/bash_completion.sh \
-         /usr/share/bash-completion/bash_completion \
-         /etc/bash_completion; do
-  # shellcheck source=/dev/null
-  [ -f "$f" ] && source "$f" && break
+	/usr/local/etc/profile.d/bash_completion.sh \
+	/usr/share/bash-completion/bash_completion \
+	/etc/bash_completion; do
+	# shellcheck source=/dev/null
+	[ -f "$f" ] && source "$f" && break
 done
 
 # Git prompt
 for f in /opt/homebrew/etc/bash_completion.d/git-prompt.sh \
-         /usr/local/etc/bash_completion.d/git-prompt.sh \
-         /usr/share/git-core/contrib/completion/git-prompt.sh; do
-  # shellcheck source=/dev/null
-  [ -f "$f" ] && source "$f" && break
+	/usr/local/etc/bash_completion.d/git-prompt.sh \
+	/usr/share/git-core/contrib/completion/git-prompt.sh; do
+	# shellcheck source=/dev/null
+	[ -f "$f" ] && source "$f" && break
 done
 
 # Fallback no-op if git-prompt.sh was not found
 if ! type -t __git_ps1 >/dev/null 2>&1; then
-  __git_ps1() { :; }
+	__git_ps1() { :; }
 fi
 
 # Git status options (exported for __git_ps1)
@@ -66,74 +66,74 @@ export GIT_PS1_SHOWUPSTREAM="auto"
 
 # Functions
 git_clone_to_worktree() {
-  local repo_name target
-  repo_name=$(basename "$1" .git)
-  target="${2:-$repo_name}"
+	local repo_name target
+	repo_name=$(basename "$1" .git)
+	target="${2:-$repo_name}"
 
-  git clone "$1" "$target/main" || return 1
-  cd "$target" || return 1
+	git clone "$1" "$target/main" || return 1
+	cd "$target" || return 1
 
-  touch .envrc
-  echo source_up >>.envrc
+	touch .envrc
+	echo source_up >>.envrc
 
-  if command -v direnv >/dev/null 2>&1; then
-    direnv allow
-  fi
+	if command -v direnv >/dev/null 2>&1; then
+		direnv allow
+	fi
 
-  cd main || return 1
+	cd main || return 1
 }
 
 git_worktree_base() {
-  local git_dir
-  git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
+	local git_dir
+	git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
 
-  if [ -z "$git_dir" ] && [ -d ./main/.git ]; then
-    cd main || return 1
-    git_dir=$(git rev-parse --show-toplevel)
-  fi
+	if [ -z "$git_dir" ] && [ -d ./main/.git ]; then
+		cd main || return 1
+		git_dir=$(git rev-parse --show-toplevel)
+	fi
 
-  if [ -d "$git_dir/.git" ]; then
-    dirname "$git_dir"
-    return 0
-  fi
+	if [ -d "$git_dir/.git" ]; then
+		dirname "$git_dir"
+		return 0
+	fi
 
-  if [ -f "$git_dir/.git" ]; then
-    dirname "$(awk -F': ' '/^gitdir:/ { sub(/\.git\/worktrees\/.*/, "", $2); print $2; exit }' "$git_dir/.git")"
-    return 0
-  fi
+	if [ -f "$git_dir/.git" ]; then
+		dirname "$(awk -F': ' '/^gitdir:/ { sub(/\.git\/worktrees\/.*/, "", $2); print $2; exit }' "$git_dir/.git")"
+		return 0
+	fi
 
-  echo "Not git repository"
-  return 1
+	echo "Not git repository"
+	return 1
 }
 
 git_worktree_select() {
-  local root
-  root=$(git_worktree_base)
-  cd "$root/main" || return 1
+	local root
+	root=$(git_worktree_base)
+	cd "$root/main" || return 1
 
-  git worktree list | \
-    awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' |
-    sed "s:$root:󰾛 :" |
-    sed "/ (root)*/d" |
-    column -t |
-    fzf --ansi --query "$1" |
-    sed "s:.*󰾛 *:$root:"
+	git worktree list |
+		awk '{printf "\x1b[34m %s\x1b[0m\t\x1b[33m%s\x1b[0m\n", ($3 == "" ? "(root)" : $3), $1}' |
+		sed "s:$root:󰾛 :" |
+		sed "/ (root)*/d" |
+		column -t |
+		fzf --ansi --query "$1" |
+		sed "s:.*󰾛 *:$root:"
 }
 
 git_worktree_switch() {
-  local worktree_path
-  worktree_path=$(git_worktree_select "$1")
+	local worktree_path
+	worktree_path=$(git_worktree_select "$1")
 
-  if [ -z "$worktree_path" ]; then
-    echo "Worktree path is not set"
-    return 1
-  fi
+	if [ -z "$worktree_path" ]; then
+		echo "Worktree path is not set"
+		return 1
+	fi
 
-  cd "$worktree_path" || return 1
+	cd "$worktree_path" || return 1
 }
 
 git_branch_query() {
-  git branch | awk '{
+	git branch | awk '{
     if ($1 == "*") {
       printf "\x1b[31m%s [default]\x1b[0m\n", $2
     } else if ($1 == "+") {
@@ -141,62 +141,88 @@ git_branch_query() {
     } else {
       printf "\x1b[34m%s\x1b[0m\n", $1
     }
-  }' | \
-    fzf --print-query --ansi --query "$1" | \
-    tail -n 1 | \
-    awk '{print $1}'
+  }' |
+		fzf --print-query --ansi --query "$1" |
+		tail -n 1 |
+		awk '{print $1}'
 }
 
 git_worktree_add_query() {
-  local root branch
-  root=$(git_worktree_base)
-  cd "$root/main" || return 1
+	local root branch
+	root=$(git_worktree_base)
+	cd "$root/main" || return 1
 
-  branch=$(git_branch_query "$1" | xargs)
+	branch=$(git_branch_query "$1" | xargs)
 
-  if git branch --list "$branch" | grep -q .; then
-    git worktree add "$root/$branch" "$branch"
-  else
-    git worktree add "$root/$branch" -b "$branch"
-  fi
+	if git branch --list "$branch" | grep -q .; then
+		git worktree add "$root/$branch" "$branch"
+	else
+		git worktree add "$root/$branch" -b "$branch"
+	fi
 
-  cd "$root/$branch" || return 1
+	cd "$root/$branch" || return 1
 }
 
 git_worktree_remove() {
-  local root
-  root=$(git_worktree_base)
-  cd "$root/main" || return 1
+	local root
+	root=$(git_worktree_base)
+	cd "$root/main" || return 1
 
-  git worktree list | \
-    awk '{print $1}' | \
-    fzf --multi | \
-    while read -r line; do
-      git worktree remove --force "$line"
-      echo "Worktree '${line}' removed"
-    done
+	git worktree list |
+		awk '{print $1}' |
+		fzf --multi |
+		while read -r line; do
+			git worktree remove --force "$line"
+			echo "Worktree '${line}' removed"
+		done
 }
 
 chezmoi-cd() {
-  cd "$(chezmoi source-path)" || return 1
+	cd "$(chezmoi source-path)" || return 1
 }
 
 __short_path() {
-  local path="${PWD/#$HOME/\~}"
-  local result="" dir
-  local IFS='/'
-  read -ra parts <<< "$path"
-  local last=$((${#parts[@]} - 1))
+	local path="${PWD/#$HOME/\~}"
+	local result="" dir
+	local IFS='/'
+	read -ra parts <<<"$path"
+	local last=$((${#parts[@]} - 1))
 
-  for i in "${!parts[@]}"; do
-    dir="${parts[i]}"
-    if [[ $i -eq $last || -z "$dir" ]]; then
-      result+="$dir"
-    else
-      result+="${dir:0:1}/"
-    fi
-  done
-  printf '%s' "$result"
+	for i in "${!parts[@]}"; do
+		dir="${parts[i]}"
+		if [[ $i -eq $last || -z "$dir" ]]; then
+			result+="$dir"
+		else
+			result+="${dir:0:1}/"
+		fi
+	done
+	printf '%s' "$result"
+}
+
+venv_init() {
+	local root
+	root=$(git rev-parse --show-toplevel 2>/dev/null) || {
+		echo "error: not a git repo" >&2
+		return 1
+	}
+
+	if [ ! -d "$root/.venv" ]; then
+		echo "→ creating .venv"
+		python3 -m venv "$root/.venv"
+	fi
+
+	source "$root/.venv/bin/activate"
+	echo "✓ activated $root/.venv"
+
+	if [ -f "$root/requirements.txt" ]; then
+		echo "→ installing requirements.txt"
+		pip install -q -r "$root/requirements.txt"
+		echo "✓ done"
+	fi
+}
+
+manf() {
+	man -k . | awk '{print $1}' | sort -u | fzf --preview "man {1} 2>/dev/null" --preview-window=right,70% | xargs man
 }
 
 # Aliases
@@ -246,7 +272,6 @@ alias reload='exec bash'
 alias vf='nvim .'
 alias v='nvim'
 alias clean_desktop='rm ~/Desktop/*.png'
-manf() { man -k . | awk '{print $1}' | sort -u | fzf --preview "man {1} 2>/dev/null" --preview-window=right,70% | xargs man; }
 
 alias hl='rg --passthru'
 
@@ -259,9 +284,9 @@ alias tn='tmux-sessionizer'
 # Prompt (PS1)
 # Colors
 C_RESET='\[\e[0m\]'
-C_PATH='\[\e[34m\]'      # blue
-C_GIT='\[\e[33m\]'       # yellow
-C_USER='\[\e[32m\]'      # green
+C_PATH='\[\e[34m\]' # blue
+C_GIT='\[\e[33m\]'  # yellow
+C_USER='\[\e[32m\]' # green
 
 SSH_INFO=""
 [ -n "$SSH_TTY" ] && SSH_INFO="${C_USER}\u@\h${C_RESET}:"
