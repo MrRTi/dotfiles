@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+man -k . | awk '{print $1}' | sort -u | fzf --preview "man {1} 2>/dev/null" --preview-window=right,70% | xargs man

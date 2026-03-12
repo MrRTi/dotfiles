@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Interactively adds a worktree and prints the new worktree path to cd into.
+root=$(git_worktree_base) || exit 1
+cd "$root/main" || exit 1
+
+branch=$(git_branch_query "${1:-}" | xargs)
+
+[ -z "$branch" ] && exit 0
+
+if git branch --list "$branch" | grep -q .; then
+	git worktree add "$root/$branch" "$branch"
+else
+	git worktree add "$root/$branch" -b "$branch"
+fi
+
+echo "$root/$branch"

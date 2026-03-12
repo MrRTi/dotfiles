@@ -17,6 +17,12 @@ cask {{ . | quote }}
 {{ end -}}
 EOF
 
+# Register fish as a valid login shell
+FISH_PATH="$(brew --prefix)/bin/fish"
+if ! grep -qF "$FISH_PATH" /etc/shells; then
+	echo "$FISH_PATH" | sudo tee -a /etc/shells
+fi
+
 # Install Mac App Store apps individually so failures don't block the rest
 {{ range .packages.darwin.mas -}}
 mas install {{ .id }} || echo "Failed to install {{ .name }} ({{ .id }}) — install manually from App Store"

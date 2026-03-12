@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+path="${PWD/#$HOME/\~}"
+result="" dir
+IFS='/'
+read -ra parts <<<"$path"
+last=$((${#parts[@]} - 1))
+
+for i in "${!parts[@]}"; do
+	dir="${parts[i]}"
+	if [[ $i -eq $last || -z "$dir" ]]; then
+		result+="$dir"
+	else
+		result+="${dir:0:1}/"
+	fi
+done
+printf '%s' "$result"

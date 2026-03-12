@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
+
+if [ -z "$git_dir" ] && [ -d ./main/.git ]; then
+	cd main || exit 1
+	git_dir=$(git rev-parse --show-toplevel)
+fi
+
+if [ -d "$git_dir/.git" ]; then
+	dirname "$git_dir"
+	exit 0
+fi
+
+if [ -f "$git_dir/.git" ]; then
+	dirname "$(awk -F': ' '/^gitdir:/ { sub(/\.git\/worktrees\/.*/, "", $2); print $2; exit }' "$git_dir/.git")"
+	exit 0
+fi
+
+echo "Not git repository" >&2
+exit 1

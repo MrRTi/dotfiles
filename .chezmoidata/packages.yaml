@@ -15,6 +15,7 @@ packages:
       - dust
       - eza
       - fd
+      - fish
       - fzf
       - zstd
       - git
