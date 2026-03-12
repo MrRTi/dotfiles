@@ -84,3 +84,5 @@ abbr --add v nvim
 abbr --add vf 'nvim .'
 abbr --add -- - 'cd -'
 abbr --add ':q' exit
+
+fish_config prompt choose informative_vcs
