@@ -15,9 +15,11 @@ brew {{ .name | quote }}, {{ .options }}
 {{ range .packages.darwin.casks -}}
 cask {{ . | quote }}
 {{ end -}}
-{{ range .packages.darwin.mas -}}
-mas {{ .name | quote }}, id: {{ .id }}
-{{ end -}}
 EOF
+
+# Install Mac App Store apps individually so failures don't block the rest
+{{ range .packages.darwin.mas -}}
+mas install {{ .id }} || echo "Failed to install {{ .name }} ({{ .id }}) — install manually from App Store"
+{{ end -}}
 {{ end -}}
 # vim: set ft=sh :
