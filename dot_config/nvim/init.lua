@@ -179,6 +179,9 @@ require("fzf-lua").setup({
       layout = "vertical",
     },
   },
+  grep = {
+    rg_opts = "--multiline --column --line-number --no-heading --color=always --smart-case",
+  },
   keymap = {
     fzf = {
       true,
