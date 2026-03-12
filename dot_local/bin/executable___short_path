@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 path="${PWD/#$HOME/\~}"
-result="" dir
+result=""
+dir=""
 IFS='/'
 read -ra parts <<<"$path"
 last=$((${#parts[@]} - 1))
