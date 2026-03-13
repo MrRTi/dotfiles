@@ -173,15 +173,32 @@ require("oil").setup({
   },
 })
 
+local fzf_grep_normal = {
+  rg_opts = "--column --line-number --no-heading --color=always --smart-case --max-columns=512",
+  header = ":: <ctrl-g> to Fuzzy Search | :: <alt-m> to Multiline Mode",
+}
+local fzf_grep_multiline = {
+  rg_opts = "--multiline --column --line-number --no-heading --color=always --smart-case",
+  header = ":: <ctrl-g> to Fuzzy Search | :: <alt-m> to Normal Mode",
+}
+fzf_grep_normal.actions = {
+  ["alt-m"] = function(_, _)
+    require("fzf-lua").live_grep(vim.tbl_extend("force", fzf_grep_multiline, { resume = true }))
+  end,
+}
+fzf_grep_multiline.actions = {
+  ["alt-m"] = function(_, _)
+    require("fzf-lua").live_grep(vim.tbl_extend("force", fzf_grep_normal, { resume = true }))
+  end,
+}
+
 require("fzf-lua").setup({
   winopts = {
     preview = {
       layout = "vertical",
     },
   },
-  grep = {
-    rg_opts = "--multiline --column --line-number --no-heading --color=always --smart-case",
-  },
+  grep = fzf_grep_normal,
   keymap = {
     fzf = {
       true,
