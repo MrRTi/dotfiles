@@ -4,10 +4,8 @@ packages:
     taps:
       - netbirdio/tap
     brews:
-      - readline
       - bash
       - bash-completion@2
-      - openssl@3
       - bat
       - cmake
       - direnv
@@ -17,7 +15,6 @@ packages:
       - fd
       - fish
       - fzf
-      - zstd
       - git
       - git-delta
       - glow
@@ -36,18 +33,21 @@ packages:
       - mongosh
       - mysql
       - mysql@8.4
+      - netbirdio/tap/netbird
       - ollama
+      - openssl@3
       - pipx
+      - readline
       - ripgrep
       - rust
       - tmux
-      - usql
       - tree-sitter
       - tree-sitter-cli
       - trivy
+      - usql
       - wget
       - yq
-      - netbirdio/tap/netbird
+      - zstd
     brews_with_options:
       - name: gemini-cli
         options: "link: false"
@@ -56,6 +56,7 @@ packages:
       - font-jetbrains-mono-nerd-font
       - ngrok
       - orbstack
+      - stats
       - yandex-cloud-cli
     mas:
       - name: 1Password for Safari
