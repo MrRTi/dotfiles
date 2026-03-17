@@ -4,20 +4,26 @@
 SESSION_FOLDERS=("${SESSION_FOLDERS[@]:-"$HOME"}")
 
 __select_path() {
-  fd \
-    --type d \
-    --min-depth=0 \
-    --max-depth=3 \
-    --exclude .git \
-    --exclude Library \
-    --follow \
-    . \
-    "${SESSION_FOLDERS[@]}" 2>/dev/null | \
-    { echo "${HOME}"; cat; } | \
-    sed "s:${HOME}:~:" | \
-    awk '{printf "\x1b[33m%s\x1b[0m\n", $1}' | \
-    fzf --ansi --tmux bottom,75% --preview "eza -la --color=always \$(echo {} | sed \"s:~:${HOME}:\")" | \
-    sed "s:~:${HOME}:"
+  {
+    fd \
+      --type d \
+      --min-depth=0 \
+      --max-depth=3 \
+      --exclude .git \
+      --exclude Library \
+      --follow \
+      . \
+      "${SESSION_FOLDERS[@]}" 2>/dev/null | \
+      { echo "${HOME}"; cat; } | \
+      sed "s:${HOME}:~:" | \
+      awk '{printf "\x1b[33m%s\x1b[0m\n", $1}'
+    tmux list-sessions -F "#S" 2>/dev/null | \
+      awk '{printf "$\x1b[36m%s\x1b[0m\n", $1}'
+  } | \
+  fzf --ansi --tmux bottom,75% \
+    --preview 'tmux-sessionizer-preview {}' \
+    --preview-window 'right,60%' | \
+  sed "s:~:${HOME}:"
 }
 
 __session_name() {
@@ -62,6 +68,12 @@ else
   if [ -z "${path}" ]; then
     exit 0
   fi
+fi
+
+# Handle direct session selection (prefixed with $ from session list)
+if [[ "${path}" == \$* ]]; then
+  __attach_session "${path:1}"
+  exit 0
 fi
 
 name=$(__session_name "${path}")
