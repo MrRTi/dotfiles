@@ -8,9 +8,9 @@ branch=$(git_branch_query "${1:-}" | xargs)
 [ -z "$branch" ] && exit 0
 
 if git branch --list "$branch" | grep -q .; then
-	git worktree add "$root/$branch" "$branch"
+	git worktree add "$root/$branch" "$branch" >&2
 else
-	git worktree add "$root/$branch" -b "$branch"
+	git worktree add "$root/$branch" -b "$branch" >&2
 fi
 
 echo "$root/$branch"
