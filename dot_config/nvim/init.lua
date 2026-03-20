@@ -239,7 +239,12 @@ vim.keymap.set("n", "<leader>sr", "<cmd>FzfLua resume<CR>", { desc = "Resume las
 vim.keymap.set("n", "<leader>e", "<cmd>Oil<CR>", { desc = "Open file explorer" })
 vim.keymap.set("n", "<leader>-", "<cmd>Oil<CR>", { desc = "Open file explorer" })
 
-vim.keymap.set("n", "<leader>fp", '<cmd>let @+ = expand("%")<CR>', { desc = "Copy file path to clipboard" })
+vim.keymap.set(
+  "n",
+  "<leader>fp",
+  '<cmd>let @+ = fnamemodify(expand("%:p"), ":~:.")<CR>',
+  { desc = "Copy file path to clipboard" }
+)
 
 vim.keymap.set("n", "<leader>gg", function()
   vim.cmd("tabnew | terminal lazygit")
