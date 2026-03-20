@@ -27,8 +27,7 @@ set fish_cursor_visual block
 set fish_cursor_replace_one underscore
 
 # Git prompt settings (mirrors GIT_PS1_SHOW* in bash)
-set -g __fish_git_prompt_showdirtystate 1
-set -g __fish_git_prompt_showuntrackedfiles 1
+set -g __fish_git_prompt_show_informative_status 1
 set -g __fish_git_prompt_showupstream auto
 set -g __fish_git_prompt_color yellow
 
@@ -85,4 +84,3 @@ abbr --add vf 'nvim .'
 abbr --add -- - 'cd -'
 abbr --add ':q' exit
 
-fish_config prompt choose informative_vcs
