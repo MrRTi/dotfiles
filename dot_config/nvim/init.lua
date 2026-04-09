@@ -51,8 +51,6 @@ vim.pack.add({
   { src = "https://github.com/ibhagwan/fzf-lua" },
   { src = "https://github.com/echasnovski/mini.ai" },
   { src = "https://github.com/echasnovski/mini.splitjoin" },
-  { src = "https://github.com/echasnovski/mini.extra" },
-  { src = "https://github.com/echasnovski/mini.completion" },
   { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
   { src = "https://github.com/neovim/nvim-lspconfig" },
   { src = "https://github.com/lewis6991/gitsigns.nvim" },
@@ -77,8 +75,6 @@ vim.pack.add({
 
 require("todo-comments").setup()
 require("mini.ai").setup()
-require("mini.completion").setup()
-require("mini.extra").setup()
 require("mini.splitjoin").setup()
 require("coverage").setup({
   auto_reload = true,
@@ -89,16 +85,9 @@ require("neotest").setup({
   },
 })
 
-vim.lsp.enable({
-  "lua_ls",
-  "ruby_lsp",
-  "pyright",
-  "ruff",
-  "yamlls",
-  "marksman",
-})
+local lspconfig = require("lspconfig")
 
-vim.lsp.config("lua_ls", {
+lspconfig.lua_ls.setup({
   settings = {
     Lua = {
       workspace = {
@@ -107,6 +96,11 @@ vim.lsp.config("lua_ls", {
     },
   },
 })
+lspconfig.ruby_lsp.setup({})
+lspconfig.pyright.setup({})
+lspconfig.ruff.setup({})
+lspconfig.yamlls.setup({})
+lspconfig.marksman.setup({})
 
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(ev)
@@ -117,7 +111,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-vim.opt.completeopt:append("noselect")
+-- Built-in LSP completion config: fuzzy matching, show menu, don't auto-insert
+vim.opt.completeopt = { "menu", "menuone", "noinsert", "noselect", "fuzzy" }
 
 local null_ls = require("null-ls")
 local augroup_format = vim.api.nvim_create_augroup("NullLsFormat", { clear = true })
@@ -157,7 +152,6 @@ null_ls.setup({
 
 require("nvim-treesitter.configs").setup({
   ensure_installed = {
-    "lua",
     "ruby",
     "python",
     "javascript",
@@ -271,8 +265,8 @@ vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" 
 vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "Go to references" })
 
 vim.keymap.set("n", "<leader>do", vim.diagnostic.open_float, { desc = "Open floating diagnostic window" })
-vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, { desc = "Previous diagnostic" })
-vim.keymap.set("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, { desc = "Previous diagnostic" })
+vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, { desc = "Next diagnostic" })
 
 local harpoon = require("harpoon")
 harpoon.setup()
@@ -292,6 +286,45 @@ end, { desc = "Previous harpoon file" })
 vim.keymap.set("n", "]H", function()
   harpoon:list():next()
 end, { desc = "Next harpoon file" })
+
+local function ruby_spec(on_success)
+  local f = vim.fn.expand("%:p")
+  local spec = f:gsub("/app/(.+)%.rb$", "/spec/%1_spec.rb")
+  if spec == f then spec = f:gsub("/lib/(.+)%.rb$", "/spec/lib/%1_spec.rb") end
+  if spec == f then spec = f:gsub("_spec%.rb$", ".rb"):gsub("/spec/(.+)%.rb$", "/app/%1.rb") end
+  spec = spec ~= f and spec or nil
+  if spec and vim.fn.filereadable(spec) == 1 then
+    on_success(spec)
+  else
+    require("fzf-lua").files({ query = vim.fn.expand("%:t:r") .. "_spec" })
+  end
+end
+
+-- Neotest
+vim.keymap.set("n", "<leader>tn", function() require("neotest").run.run() end, { desc = "Run nearest test" })
+vim.keymap.set("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, { desc = "Run test file" })
+vim.keymap.set("n", "<leader>ts", function() require("neotest").summary.toggle() end, { desc = "Toggle test summary" })
+vim.keymap.set("n", "<leader>to", function() require("neotest").output_panel.toggle() end, { desc = "Toggle test output" })
+vim.keymap.set("n", "]t", function() require("neotest").jump.next({ status = "failed" }) end, { desc = "Next failed test" })
+vim.keymap.set("n", "[t", function() require("neotest").jump.prev({ status = "failed" }) end, { desc = "Prev failed test" })
+vim.keymap.set("n", "<leader>ta", function()
+  if vim.bo.filetype == "ruby" then
+    ruby_spec(function(spec) vim.cmd("edit " .. spec) end)
+  else
+    vim.notify("No spec finder for filetype: " .. vim.bo.filetype, vim.log.levels.WARN)
+  end
+end, { desc = "Go to related spec" })
+vim.keymap.set("n", "<leader>tA", function()
+  if vim.bo.filetype == "ruby" then
+    ruby_spec(function(spec) require("neotest").run.run(spec) end)
+  else
+    vim.notify("No spec finder for filetype: " .. vim.bo.filetype, vim.log.levels.WARN)
+  end
+end, { desc = "Run related spec" })
+
+-- Coverage
+vim.keymap.set("n", "<leader>tc", "<cmd>Coverage<CR>", { desc = "Load coverage" })
+vim.keymap.set("n", "<leader>tC", "<cmd>CoverageToggle<CR>", { desc = "Toggle coverage display" })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   pattern = "*",
