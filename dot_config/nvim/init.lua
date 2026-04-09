@@ -105,10 +105,10 @@ end
 
 require("kanagawa").setup({
   transparent = true,
-  background = { dark = "wave", light = "lotus" },
+  background = { dark = "dragon", light = "lotus" },
 })
 vim.cmd("colorscheme kanagawa")
-vim.cmd("hi statusline guibg=NONE")
+
 vim.cmd("hi NormalFloat guibg=NONE")
 vim.cmd("hi FloatBorder guibg=NONE")
 
