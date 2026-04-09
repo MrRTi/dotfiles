@@ -84,7 +84,7 @@ vim.pack.add({
   --
   { src = "https://github.com/andythigpen/nvim-coverage" },
   -- Theme
-  { src = "https://github.com/catppuccin/nvim" },
+  { src = "https://github.com/rebelot/kanagawa.nvim" },
 })
 
 -- Appearance
@@ -103,17 +103,14 @@ local function toggle_appearance(toggle_to)
   vim.o.background = toggle_to
 end
 
-require("catppuccin").setup({
-  flavour = "auto",
-  background = { dark = "macchiato", light = "latte" },
-  transparent_background = true,
+require("kanagawa").setup({
+  transparent = true,
+  background = { dark = "wave", light = "lotus" },
 })
-vim.cmd("colorscheme catppuccin")
+vim.cmd("colorscheme kanagawa")
 vim.cmd("hi statusline guibg=NONE")
 vim.cmd("hi NormalFloat guibg=NONE")
 vim.cmd("hi FloatBorder guibg=NONE")
-vim.cmd("hi CursorLine guibg=#2a2a3d")
-vim.cmd("hi CursorLineNr guifg=#cba6f7 gui=bold")
 
 if is_dark_local() then
   toggle_appearance("dark")
