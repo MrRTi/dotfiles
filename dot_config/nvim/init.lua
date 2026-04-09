@@ -55,7 +55,9 @@ vim.o.langmap = "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯ;"
 
 -- Plugins
 
-vim.keymap.set("n", "<leader>pu", function() vim.pack.update() end, { desc = "Update plugins" })
+vim.keymap.set("n", "<leader>pu", function()
+  vim.pack.update()
+end, { desc = "Update plugins" })
 
 vim.pack.add({
   { src = "https://github.com/stevearc/oil.nvim" },
@@ -63,6 +65,7 @@ vim.pack.add({
   { src = "https://github.com/echasnovski/mini.ai" },
   { src = "https://github.com/echasnovski/mini.splitjoin" },
   { src = "https://github.com/echasnovski/mini.indentscope" },
+  { src = "https://github.com/echasnovski/mini.statusline" },
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
   { src = "https://github.com/neovim/nvim-lspconfig" },
   { src = "https://github.com/lewis6991/gitsigns.nvim" },
@@ -92,7 +95,9 @@ vim.pack.add({
 local function is_dark_local()
   local handle =
       io.popen([[osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode']])
-  if not handle then return false end
+  if not handle then
+    return false
+  end
   local result = handle:read("*a")
   handle:close()
   return result:lower():gsub("%s+", "") == "true"
@@ -124,6 +129,61 @@ require("todo-comments").setup()
 require("mini.ai").setup()
 require("mini.splitjoin").setup()
 require("mini.indentscope").setup()
+local function colored_diagnostics()
+  local severities = {
+    [1] = { "E", "DiagnosticError" },
+    [2] = { "W", "DiagnosticWarn" },
+    [3] = { "I", "DiagnosticInfo" },
+    [4] = { "H", "DiagnosticHint" },
+  }
+  local parts = {}
+  for sev, v in pairs(severities) do
+    local n = #vim.diagnostic.get(0, { severity = sev })
+    if n > 0 then
+      table.insert(parts, string.format("%%#%s#%s:%d", v[2], v[1], n))
+    end
+  end
+  return #parts > 0 and (" " .. table.concat(parts, " ") .. " %#MiniStatuslineDevinfo#") or ""
+end
+
+local function lsp_clients()
+  local clients = vim.tbl_filter(function(c)
+    return c.name ~= "null-ls"
+  end, vim.lsp.get_clients({ bufnr = 0 }))
+  return #clients > 0 and table.concat(
+    vim.tbl_map(function(c)
+      return c.name
+    end, clients),
+    " "
+  ) or ""
+end
+
+require("mini.statusline").setup({
+  use_icons = true,
+  content = {
+    active = function()
+      local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
+      local git = MiniStatusline.section_git({ trunc_width = 75 })
+      local filename = MiniStatusline.section_filename({ trunc_width = 140 })
+      local location = MiniStatusline.section_location({ trunc_width = 75 })
+
+      local lsp = lsp_clients()
+      local ft = vim.bo.filetype
+      local lsp_ft = lsp ~= "" and (lsp .. " · " .. ft) or ft
+
+      return MiniStatusline.combine_groups({
+        { hl = mode_hl,                 strings = { mode } },
+        { hl = "MiniStatuslineDevinfo", strings = { git } },
+        "%<",
+        { hl = "MiniStatuslineFilename", strings = { filename } },
+        "%=",
+        colored_diagnostics(),
+        { hl = "MiniStatuslineDevinfo", strings = { lsp_ft } },
+        { hl = mode_hl, strings = { "󰡏 %l/%L 󰡎 %c/%{col('$')-1}" } },
+      })
+    end,
+  },
+})
 
 require("which-key").setup()
 require("which-key").add({
@@ -135,11 +195,19 @@ require("which-key").add({
   { "<leader>t", group = "test" },
   { "<leader>p", group = "plugins" },
   { "<leader>u", group = "ui" },
-  { "[", group = "prev" },
-  { "]", group = "next" },
+  { "[",         group = "prev" },
+  { "]",         group = "next" },
 })
 
 vim.keymap.set("n", "<leader>ut", toggle_appearance, { desc = "Toggle light/dark" })
+vim.keymap.set("n", "<leader>uT", function()
+  local buf = vim.api.nvim_get_current_buf()
+  if vim.treesitter.highlighter.active[buf] then
+    vim.treesitter.stop()
+  else
+    vim.treesitter.start()
+  end
+end, { desc = "Toggle treesitter highlight" })
 
 -- File explorer
 
@@ -222,13 +290,19 @@ vim.opt.completeopt = { "menu", "menuone", "noinsert", "noselect", "fuzzy" }
 
 -- NOTE: grr (references), grn (rename), gra (code action), gri (implementation)
 --       are Neovim 0.11 built-ins and appear in which-key automatically.
-vim.keymap.set({ "n", "v" }, "<leader>lf", function() vim.lsp.buf.format({ async = true }) end, { desc = "Format" })
+vim.keymap.set({ "n", "v" }, "<leader>lf", function()
+  vim.lsp.buf.format({ async = true })
+end, { desc = "Format" })
 vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover docs" })
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
 vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
 vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Diagnostic float" })
-vim.keymap.set("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, { desc = "Previous diagnostic" })
-vim.keymap.set("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, { desc = "Next diagnostic" })
+vim.keymap.set("n", "[d", function()
+  vim.diagnostic.jump({ count = -1 })
+end, { desc = "Previous diagnostic" })
+vim.keymap.set("n", "]d", function()
+  vim.diagnostic.jump({ count = 1 })
+end, { desc = "Next diagnostic" })
 
 -- Formatting & diagnostics (null-ls)
 
@@ -260,7 +334,9 @@ null_ls.setup({
       vim.api.nvim_create_autocmd("BufWritePre", {
         group = augroup_format,
         buffer = bufnr,
-        callback = function() vim.lsp.buf.format({ bufnr = bufnr }) end,
+        callback = function()
+          vim.lsp.buf.format({ bufnr = bufnr })
+        end,
       })
     end
   end,
@@ -279,16 +355,26 @@ local function tmux_navigate(direction)
 end
 
 for _, dir in ipairs({ "h", "j", "k", "l" }) do
-  vim.keymap.set("n", "<C-" .. dir .. ">", function() tmux_navigate(dir) end, { desc = "Navigate " .. dir })
+  vim.keymap.set("n", "<C-" .. dir .. ">", function()
+    tmux_navigate(dir)
+  end, { desc = "Navigate " .. dir })
 end
 
 local harpoon = require("harpoon")
 harpoon.setup()
 
-vim.keymap.set("n", "<leader>H", function() harpoon:list():add() end, { desc = "Add file to harpoon" })
-vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end, { desc = "Toggle harpoon menu" })
-vim.keymap.set("n", "[H", function() harpoon:list():prev() end, { desc = "Previous harpoon file" })
-vim.keymap.set("n", "]H", function() harpoon:list():next() end, { desc = "Next harpoon file" })
+vim.keymap.set("n", "<leader>H", function()
+  harpoon:list():add()
+end, { desc = "Add file to harpoon" })
+vim.keymap.set("n", "<leader>h", function()
+  harpoon.ui:toggle_quick_menu(harpoon:list())
+end, { desc = "Toggle harpoon menu" })
+vim.keymap.set("n", "[H", function()
+  harpoon:list():prev()
+end, { desc = "Previous harpoon file" })
+vim.keymap.set("n", "]H", function()
+  harpoon:list():next()
+end, { desc = "Next harpoon file" })
 
 -- Git
 
@@ -302,7 +388,9 @@ vim.keymap.set("n", "<leader>gG", function()
   vim.cmd("startinsert")
   vim.api.nvim_create_autocmd("TermClose", {
     buffer = 0,
-    callback = function() vim.cmd("bdelete!") end,
+    callback = function()
+      vim.cmd("bdelete!")
+    end,
   })
 end, { desc = "LazyGit" })
 vim.keymap.set({ "n", "v" }, "<leader>gb", "<cmd>Gitsigns blame_line<CR>", { desc = "Blame line" })
@@ -324,8 +412,12 @@ require("neotest").setup({
 local function ruby_spec(on_success)
   local f = vim.fn.expand("%:p")
   local spec = f:gsub("/app/(.+)%.rb$", "/spec/%1_spec.rb")
-  if spec == f then spec = f:gsub("/lib/(.+)%.rb$", "/spec/lib/%1_spec.rb") end
-  if spec == f then spec = f:gsub("_spec%.rb$", ".rb"):gsub("/spec/(.+)%.rb$", "/app/%1.rb") end
+  if spec == f then
+    spec = f:gsub("/lib/(.+)%.rb$", "/spec/lib/%1_spec.rb")
+  end
+  if spec == f then
+    spec = f:gsub("_spec%.rb$", ".rb"):gsub("/spec/(.+)%.rb$", "/app/%1.rb")
+  end
   spec = spec ~= f and spec or nil
   if spec and vim.fn.filereadable(spec) == 1 then
     on_success(spec)
@@ -334,28 +426,44 @@ local function ruby_spec(on_success)
   end
 end
 
-vim.keymap.set("n", "<leader>tn", function() require("neotest").run.run() end, { desc = "Run nearest test" })
-vim.keymap.set("n", "<leader>tf", function() require("neotest").run.run(vim.fn.expand("%")) end, { desc = "Run test file" })
-vim.keymap.set("n", "<leader>ts", function() require("neotest").summary.toggle() end, { desc = "Toggle summary" })
-vim.keymap.set("n", "<leader>to", function() require("neotest").output_panel.toggle() end, { desc = "Toggle output" })
+vim.keymap.set("n", "<leader>tn", function()
+  require("neotest").run.run()
+end, { desc = "Run nearest test" })
+vim.keymap.set("n", "<leader>tf", function()
+  require("neotest").run.run(vim.fn.expand("%"))
+end, { desc = "Run test file" })
+vim.keymap.set("n", "<leader>ts", function()
+  require("neotest").summary.toggle()
+end, { desc = "Toggle summary" })
+vim.keymap.set("n", "<leader>to", function()
+  require("neotest").output_panel.toggle()
+end, { desc = "Toggle output" })
 vim.keymap.set("n", "<leader>ta", function()
   if vim.bo.filetype == "ruby" then
-    ruby_spec(function(spec) vim.cmd("edit " .. spec) end)
+    ruby_spec(function(spec)
+      vim.cmd("edit " .. spec)
+    end)
   else
     vim.notify("No spec finder for filetype: " .. vim.bo.filetype, vim.log.levels.WARN)
   end
 end, { desc = "Go to related spec" })
 vim.keymap.set("n", "<leader>tA", function()
   if vim.bo.filetype == "ruby" then
-    ruby_spec(function(spec) require("neotest").run.run(spec) end)
+    ruby_spec(function(spec)
+      require("neotest").run.run(spec)
+    end)
   else
     vim.notify("No spec finder for filetype: " .. vim.bo.filetype, vim.log.levels.WARN)
   end
 end, { desc = "Run related spec" })
 vim.keymap.set("n", "<leader>tc", "<cmd>Coverage<CR>", { desc = "Load coverage" })
 vim.keymap.set("n", "<leader>uc", "<cmd>CoverageToggle<CR>", { desc = "Toggle coverage" })
-vim.keymap.set("n", "]t", function() require("neotest").jump.next({ status = "failed" }) end, { desc = "Next failed test" })
-vim.keymap.set("n", "[t", function() require("neotest").jump.prev({ status = "failed" }) end, { desc = "Prev failed test" })
+vim.keymap.set("n", "]t", function()
+  require("neotest").jump.next({ status = "failed" })
+end, { desc = "Next failed test" })
+vim.keymap.set("n", "[t", function()
+  require("neotest").jump.prev({ status = "failed" })
+end, { desc = "Prev failed test" })
 
 -- Buffer
 
