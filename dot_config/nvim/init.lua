@@ -62,6 +62,7 @@ vim.pack.add({
   { src = "https://github.com/ibhagwan/fzf-lua" },
   { src = "https://github.com/echasnovski/mini.ai" },
   { src = "https://github.com/echasnovski/mini.splitjoin" },
+  { src = "https://github.com/echasnovski/mini.indentscope" },
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
   { src = "https://github.com/neovim/nvim-lspconfig" },
   { src = "https://github.com/lewis6991/gitsigns.nvim" },
@@ -102,11 +103,17 @@ local function toggle_appearance(toggle_to)
   vim.o.background = toggle_to
 end
 
-require("catppuccin").setup({ transparent_background = true })
+require("catppuccin").setup({
+  flavour = "auto",
+  background = { dark = "macchiato", light = "latte" },
+  transparent_background = true,
+})
 vim.cmd("colorscheme catppuccin")
 vim.cmd("hi statusline guibg=NONE")
 vim.cmd("hi NormalFloat guibg=NONE")
 vim.cmd("hi FloatBorder guibg=NONE")
+vim.cmd("hi CursorLine guibg=#2a2a3d")
+vim.cmd("hi CursorLineNr guifg=#cba6f7 gui=bold")
 
 if is_dark_local() then
   toggle_appearance("dark")
@@ -119,6 +126,7 @@ end
 require("todo-comments").setup()
 require("mini.ai").setup()
 require("mini.splitjoin").setup()
+require("mini.indentscope").setup()
 
 require("which-key").setup()
 require("which-key").add({
@@ -185,6 +193,7 @@ vim.keymap.set("n", "<leader>sw", "<cmd>FzfLua grep_cword<CR>", { desc = "Word u
 vim.keymap.set("n", "<leader>sh", "<cmd>FzfLua helptags<CR>", { desc = "Help tags" })
 vim.keymap.set("n", "<leader>sk", "<cmd>FzfLua keymaps<CR>", { desc = "Keymaps" })
 vim.keymap.set("n", "<leader>sr", "<cmd>FzfLua resume<CR>", { desc = "Resume last search" })
+vim.keymap.set("n", "<leader>st", "<cmd>TodoFzfLua<CR>", { desc = "Search todos/notes" })
 
 -- Treesitter
 -- NOTE: nvim-treesitter main branch (Neovim 0.12+) only manages parser installation.
