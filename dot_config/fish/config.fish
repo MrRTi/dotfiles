@@ -61,6 +61,8 @@ abbr --add dcu 'docker compose up'
 abbr --add dcud 'docker compose up -d'
 abbr --add dcr 'docker compose run --rm --use-aliases'
 abbr --add dcrs 'docker compose run --rm --use-aliases --service-ports'
+abbr --add db 'docker_build'
+abbr --add dr 'docker_run'
 abbr --add g git
 abbr --add ga 'git add'
 abbr --add gb 'git branch'
