@@ -1,79 +1,183 @@
 #!/usr/bin/env bash
 # vim: set ft=sh :
 
-SESSION_FOLDERS=("${SESSION_FOLDERS[@]:-"$HOME"}")
+SESSION_FOLDERS=("${SESSION_FOLDERS[@]:-"$HOME/Developer"}")
+
+# Used for plain dir search (excludes .git from results and traversal)
+_FD_EXCLUDES=(
+	--exclude '.git'
+	--exclude 'Library'
+	--exclude '.Trash'
+	--exclude 'node_modules'
+	--exclude '.cache'
+	--exclude '__pycache__'
+	--exclude 'vendor'
+	--exclude '.venv'
+	--exclude 'venv'
+)
+
+# Used for git search (must NOT exclude .git, but still skips noise dirs)
+_FD_GIT_EXCLUDES=(
+	--exclude 'Library'
+	--exclude '.Trash'
+	--exclude 'node_modules'
+	--exclude '.cache'
+	--exclude '__pycache__'
+	--exclude 'vendor'
+	--exclude '.venv'
+	--exclude 'venv'
+)
+
+__project_root() {
+	local git_path="$1"
+	local parent parent_name
+	parent=$(dirname "$git_path")
+	parent_name=$(basename "$parent")
+	if [[ "$parent_name" == "main" || "$parent_name" == "git" ]]; then
+		dirname "$parent"
+	else
+		echo "$parent"
+	fi
+}
+
+__ancestors_between() {
+	local base="$1" leaf="$2"
+	local current
+	current=$(dirname "$leaf")
+	while [[ "$current" == "$base/"* ]]; do
+		echo "$current"
+		current=$(dirname "$current")
+	done
+}
+
+__session_dirs() {
+	local base="$1"
+
+	echo "$base"
+
+	local git_paths project_roots=""
+	git_paths=$(fd --hidden --type d --glob '.git' --prune --max-depth 6 "${_FD_GIT_EXCLUDES[@]}" "$base" 2>/dev/null)
+
+	if [[ -n "$git_paths" ]]; then
+		while IFS= read -r git_path; do
+			local root
+			root=$(__project_root "$git_path")
+			echo "%${root}"
+			__ancestors_between "$base" "$root"
+			project_roots="$project_roots"$'\n'"$root"
+		done <<< "$git_paths"
+	fi
+
+	local plain_dirs
+	plain_dirs=$(fd --type d "${_FD_EXCLUDES[@]}" --max-depth 5 . "$base" 2>/dev/null | sed 's|/$||')
+
+	if [[ -n "$plain_dirs" ]]; then
+		if [[ -n "$project_roots" ]]; then
+			local roots_list
+			roots_list=$(echo "$project_roots" | grep -v '^$')
+			echo "$plain_dirs" \
+				| grep -vFf <(echo "$roots_list" | sed 's|$|/|') \
+				| grep -vxFf <(echo "$roots_list")
+		else
+			echo "$plain_dirs"
+		fi
+	fi
+}
+
+__tmux_sessions() {
+	tmux list-sessions -F "#S" 2>/dev/null | sed 's/^/$/'
+}
 
 __select_path() {
-  {
-    fd \
-      --type d \
-      --min-depth=0 \
-      --max-depth=3 \
-      --exclude .git \
-      --exclude Library \
-      --follow \
-      . \
-      "${SESSION_FOLDERS[@]}" 2>/dev/null | \
-      { echo "${HOME}"; cat; } | \
-      sed "s:${HOME}:~:" | \
-      awk '{printf "\x1b[33m%s\x1b[0m\n", $1}'
-    tmux list-sessions -F "#S" 2>/dev/null | \
-      awk '{printf "$\x1b[36m%s\x1b[0m\n", $1}'
-  } | \
-  fzf --ansi --tmux bottom,75% \
-    --preview 'tmux-sessionizer-preview {}' \
-    --preview-window 'right,60%' | \
-  sed "s:~:${HOME}:"
+	{
+		{
+			printf '%s\n' "$HOME" "$HOME/.config"
+			for folder in "${SESSION_FOLDERS[@]}"; do
+				__session_dirs "$folder"
+			done
+			__tmux_sessions
+		} |
+			sed "s:${HOME}:~:" |
+			sed 's|/$||' |
+			awk '{key=$0; sub(/^[%$]/, "", key); print key "\t" $0}' |
+			sort -t$'\t' -k1,1 -u |
+			cut -f2- |
+			awk '
+				/^%/ { printf "%%\x1b[35m%s\x1b[0m\n", substr($0,2); next }
+				/^\$/ { printf "$\x1b[36m%s\x1b[0m\n", substr($0,2); next }
+				      { printf "\x1b[33m%s\x1b[0m\n", $0 }
+			'
+	} |
+		fzf --ansi --tmux bottom,75% \
+			--preview 'tmux-sessionizer-preview {}' \
+			--preview-window 'right,60%' \
+			--header 'ctrl-f: all dirs' \
+			--bind "ctrl-f:reload(
+				fd --type d --follow --hidden \
+					--exclude .git --exclude Library --exclude .Trash \
+					--exclude node_modules --exclude .cache --exclude __pycache__ \
+					--exclude vendor --exclude .venv --exclude venv \
+					. ${HOME} 2>/dev/null \
+					| sed 's:${HOME}:~:' \
+					| sort -u \
+					| awk '{printf \"\x1b[33m%s\x1b[0m\n\", \$0}'
+			)" |
+		sed "s:~:${HOME}:"
 }
 
 __session_name() {
-  local path="$1"
-  local name
+	local path="$1"
+	local name
 
-  # NOTE: Tmux automatically replaces . with _ if session name starts with .
-  # We apply the same conversion for consistent session names on attach and create
-  name="$(basename "${path}" | tr . _)"
+	# NOTE: Tmux automatically replaces . with _ if session name starts with .
+	# We apply the same conversion for consistent session names on attach and create
+	name="$(basename "${path}" | tr . _)"
 
-  if [ "${name}" = "${USER}" ]; then
-    name="__${name}"
-  fi
+	if [ "${name}" = "${USER}" ]; then
+		name="__${name}"
+	fi
 
-  echo "${name}"
+	echo "${name}"
 }
 
 __create_session() {
-  local name="$1"
-  local path="$2"
+	local name="$1"
+	local path="$2"
 
-  if ! tmux has-session -t ="${name}" 2>/dev/null; then
-    TMUX='' tmux new -c "${path}" -s "${name}" -d
-  fi
+	if ! tmux has-session -t ="${name}" 2>/dev/null; then
+		TMUX='' tmux new -c "${path}" -s "${name}" -d
+	fi
 }
 
 __attach_session() {
-  local name="$1"
+	local name="$1"
 
-  if [ -n "${TMUX}" ]; then
-    tmux switch -t "${name}"
-  else
-    tmux attach -t "${name}"
-  fi
+	if [ -n "${TMUX}" ]; then
+		tmux switch -t "${name}"
+	else
+		tmux attach -t "${name}"
+	fi
 }
 
 if [ -n "$1" ]; then
-  path="$1"
+	path="$1"
 else
-  path=$(__select_path)
+	path=$(__select_path)
 
-  if [ -z "${path}" ]; then
-    exit 0
-  fi
+	if [ -z "${path}" ]; then
+		exit 0
+	fi
 fi
 
 # Handle direct session selection (prefixed with $ from session list)
 if [[ "${path}" == \$* ]]; then
-  __attach_session "${path:1}"
-  exit 0
+	__attach_session "${path:1}"
+	exit 0
+fi
+
+# Strip % prefix from git/worktree entries
+if [[ "${path}" == %* ]]; then
+	path="${path:1}"
 fi
 
 name=$(__session_name "${path}")
