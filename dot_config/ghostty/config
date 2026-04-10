@@ -11,6 +11,7 @@ window-padding-x = 10
 window-padding-y = 5
 
 theme = dark:Kanagawa Dragon,light:Kanagawa Lotus
+cursor-color = #e46876
 background-opacity = 0.93
 background-blur = 10
 
