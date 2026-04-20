@@ -69,7 +69,8 @@ vim.pack.add({
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
   { src = "https://github.com/neovim/nvim-lspconfig" },
   { src = "https://github.com/lewis6991/gitsigns.nvim" },
-  { src = "https://github.com/tpope/vim-fugitive" },
+  { src = "https://github.com/NeogitOrg/neogit" },
+  { src = "https://github.com/sindrets/diffview.nvim" },
   {
     src = "https://github.com/ThePrimeagen/harpoon",
     version = "harpoon2",
@@ -379,10 +380,14 @@ end, { desc = "Next harpoon file" })
 -- Git
 
 require("gitsigns").setup()
+require("neogit").setup({ integrations = { diffview = true } })
 
-vim.keymap.set("n", "<leader>gg", "<cmd>G<CR>", { desc = "Git status" })
-vim.keymap.set("n", "<leader>gd", "<cmd>Gdiffsplit<CR>", { desc = "Diff current file" })
-vim.keymap.set("n", "<leader>gP", "<cmd>Git push<CR>", { desc = "Push" })
+vim.keymap.set("n", "<leader>gg", "<cmd>Neogit<CR>", { desc = "Git status" })
+vim.keymap.set("n", "<leader>gd", "<cmd>DiffviewOpen<CR>", { desc = "Diff all changes" })
+vim.keymap.set("n", "<leader>gD", "<cmd>DiffviewFileHistory %<CR>", { desc = "File history" })
+vim.keymap.set("n", "<leader>gP", function()
+  require("neogit").open({ "push" })
+end, { desc = "Push" })
 vim.keymap.set("n", "<leader>gG", function()
   vim.cmd("tabnew | terminal lazygit")
   vim.cmd("startinsert")
