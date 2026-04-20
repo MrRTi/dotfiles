@@ -274,7 +274,7 @@ vim.lsp.config("lua_ls", {
   },
 })
 
-vim.lsp.enable({ "lua_ls", "ruby_lsp", "pyright", "ruff", "yamlls", "marksman" })
+vim.lsp.enable({ "lua_ls", "ruby_lsp", "pyright", "ruff", "yamlls", "marksman", "gopls" })
 
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(ev)
