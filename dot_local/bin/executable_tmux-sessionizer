@@ -113,13 +113,12 @@ __select_path() {
 			--preview-window 'right,60%' \
 			--header 'ctrl-f: all dirs' \
 			--bind "ctrl-f:reload(
-				fd --type d --follow --hidden \
+				fd --type d --hidden \
 					--exclude .git --exclude Library --exclude .Trash \
 					--exclude node_modules --exclude .cache --exclude __pycache__ \
 					--exclude vendor --exclude .venv --exclude venv \
 					. ${HOME} 2>/dev/null \
 					| sed 's:${HOME}:~:' \
-					| sort -u \
 					| awk '{printf \"\x1b[33m%s\x1b[0m\n\", \$0}'
 			)" |
 		sed "s:~:${HOME}:"

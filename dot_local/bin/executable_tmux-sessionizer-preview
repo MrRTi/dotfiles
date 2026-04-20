@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
-item="$1"
+# Strip ANSI escape codes that fzf passes via {}
+item=$(printf '%s' "$1" | sed 's/\x1b\[[0-9;]*m//g')
 
 if [[ "$item" == \$* ]]; then
-  tmux capture-pane -t "${item#$}" -p -e 2>/dev/null
+  session="${item#$}"
+  tmux list-panes -t "$session" -F "#{?pane_active,*,·} #{window_index}.#{pane_index} #{pane_current_command} [#{pane_width}x#{pane_height}]" 2>/dev/null
+  echo "---"
+  tmux capture-pane -t "$session" -p -e 2>/dev/null
 else
-  eza -la --color=always "${item/\~/$HOME}"
+  item="${item#%}"
+  if command -v eza &>/dev/null; then
+    eza -la --color=always "${item/\~/$HOME}"
+  else
+    ls -la "${item/\~/$HOME}"
+  fi
 fi
