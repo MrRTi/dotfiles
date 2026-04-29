@@ -22,6 +22,7 @@ vim.o.shiftwidth = 2
 vim.o.softtabstop = 2
 vim.o.expandtab = true
 
+
 local indent_overrides = {
   python = { tabstop = 4, shiftwidth = 4, softtabstop = 4, expandtab = true },
   go = { tabstop = 8, shiftwidth = 8, softtabstop = 0, expandtab = false },
@@ -475,6 +476,38 @@ end, { desc = "Prev failed test" })
 vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
 
 -- Autocmds
+
+local dw_ns = vim.api.nvim_create_namespace("double_width_chars")
+
+local function check_double_width(bufnr)
+  local diagnostics = {}
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+  for lnum, line in ipairs(lines) do
+    for col, char in line:gmatch("()([\128-\255])") do
+      table.insert(diagnostics, {
+        lnum = lnum - 1,
+        col = col - 1,
+        end_col = col - 1 + #char,
+        severity = vim.diagnostic.severity.WARN,
+        message = "Non-ASCII character (double-width risk)",
+        source = "double-width",
+      })
+    end
+  end
+  vim.diagnostic.set(dw_ns, bufnr, diagnostics)
+end
+
+vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged", "InsertLeave" }, {
+  callback = function(ev)
+    check_double_width(ev.buf)
+  end,
+})
+
+vim.keymap.set("n", "<leader>fd", function()
+  vim.fn.setreg("/", [=[[^\x00-\x7E]]=])
+  vim.o.hlsearch = true
+  vim.diagnostic.setqflist({ namespace = dw_ns, open = true })
+end, { desc = "Find double-width chars" })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   pattern = "*",
