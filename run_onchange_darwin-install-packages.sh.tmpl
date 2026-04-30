@@ -2,30 +2,20 @@
 
 {{ if eq .chezmoi.os "darwin" -}}
 
-brew bundle --file=/dev/stdin <<EOF
-{{ range .packages.darwin.taps -}}
-tap {{ . | quote }}
-{{ end -}}
-{{ range .packages.darwin.brews -}}
-brew {{ . | quote }}
-{{ end -}}
-{{ range .packages.darwin.brews_with_options -}}
-brew {{ .name | quote }}, {{ .options }}
-{{ end -}}
-{{ range .packages.darwin.casks -}}
-cask {{ . | quote }}
-{{ end -}}
-EOF
+{{ $brewfile := joinPath .chezmoi.sourceDir "Brewfile" -}}
+{{ if stat $brewfile -}}
+# Brewfile checksum: {{ include "Brewfile" | sha256sum }}
+
+brew bundle --file="{{ .chezmoi.homeDir }}/Brewfile"
 
 # Register fish as a valid login shell
 FISH_PATH="$(brew --prefix)/bin/fish"
 if ! grep -qF "$FISH_PATH" /etc/shells; then
 	echo "$FISH_PATH" | sudo tee -a /etc/shells
 fi
-
-# Install Mac App Store apps individually so failures don't block the rest
-{{ range .packages.darwin.mas -}}
-mas install {{ .id }} || echo "Failed to install {{ .name }} ({{ .id }}) — install manually from App Store"
+{{ else -}}
+echo "Brewfile not found in chezmoi source — run 'just brew-dump && just brew-sync' first"
 {{ end -}}
+
 {{ end -}}
 # vim: set ft=sh :

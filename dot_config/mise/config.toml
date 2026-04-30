@@ -2,6 +2,9 @@
 auto_install = true
 idiomatic_version_file_enable_tools = ["ruby"]
 
+[settings.ruby]
+default_packages_file = "~/.config/mise/default-gems"
+
 [settings.status]
 missing_tools = "always"
 show_env = true
