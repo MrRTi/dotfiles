@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DEFAULT_BREWFILE="$HOME/Brewfile"
+
+cmd="${1:-help}"
+shift || true
+
+case "$cmd" in
+  clean)
+    dry_run=false
+    [[ "${1:-}" == "--dry-run" ]] && dry_run=true
+
+    echo "Collecting installed packages..."
+
+    mapfile -t installed_formulae < <(brew list --formula 2>/dev/null)
+    mapfile -t installed_casks < <(brew list --cask 2>/dev/null)
+
+    echo ""
+    while IFS= read -r tap; do
+      tap_json=$(brew tap-info --json "$tap" 2>/dev/null)
+
+      mapfile -t tap_formulae < <(echo "$tap_json" | jq -r '.[].formula_names[] | split("/")[-1]')
+      mapfile -t tap_casks < <(echo "$tap_json" | jq -r '.[].cask_tokens[] | split("/")[-1]')
+
+      used=false
+      for f in "${tap_formulae[@]+"${tap_formulae[@]}"}"; do
+        printf '%s\n' "${installed_formulae[@]+"${installed_formulae[@]}"}" | grep -qx "$f" && used=true && break
+      done
+      if ! $used; then
+        for c in "${tap_casks[@]+"${tap_casks[@]}"}"; do
+          printf '%s\n' "${installed_casks[@]+"${installed_casks[@]}"}" | grep -qx "$c" && used=true && break
+        done
+      fi
+
+      if $used; then
+        echo "  keep   $tap"
+      else
+        echo "  untap  $tap"
+        if ! $dry_run; then
+          brew untap "$tap"
+        fi
+      fi
+    done < <(brew tap)
+
+    $dry_run && echo "" && echo "(dry run — nothing removed)"
+    ;;
+
+  receipt)
+    file="${1:-$DEFAULT_BREWFILE}"
+    echo "Dumping brew state to $file..."
+    brew bundle dump --file="$file" --force
+    echo "Done."
+    ;;
+
+  rebrew)
+    file="${1:-$DEFAULT_BREWFILE}"
+    if [[ ! -f "$file" ]]; then
+      echo "Error: file not found: $file" >&2
+      exit 1
+    fi
+    echo "Restoring from $file..."
+    brew bundle --file="$file"
+    echo "Done."
+    ;;
+
+  sync)
+    echo "Syncing $DEFAULT_BREWFILE into chezmoi..."
+    chezmoi add --force "$DEFAULT_BREWFILE"
+    echo "Done."
+    ;;
+
+  help|*)
+    cat <<EOF
+barista — Homebrew management CLI
+
+Usage:
+  barista clean [--dry-run]  Untap unused taps
+  barista receipt [path]     Dump brew state to file (default: ~/Brewfile)
+  barista rebrew  [path]     Restore from dump file (default: ~/Brewfile)
+  barista sync               Add ~/Brewfile to chezmoi
+  barista help               Show this help
+EOF
+    ;;
+esac
