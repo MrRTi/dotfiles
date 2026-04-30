@@ -8,7 +8,7 @@ if [[ "$item" == \$* ]]; then
   echo "---"
   tmux capture-pane -t "$session" -p -e 2>/dev/null
 else
-  item="${item#%}"
+  item="${item#[% ]}"
   if command -v eza &>/dev/null; then
     eza -la --color=always "${item/\~/$HOME}"
   else

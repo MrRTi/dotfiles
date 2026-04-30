@@ -16,30 +16,6 @@ _FD_EXCLUDES=(
 	--exclude 'venv'
 )
 
-# Used for git search (must NOT exclude .git, but still skips noise dirs)
-_FD_GIT_EXCLUDES=(
-	--exclude 'Library'
-	--exclude '.Trash'
-	--exclude 'node_modules'
-	--exclude '.cache'
-	--exclude '__pycache__'
-	--exclude 'vendor'
-	--exclude '.venv'
-	--exclude 'venv'
-)
-
-__project_root() {
-	local git_path="$1"
-	local parent parent_name
-	parent=$(dirname "$git_path")
-	parent_name=$(basename "$parent")
-	if [[ "$parent_name" == "main" || "$parent_name" == "git" ]]; then
-		dirname "$parent"
-	else
-		echo "$parent"
-	fi
-}
-
 __ancestors_between() {
 	local base="$1" leaf="$2"
 	local current
@@ -55,17 +31,15 @@ __session_dirs() {
 
 	echo "$base"
 
-	local git_paths project_roots=""
-	git_paths=$(fd --hidden --type d --glob '.git' --prune --max-depth 6 "${_FD_GIT_EXCLUDES[@]}" "$base" 2>/dev/null)
+	local project_roots="" roots
+	roots=$(git_project_roots "$base")
 
-	if [[ -n "$git_paths" ]]; then
-		while IFS= read -r git_path; do
-			local root
-			root=$(__project_root "$git_path")
+	if [[ -n "$roots" ]]; then
+		while IFS= read -r root; do
 			echo "%${root}"
 			__ancestors_between "$base" "$root"
 			project_roots="$project_roots"$'\n'"$root"
-		done <<< "$git_paths"
+		done <<< "$roots"
 	fi
 
 	local plain_dirs
@@ -105,7 +79,7 @@ __select_path() {
 			awk '
 				/^%/ { printf "%%\x1b[35m%s\x1b[0m\n", substr($0,2); next }
 				/^\$/ { printf "$\x1b[36m%s\x1b[0m\n", substr($0,2); next }
-				      { printf "\x1b[33m%s\x1b[0m\n", $0 }
+				      { printf " \x1b[33m%s\x1b[0m\n", $0 }
 			'
 	} |
 		fzf --ansi --tmux bottom,75% \
@@ -121,7 +95,8 @@ __select_path() {
 					| sed 's:${HOME}:~:' \
 					| awk '{printf \"\x1b[33m%s\x1b[0m\n\", \$0}'
 			)" |
-		sed "s:~:${HOME}:"
+		sed "s:~:${HOME}:" |
+		sed 's/^ //'
 }
 
 __session_name() {

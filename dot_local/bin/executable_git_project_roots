@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# Outputs git project roots under given base dirs.
+# Worktree-style repos (parent dir named "main" or "git") → grandparent.
+# Regular repos → parent.
+# Usage: git_project_roots [base_dir...]
+#
+# Outputs one absolute path per line, deduplicated.
+
+_FD_GIT_EXCLUDES=(
+	--exclude Library
+	--exclude .Trash
+	--exclude node_modules
+	--exclude .cache
+	--exclude __pycache__
+	--exclude vendor
+	--exclude .venv
+	--exclude venv
+)
+
+bases=("${@:-${SESSION_FOLDERS[@]:-$HOME/Developer}}")
+
+for base in "${bases[@]}"; do
+	fd --hidden --type d --glob '.git' --prune --max-depth 6 \
+		"${_FD_GIT_EXCLUDES[@]}" "$base" 2>/dev/null |
+	while IFS= read -r git_path; do
+		parent=$(dirname "$git_path")
+		parent_name=$(basename "$parent")
+		if [[ "$parent_name" == "main" || "$parent_name" == "git" ]]; then
+			dirname "$parent"
+		else
+			echo "$parent"
+		fi
+	done
+done | sort -u

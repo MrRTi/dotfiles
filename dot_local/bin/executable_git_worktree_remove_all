@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Remove worktrees across all worktree-style projects in ~/Developer
+DEVELOPER="${DEVELOPER:-$HOME/Developer}"
+
+mapfile -t projects < <(
+	git_project_roots "$DEVELOPER" | while IFS= read -r root; do
+		[[ -d "$root/main" ]] && echo "$root"
+	done
+)
+
+total=${#projects[@]}
+echo "Found $total projects"
+
+for i in "${!projects[@]}"; do
+	project_root="${projects[$i]}"
+	echo ""
+	echo "[$(( i + 1 ))/$total] $project_root"
+	git_worktree_remove "$project_root"
+done
+
+echo ""
+echo "Done"
