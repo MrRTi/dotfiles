@@ -1,0 +1,103 @@
+#!/bin/sh
+set -eu
+
+read_password() {
+	printf '%s' "$1" >/dev/tty
+	stty -echo
+	read -r _PASSWORD
+	stty echo
+	echo >/dev/tty
+	printf '%s\n' "$_PASSWORD"
+}
+
+sha256() {
+	if command -v sha256sum >/dev/null 2>&1; then
+		sha256sum "$1"
+	else
+		shasum -a 256 "$1"
+	fi
+}
+
+INPUT_FILE=$(find . -type f ! -path '*/.git/*' | fzf)
+[ -z "$INPUT_FILE" ] && {
+	echo "No file selected."
+	exit 1
+}
+
+case "$INPUT_FILE" in
+*.enc)
+	MODE="decrypt"
+	OUTPUT_FILE="${INPUT_FILE%.enc}"
+	;;
+*)
+	MODE="encrypt"
+	OUTPUT_FILE="${INPUT_FILE}.enc"
+	;;
+esac
+
+echo "Mode: $MODE"
+echo " - input:  $INPUT_FILE"
+echo " - output: $OUTPUT_FILE"
+
+printf "Continue? [Y/n] "
+read -r REPLY
+case "$REPLY" in
+[Yy] | "") ;;
+*)
+	echo "Aborted."
+	exit 1
+	;;
+esac
+
+trap 'stty echo' EXIT
+
+PASSWORD=$(read_password "Enter password: ") || exit 1
+
+if [ -z "$PASSWORD" ]; then
+	echo "Password cannot be empty."
+	exit 1
+fi
+
+if [ "$MODE" = "encrypt" ]; then
+	PASSWORD_CONFIRM=$(read_password "Confirm password: ") || exit 1
+
+	if [ "$PASSWORD" != "$PASSWORD_CONFIRM" ]; then
+		echo "Passwords do not match." >&2
+		exit 1
+	fi
+
+	DECRYPTED_TEMP="$(mktemp)"
+	FILE_WITH_ORIGINAL_HASH="$(mktemp)"
+	FILE_WITH_DECRYPTED_HASH="$(mktemp)"
+
+	trap 'stty echo; rm -f "$DECRYPTED_TEMP" "$FILE_WITH_ORIGINAL_HASH" "$FILE_WITH_DECRYPTED_HASH" "$OUTPUT_FILE"' EXIT
+
+	echo "Encrypting..."
+	printf '%s\n' "$PASSWORD" | openssl enc -aes-256-cbc -pbkdf2 -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass stdin
+
+	echo "Verifying..."
+	printf '%s\n' "$PASSWORD" | openssl enc -d -aes-256-cbc -pbkdf2 -in "$OUTPUT_FILE" -out "$DECRYPTED_TEMP" -pass stdin
+
+	sha256 "$INPUT_FILE" >"$FILE_WITH_ORIGINAL_HASH"
+	sha256 "$DECRYPTED_TEMP" >"$FILE_WITH_DECRYPTED_HASH"
+
+	if [ "$(awk '{print $1}' <"$FILE_WITH_ORIGINAL_HASH")" = "$(awk '{print $1}' <"$FILE_WITH_DECRYPTED_HASH")" ]; then
+		OUTPUT_FILE=""
+		echo "Verified. SHA sum: $(awk '{print $1}' <"$FILE_WITH_ORIGINAL_HASH")"
+		echo "Removing original: $INPUT_FILE..."
+		rm -f "$INPUT_FILE"
+		echo "Done."
+	else
+		echo "Verification failed." >&2
+		exit 1
+	fi
+else
+	trap 'stty echo; rm -f "$OUTPUT_FILE"' EXIT
+
+	echo "Decrypting..."
+	printf '%s\n' "$PASSWORD" | openssl enc -d -aes-256-cbc -pbkdf2 -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass stdin
+
+	RESULT="$OUTPUT_FILE"
+	OUTPUT_FILE=""
+	echo "Done. Your file is at $RESULT"
+fi
