@@ -18,7 +18,8 @@ sha256() {
 	fi
 }
 
-INPUT_FILE=$(find . -type f ! -path '*/.git/*' | fzf)
+SEARCH_ROOT="${1:-.}"
+INPUT_FILE=$(find "$SEARCH_ROOT" -type f ! -path '*/.git/*' | fzf)
 [ -z "$INPUT_FILE" ] && {
 	echo "No file selected."
 	exit 1
@@ -39,10 +40,24 @@ echo "Mode: $MODE"
 echo " - input:  $INPUT_FILE"
 echo " - output: $OUTPUT_FILE"
 
-printf "Continue? [Y/n] "
+printf "Continue? [Y/n/p(change output path)] "
 read -r REPLY
 case "$REPLY" in
 [Yy] | "") ;;
+[Pp])
+	printf "Enter output path: "
+	read -r OUTPUT_FILE
+
+	[ -z "$OUTPUT_FILE" ] && {
+		echo "Output path cannot be empty." >&2
+		exit 1
+	}
+
+	[ "$OUTPUT_FILE" = "$INPUT_FILE" ] && {
+		echo "Output path must differ from input." >&2
+		exit 1
+	}
+	;;
 *)
 	echo "Aborted."
 	exit 1
