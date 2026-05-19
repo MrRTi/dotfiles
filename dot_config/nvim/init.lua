@@ -22,7 +22,6 @@ vim.o.shiftwidth = 2
 vim.o.softtabstop = 2
 vim.o.expandtab = true
 
-
 local indent_overrides = {
   python = { tabstop = 4, shiftwidth = 4, softtabstop = 4, expandtab = true },
   go = { tabstop = 8, shiftwidth = 8, softtabstop = 0, expandtab = false },
@@ -283,6 +282,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
     if client and client.server_capabilities.completionProvider then
       vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("VimLeavePre", {
+  callback = function()
+    for _, client in ipairs(vim.lsp.get_clients()) do
+      client:stop()
     end
   end,
 })
