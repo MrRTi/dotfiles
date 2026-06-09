@@ -1,0 +1,10 @@
+MYSQL_ROOT_PASSWORD=op://env/mysql-root/password
+
+MYSQL_USER=op://env/mysql/username
+MYSQL_PASSWORD=op://env/mysql/password
+
+POSTGRES_USER=op://env/postgres/username
+POSTGRES_PASSWORD=op://env/postgres/password
+
+MONGO_ROOT_USER=op://env/mongo/username
+MONGO_ROOT_PASSWORD=op://env/mongo/password

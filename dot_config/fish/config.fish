@@ -42,6 +42,9 @@ alias lessl='bat -pl'
 alias cat='bat -pp'
 alias reload='exec fish'
 
+alias gemini='op run --env-file=$HOME/.envs/.gemini -- gemini'
+alias opr=op_run_with_env
+
 # Abbreviations
 abbr --add b bundle
 abbr --add be 'bundle exec'
@@ -86,5 +89,3 @@ abbr --add v nvim
 abbr --add vf 'nvim .'
 abbr --add -- - 'cd -'
 abbr --add ':q' exit
-
-abbr --add rwe op_run_with_env
