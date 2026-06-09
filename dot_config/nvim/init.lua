@@ -321,7 +321,7 @@ local augroup_format = vim.api.nvim_create_augroup("NullLsFormat", { clear = tru
 null_ls.setup({
   sources = {
     null_ls.builtins.formatting.stylua,
-    null_ls.builtins.completion.spell,
+    -- null_ls.builtins.completion.spell,
     -- Python
     null_ls.builtins.formatting.black,
     null_ls.builtins.formatting.isort,
@@ -332,7 +332,7 @@ null_ls.setup({
     -- JSON
     require("none-ls.formatting.jq"),
     -- YAML
-    null_ls.builtins.formatting.yamlfmt,
+    -- null_ls.builtins.formatting.yamlfmt,
     -- Shell
     null_ls.builtins.formatting.shfmt,
     require("none-ls-shellcheck.diagnostics"),
