@@ -1,7 +1,0 @@
-source_up
-
-# NOTE: export envs from .env (1Password FIFO pipe)
-if [[ -e .env ]]; then
-  eval "$(grep -v '^#' .env | grep -v '^[[:space:]]*$' | sed 's/^/export /')"
-fi
-

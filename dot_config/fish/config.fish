@@ -76,6 +76,7 @@ abbr --add grup 'git remote update'
 abbr --add gs 'git status'
 abbr --add gw 'git worktree'
 abbr --add gwa git_worktree_add_query
+abbr --add gwb git_worktree_base
 abbr --add gwr git_worktree_remove
 abbr --add gws git_worktree_switch
 abbr --add hl 'rg --passthru'
@@ -86,3 +87,4 @@ abbr --add vf 'nvim .'
 abbr --add -- - 'cd -'
 abbr --add ':q' exit
 
+abbr --add rwe op_run_with_env

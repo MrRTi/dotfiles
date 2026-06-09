@@ -1,0 +1,8 @@
+run service="":
+  op run --no-masking --env-file=.env -- docker compose up {{service}}
+
+run_d service="":
+  op run --no-masking --env-file=.env -- docker compose up -d {{service}}
+
+stop service="":
+  docker compose stop {{service}}

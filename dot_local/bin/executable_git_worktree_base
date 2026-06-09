@@ -1,16 +1,24 @@
 #!/usr/bin/env bash
 git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
 
+# Not in a git repo, but ./main/.git exists — cd into it
 if [ -z "$git_dir" ] && [ -d ./main/.git ]; then
 	cd main || exit 1
 	git_dir=$(git rev-parse --show-toplevel)
 fi
 
 if [ -d "$git_dir/.git" ]; then
-	dirname "$git_dir"
+	if [ -d "$git_dir/.git/worktrees" ]; then
+		# .../repo/main/.git (folder) = main repo with worktrees → return .../repo
+		dirname "$git_dir"
+	else
+		# .../repo/.git (folder) = simple repo without worktrees → return .../repo
+		echo "$git_dir"
+	fi
 	exit 0
 fi
 
+# .../repo/feature/.git (file) = worktree checkout → return .../repo
 if [ -f "$git_dir/.git" ]; then
 	dirname "$(awk -F': ' '/^gitdir:/ { sub(/\.git\/worktrees\/.*/, "", $2); print $2; exit }' "$git_dir/.git")"
 	exit 0
