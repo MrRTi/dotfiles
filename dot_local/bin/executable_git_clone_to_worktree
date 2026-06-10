@@ -5,11 +5,4 @@ target="${2:-$repo_name}"
 
 git clone "$1" "$target/main" || exit 1
 
-touch "$target/.envrc"
-printf 'source_up\n' >>"$target/.envrc"
-
-if command -v direnv >/dev/null 2>&1; then
-	direnv allow "$target/.envrc"
-fi
-
 cd "$target/main" && pwd
