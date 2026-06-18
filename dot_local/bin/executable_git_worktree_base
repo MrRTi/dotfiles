@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
+worktree_layout=0
 
 # Not in a git repo, but ./main/.git exists — cd into it
 if [ -z "$git_dir" ] && [ -d ./main/.git ]; then
 	cd main || exit 1
 	git_dir=$(git rev-parse --show-toplevel)
+	worktree_layout=1
 fi
 
 if [ -d "$git_dir/.git" ]; then
-	if [ -d "$git_dir/.git/worktrees" ]; then
+	if [ -d "$git_dir/.git/worktrees" ] || [ "$worktree_layout" = "1" ] || [ "$(basename "$git_dir")" = "main" ]; then
 		# .../repo/main/.git (folder) = main repo with worktrees → return .../repo
 		dirname "$git_dir"
 	else
