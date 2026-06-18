@@ -34,4 +34,7 @@
 vault = "Private"
 
 [[ssh-keys]]
+vault = "xjlsp3mnaxkhe2un44v4zi4weq"
+
+[[ssh-keys]]
 vault = "zykgg6bagb2326fqwzxoypij3u"
