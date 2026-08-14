@@ -1,76 +1,156 @@
 tap "anomalyco/tap"
-tap "d12frosted/emacs-plus"
+tap "d12frosted/emacs-plus", trusted: true
+tap "hashicorp/tap"
 tap "vmware/pinniped"
 tap "xo/xo"
+# Search tool like grep, but optimized for programmers
 brew "ack"
+# Automatic configure script builder
 brew "autoconf"
+# Library for command-line editing
 brew "readline"
+# Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
+# Programmable completion for Bash 4.2+
 brew "bash-completion@2"
+# Cryptography and SSL/TLS Toolkit
 brew "openssl@3"
+# Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Manage your dotfiles across multiple diverse machines, securely
 brew "chezmoi"
+# Cross-platform make
 brew "cmake"
+# GNU multiple precision arithmetic library
 brew "gmp"
+# GNU File, Shell, and Text utilities
 brew "coreutils"
+# Load/unload environment variables based on $PWD
 brew "direnv"
+# Tool for exploring each layer in a docker image
 brew "dive"
+# More intuitive version of du in rust
 brew "dust"
+# Modern, maintained replacement for ls
 brew "eza"
+# Simple, fast and user-friendly alternative to find
 brew "fd"
+# User-friendly command-line shell for UNIX-like operating systems
 brew "fish"
+# Command-line fuzzy finder written in Go
 brew "fzf"
+# Zstandard is a real-time compression algorithm
 brew "zstd"
-brew "gemini-cli", link: false
+# TIFF library and utilities
+brew "libtiff"
+# Distributed revision control system
 brew "git"
+# Syntax-highlighting pager for git and diff output
 brew "git-delta"
+# Render markdown on the CLI
 brew "glow"
+# GNU Privacy Guard (OpenPGP)
 brew "gnupg"
+# Kubernetes package manager
+brew "helm"
+# Deploy Kubernetes Helm Charts
+brew "helmfile"
+# Easy plain text accounting with command-line, terminal and web UIs
 brew "hledger"
+# Improved top (interactive process viewer)
 brew "htop"
+# User-friendly cURL replacement (command-line HTTP client)
 brew "httpie"
+# Interactive JSON filter using jq
 brew "jnv"
+# Lightweight and flexible command-line JSON processor
 brew "jq"
+# Handy way to save and run project-specific commands
 brew "just"
+# Kubernetes CLI To Manage Your Clusters In Style!
 brew "k9s"
+# Kubernetes controller and tool for one-way encrypted Secrets
+brew "kubeseal"
+# Simple terminal UI for git commands
 brew "lazygit"
+# Postgres C API library
 brew "libpq"
+# YAML Parser
 brew "libyaml"
+# Mac App Store command-line interface
 brew "mas"
+# Polyglot runtime manager (asdf rust clone)
 brew "mise"
+# MongoDB CLI enables you to manage your MongoDB in the Cloud
 brew "mongocli"
+# MongoDB Shell to connect, configure, query, and work with your MongoDB database
 brew "mongosh"
+# Open source relational database management system
 brew "mysql"
+# Open source relational database management system
 brew "mysql@8.4"
-brew "ollama", restart_service: :changed
+# Create, run, and share large language models (LLMs)
+brew "ollama"
+# Drop-in replacement for Terraform. Infrastructure as Code Tool
+brew "opentofu"
+# Execute binaries from Python packages in isolated environments
 brew "pipx"
+# Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Utility that provides fast incremental file transfer
+brew "rsync"
+# Safe, concurrent, practical language
 brew "rust"
+# Static analysis and lint tool, for (ba)sh scripts
 brew "shellcheck"
+# Autoformat shell script source code
 brew "shfmt"
+# Very fast implementation of tldr in Rust
 brew "tealdeer"
+# Terminal multiplexer
 brew "tmux"
+# Display directories as trees (with optional color/HTML output)
 brew "tree"
+# Incremental parsing library
 brew "tree-sitter"
+# Parser generator tool
 brew "tree-sitter-cli"
+# Vulnerability scanner for container images, file systems, and Git repos
 brew "trivy"
+# Disaster recovery for Kubernetes resources and persistent volumes
+brew "velero"
+# Internet file retriever
 brew "wget"
+# Extensible command-line tool to format YAML files
 brew "yamlfmt"
+# Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
-brew "anomalyco/tap/opencode"
+# GNU Emacs text editor
 brew "d12frosted/emacs-plus/emacs-plus@30"
-brew "vmware/pinniped/pinniped-cli"
-brew "xo/xo/usql"
+# Command-line interface for 1Password
+cask "1password-cli"
+# Automatic tiling window manager similar to xmonad
 cask "amethyst"
+# Terminal interface for Antigravity agents
+cask "antigravity-cli"
+# Chromium based browser
 cask "arc"
+# E-books management software
+cask "calibre"
+# OpenAI's official ChatGPT desktop app
 cask "chatgpt"
+# Terminal-based AI coding assistant
 cask "claude-code"
 cask "font-jetbrains-mono-nerd-font"
+# Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Privacy-first, open-source platform for knowledge sharing and management
 cask "logseq"
-cask "ngrok"
+# Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
+# Replacement for Docker Desktop
 cask "orbstack"
+# System monitor for the menu bar
 cask "stats"
 mas "1Password for Safari", id: 1569813296
 mas "Color Picker", id: 1545870783
@@ -87,9 +167,11 @@ mas "Shadowrocket", id: 932747118
 mas "Surfingkeys", id: 1609752330
 mas "Tailscale", id: 1475387142
 mas "Telegram", id: 747648890
+mas "Windows App", id: 1295203466
 mas "Wipr", id: 1662217862
 mas "Yubico Authenticator", id: 1497506650
 go "cmd/go"
 go "cmd/gofmt"
 go "golang.org/x/tools/gopls"
 go "github.com/golang-migrate/migrate/v4/cmd/migrate"
+npm "corepack"
