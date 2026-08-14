@@ -4,3 +4,4 @@ mise.toml
 configure-git-for-dev-folders.sh
 CLAUDE.md
 justfile
+*/.keep

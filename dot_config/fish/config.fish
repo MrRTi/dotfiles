@@ -42,7 +42,6 @@ alias lessl='bat -pl'
 alias cat='bat -pp'
 alias reload='exec fish'
 
-alias gemini='op run --env-file=$HOME/.envs/.gemini -- gemini'
 alias opr=op_run_with_env
 
 # Abbreviations
