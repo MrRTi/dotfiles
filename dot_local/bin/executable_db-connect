@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# vim: set ft=sh :
+
+set -euo pipefail
+
+# shellcheck source=_db-lib
+source "$(dirname "$(realpath "$0")")/_db-lib"
+
+db_connect() {
+  local engine db_name dsn
+
+  if [[ $# -eq 2 ]]; then
+    engine="$1"
+    db_name="$2"
+  elif [[ $# -eq 1 ]]; then
+    engine="$1"
+    db_name=""
+  else
+    engine=$(printf 'postgres\nmysql\nmongo' | fzf --prompt="Database engine: ") || return 1
+    db_name=""
+  fi
+
+  dsn=$(db_dsn "$engine" "$db_name")
+  exec usql "$dsn"
+}
+
+db_connect "$@"

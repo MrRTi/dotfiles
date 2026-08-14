@@ -3,6 +3,9 @@
 
 set -euo pipefail
 
+# shellcheck source=_db-lib
+source "$(dirname "$(realpath "$0")")/_db-lib"
+
 db_create() {
   local engine db_name dsn
 
@@ -19,7 +22,7 @@ db_create() {
 
   case "$engine" in
     postgres)
-      dsn="pg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/postgres"
+      dsn=$(db_dsn postgres)
       if usql "$dsn" -qc "SELECT 1 FROM pg_database WHERE datname = '$db_name'" 2>/dev/null | grep -q 1; then
         echo "Error: postgres database '$db_name' already exists" >&2
         return 1
@@ -28,7 +31,7 @@ db_create() {
       echo "Created postgres database '$db_name'"
       ;;
     mysql)
-      dsn="my://root:${MYSQL_ROOT_PASSWORD}@127.0.0.1:3306/"
+      dsn=$(db_dsn mysql)
       if usql "$dsn" -qc "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = '$db_name'" 2>/dev/null | grep -q "$db_name"; then
         echo "Error: mysql database '$db_name' already exists" >&2
         return 1
@@ -37,12 +40,12 @@ db_create() {
       echo "Created mysql database '$db_name'"
       ;;
     mongo)
-      dsn="mg://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@localhost:27017/?authSource=admin"
+      dsn=$(db_dsn mongo)
       if usql "$dsn" -qc "show databases" 2>/dev/null | grep -qw "$db_name"; then
         echo "Error: mongo database '$db_name' already exists" >&2
         return 1
       fi
-      usql "$dsn/$db_name" -qc "db.createCollection('_init')"
+      usql "$(db_dsn mongo "$db_name")" -qc "db.createCollection('_init')"
       echo "Created mongo database '$db_name'"
       ;;
     *)

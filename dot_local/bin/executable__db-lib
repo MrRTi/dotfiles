@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# vim: set ft=sh :
+# Shared helpers for db-create and db-connect
+
+db_dsn() {
+  local engine="$1" db_name="${2:-}"
+  case "$engine" in
+    postgres)
+      echo "pg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${db_name:-postgres}"
+      ;;
+    mysql)
+      echo "my://root:${MYSQL_ROOT_PASSWORD}@127.0.0.1:3306/${db_name}"
+      ;;
+    mongo)
+      if [[ -n "$db_name" ]]; then
+        echo "mg://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@localhost:27017/${db_name}?authSource=admin"
+      else
+        echo "mg://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@localhost:27017/?authSource=admin"
+      fi
+      ;;
+    *)
+      echo "Error: unknown engine '$engine' (postgres, mysql, mongo)" >&2
+      return 1
+      ;;
+  esac
+}
