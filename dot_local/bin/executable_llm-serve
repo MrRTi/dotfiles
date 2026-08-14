@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Starts a local mlx-lm OpenAI-compatible server (http://localhost:${LLM_SERVE_PORT:-8090}).
+# Usage: llm-serve [code|coding]   (default: general-purpose model)
+#
+# max-tokens raised from mlx_lm.server's 512 default — Qwen3's thinking mode
+# can burn hundreds of tokens on reasoning alone before any real answer,
+# and a too-low cap truncates mid-think with no content ever produced.
+
+variant="${1:-general}"
+port="${LLM_SERVE_PORT:-8090}"
+max_tokens="${LLM_SERVE_MAX_TOKENS:-4096}"
+
+case "$variant" in
+code | coding)
+  model="mlx-community/Qwen3-Coder-30B-A3B-Instruct-4bit"
+  ;;
+*)
+  model="mlx-community/Qwen3-8B-4bit"
+  ;;
+esac
+
+exec mlx_lm.server --model "$model" --port "$port" --max-tokens "$max_tokens"

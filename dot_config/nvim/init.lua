@@ -81,10 +81,13 @@ vim.pack.add({
   { src = "https://github.com/folke/which-key.nvim" },
   { src = "https://github.com/folke/todo-comments.nvim" },
   { src = "https://github.com/nvim-neotest/neotest" },
+  { src = "https://github.com/olimorris/codecompanion.nvim" },
+  { src = "https://github.com/yetone/avante.nvim" },
   -- deps
   { src = "https://github.com/nvim-lua/plenary.nvim" },
   { src = "https://github.com/nvim-neotest/nvim-nio" },
   { src = "https://github.com/olimorris/neotest-rspec" },
+  { src = "https://github.com/MunifTanjim/nui.nvim" },
   --
   { src = "https://github.com/andythigpen/nvim-coverage" },
   -- Theme
@@ -188,6 +191,8 @@ require("mini.statusline").setup({
 
 require("which-key").setup()
 require("which-key").add({
+  { "<leader>a", group = "avante" },
+  { "<leader>v", group = "ai" },
   { "<leader>b", group = "buffer" },
   { "<leader>f", group = "file" },
   { "<leader>g", group = "git" },
@@ -384,6 +389,110 @@ end, { desc = "Previous harpoon file" })
 vim.keymap.set("n", "]H", function()
   harpoon:list():next()
 end, { desc = "Next harpoon file" })
+
+-- AI
+
+require("codecompanion").setup({
+  adapters = {
+    http = {
+      llm_serve = function()
+        local url = os.getenv("LLM_SERVE_URL") or "http://127.0.0.1:8090"
+        return require("codecompanion.adapters").extend("openai_compatible", {
+          env = {
+            url = url,
+            api_key = "not-needed",
+            chat_url = "/v1/chat/completions",
+          },
+          handlers = {
+            -- mlx_lm.server puts Qwen3's <think> reasoning in delta.reasoning
+            -- (not the reasoning_content name most providers use). Without
+            -- this, codecompanion only reads delta.content and the buffer
+            -- shows nothing at all while the model is thinking.
+            parse_meta = function(self, data)
+              local reasoning_content = data.extra and data.extra.reasoning
+              if reasoning_content then
+                data.output.reasoning = { content = reasoning_content }
+                if data.output.content == "" then
+                  data.output.content = nil
+                end
+              end
+              return data
+            end,
+          },
+        })
+      end,
+    },
+  },
+  interactions = {
+    chat = { adapter = "llm_serve" },
+    inline = { adapter = "llm_serve" },
+  },
+})
+
+-- <leader>a is avante's own namespace (its default mappings, e.g. <leader>ac
+-- "add current buffer", live there and aren't declared in this file) — moved
+-- codecompanion under <leader>v instead of fighting over the same keys.
+vim.keymap.set("n", "<leader>vc", "<cmd>CodeCompanionChat Toggle<CR>", { desc = "Toggle AI chat" })
+vim.keymap.set("v", "<leader>vi", "<cmd>CodeCompanion<CR>", { desc = "AI inline edit" })
+
+local codecompanion_group = vim.api.nvim_create_augroup("CodeCompanionNotify", { clear = true })
+vim.api.nvim_create_autocmd("User", {
+  pattern = "CodeCompanionRequestStarted",
+  group = codecompanion_group,
+  callback = function()
+    vim.schedule(function()
+      vim.notify("CodeCompanion: request sent...", vim.log.levels.INFO)
+    end)
+  end,
+})
+vim.api.nvim_create_autocmd("User", {
+  pattern = "CodeCompanionRequestFinished",
+  group = codecompanion_group,
+  callback = function(request)
+    local status = request.data and request.data.status
+    vim.schedule(function()
+      if status == "success" then
+        vim.notify("CodeCompanion: response received", vim.log.levels.INFO)
+      else
+        vim.notify("CodeCompanion: request failed (" .. tostring(status) .. ")", vim.log.levels.WARN)
+      end
+    end)
+  end,
+})
+
+-- Avante (alternative to codecompanion, comparing the two)
+-- mlx_lm.server doesn't check auth, but avante's openai provider needs
+-- OPENAI_API_KEY present to consider itself configured.
+vim.env.OPENAI_API_KEY = vim.env.OPENAI_API_KEY or "not-needed"
+
+require("avante").setup({
+  -- "legacy" skips the agentic tool-definition system prompt (thousands of
+  -- tokens on every message) — on a local 30B model that overhead means
+  -- multi-minute prefill for plain Q&A. Switch back to "agentic" in-config
+  -- when you actually want auto-apply file edits / tool use.
+  mode = "legacy",
+  provider = "openai",
+  providers = {
+    openai = {
+      endpoint = (os.getenv("LLM_SERVE_URL") or "http://127.0.0.1:8090") .. "/v1",
+      -- "default_model", not a real model name: mlx_lm.server maps this key
+      -- to whatever it was launched with (server.py's _model_map). A real
+      -- model name here would make the server hot-swap/bulk-load that model
+      -- mid-request whenever it doesn't match what's actually running (e.g.
+      -- llm-serve started the small model, avante still asked for the 30B
+      -- coder one) — that sudden multi-GB Metal allocation is what tripped
+      -- a macOS GPU-driver kernel panic (IOGPUGroupMemory.cpp) and rebooted
+      -- the machine. codecompanion never hit this because it never sets
+      -- `model` at all, so it already rides along with whatever's loaded.
+      model = "default_model",
+      timeout = 120000,
+    },
+  },
+})
+
+-- Toggle dropped: avante's own default <leader>at already does this, and
+-- <leader>vc now belongs to codecompanion (see above).
+vim.keymap.set("v", "<leader>ve", "<cmd>AvanteEdit<CR>", { desc = "Avante inline edit" })
 
 -- Git
 

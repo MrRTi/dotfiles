@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Thin wrapper so `tmux-popup llm-serve-code` works — tmux-popup resolves
+# a single bare command via `command -v`, so `llm-serve code` (two tokens)
+# can't be passed directly.
+exec llm-serve code
