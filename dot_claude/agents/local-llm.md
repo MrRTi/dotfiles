@@ -30,6 +30,17 @@ The user also has a script, `llm-serve [code]`, that starts a persistent OpenAI-
 - If a requested model isn't cached yet, the first run downloads it from Hugging Face automatically — this can take a while for large models, mention that to the user
 - If a download stalls (progress bar frozen, no error) it's likely the `hf_xet` backend hanging — retry with `HF_HUB_DISABLE_XET=1` prefixed on the command, it resumes from what's already downloaded
 - If a model has no MLX quant available, fall back to `llama.cpp` instead: `llama-cli --hf-repo <gguf-repo> --prompt "<prompt>"`
+- Confirmed-working llama.cpp fallback for the coder MoE model: `unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF`, file `Qwen3-Coder-30B-A3B-Instruct-IQ4_XS.gguf` (use IQ4_XS, not Q4_K_M — the latter is 18.5GB, over Metal's ~19GB working-set ceiling on a 24GB machine and risks swap/failure)
+
+## MLX vs llama.cpp benchmark (2026-08-17, M4/24GB, 5 real prompts incl. coding, temp 0)
+
+mlx wins on dense models, roughly ties on the MoE coder model — so mlx stays the default (see Model selection above); llama.cpp is a fine fallback, not a speed downgrade, specifically for the 30B-A3B coder.
+
+| model | mlx tok/s | llama.cpp tok/s |
+|---|---|---|
+| Qwen3-8B (general) | 19.4 | 16.5 (mlx +18%) |
+| Qwen2.5-Coder-14B (coding) | 8.7 | 6.7 (mlx +29%) |
+| Qwen3-Coder-30B-A3B MoE (coding) | 23.3 | 24.2 (~tie) |
 
 ## Benched but not kept (would need re-download if used)
 

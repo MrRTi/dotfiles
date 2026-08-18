@@ -82,12 +82,11 @@ vim.pack.add({
   { src = "https://github.com/folke/todo-comments.nvim" },
   { src = "https://github.com/nvim-neotest/neotest" },
   { src = "https://github.com/olimorris/codecompanion.nvim" },
-  { src = "https://github.com/yetone/avante.nvim" },
+  { src = "https://github.com/ravitemer/mcphub.nvim" },
   -- deps
   { src = "https://github.com/nvim-lua/plenary.nvim" },
   { src = "https://github.com/nvim-neotest/nvim-nio" },
   { src = "https://github.com/olimorris/neotest-rspec" },
-  { src = "https://github.com/MunifTanjim/nui.nvim" },
   --
   { src = "https://github.com/andythigpen/nvim-coverage" },
   -- Theme
@@ -191,7 +190,6 @@ require("mini.statusline").setup({
 
 require("which-key").setup()
 require("which-key").add({
-  { "<leader>a", group = "avante" },
   { "<leader>v", group = "ai" },
   { "<leader>b", group = "buffer" },
   { "<leader>f", group = "file" },
@@ -392,7 +390,26 @@ end, { desc = "Next harpoon file" })
 
 -- AI
 
+require("mcphub").setup()
+
 require("codecompanion").setup({
+  extensions = {
+    mcphub = {
+      callback = "mcphub.extensions.codecompanion",
+      opts = {
+        make_tools = true,
+        show_server_tools_in_chat = true,
+        add_mcp_prefix_to_tool_names = false,
+        show_result_in_chat = true,
+        -- mcphub's make_vars targets codecompanion's old config.interactions.chat.variables
+        -- table, which the installed codecompanion.nvim removed (replaced by its
+        -- context/editor_context system) -> pairs(nil) crash on chat open. Off until
+        -- mcphub.nvim's codecompanion extension catches up.
+        make_vars = false,
+        make_slash_commands = true,
+      },
+    },
+  },
   adapters = {
     http = {
       llm_serve = function()
@@ -434,6 +451,7 @@ require("codecompanion").setup({
 -- codecompanion under <leader>v instead of fighting over the same keys.
 vim.keymap.set("n", "<leader>vc", "<cmd>CodeCompanionChat Toggle<CR>", { desc = "Toggle AI chat" })
 vim.keymap.set("v", "<leader>vi", "<cmd>CodeCompanion<CR>", { desc = "AI inline edit" })
+vim.keymap.set("n", "<leader>vm", "<cmd>MCPHub<CR>", { desc = "MCP Hub panel" })
 
 local codecompanion_group = vim.api.nvim_create_augroup("CodeCompanionNotify", { clear = true })
 vim.api.nvim_create_autocmd("User", {
@@ -459,40 +477,6 @@ vim.api.nvim_create_autocmd("User", {
     end)
   end,
 })
-
--- Avante (alternative to codecompanion, comparing the two)
--- mlx_lm.server doesn't check auth, but avante's openai provider needs
--- OPENAI_API_KEY present to consider itself configured.
-vim.env.OPENAI_API_KEY = vim.env.OPENAI_API_KEY or "not-needed"
-
-require("avante").setup({
-  -- "legacy" skips the agentic tool-definition system prompt (thousands of
-  -- tokens on every message) — on a local 30B model that overhead means
-  -- multi-minute prefill for plain Q&A. Switch back to "agentic" in-config
-  -- when you actually want auto-apply file edits / tool use.
-  mode = "legacy",
-  provider = "openai",
-  providers = {
-    openai = {
-      endpoint = (os.getenv("LLM_SERVE_URL") or "http://127.0.0.1:8090") .. "/v1",
-      -- "default_model", not a real model name: mlx_lm.server maps this key
-      -- to whatever it was launched with (server.py's _model_map). A real
-      -- model name here would make the server hot-swap/bulk-load that model
-      -- mid-request whenever it doesn't match what's actually running (e.g.
-      -- llm-serve started the small model, avante still asked for the 30B
-      -- coder one) — that sudden multi-GB Metal allocation is what tripped
-      -- a macOS GPU-driver kernel panic (IOGPUGroupMemory.cpp) and rebooted
-      -- the machine. codecompanion never hit this because it never sets
-      -- `model` at all, so it already rides along with whatever's loaded.
-      model = "default_model",
-      timeout = 120000,
-    },
-  },
-})
-
--- Toggle dropped: avante's own default <leader>at already does this, and
--- <leader>vc now belongs to codecompanion (see above).
-vim.keymap.set("v", "<leader>ve", "<cmd>AvanteEdit<CR>", { desc = "Avante inline edit" })
 
 -- Git
 
