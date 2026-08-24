@@ -12,13 +12,20 @@ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply MrRTi
 
 ## Package Management
 
-Packages are declared in `.chezmoidata/packages.yaml`. Changes trigger automatic reinstallation via `brew bundle`.
+Packages (brews, casks, and Mac App Store apps) are declared in `Brewfile`. Changes trigger automatic reinstallation via `brew bundle`. Managed day-to-day with `barista` and `just brew-dump`/`brew-sync`.
 
 ## Custom Scripts
 
 - `tmux-sessionizer` — FZF-based tmux session creator
 - `notes-switcher` — Interactive note selector/creator
 - `tmux-popup` — Wrapper for running CLI tools in tmux popups
+- `tmux-git-info` — Outputs git branch/remote info for tmux pane borders
+- `db-create` / `db-connect` — Multi-engine DB creator/connector (postgres, mysql, mongo) via FZF + usql
+- `barista` — Homebrew Brewfile sync/cleanup helper
+- `llm-serve` / `llm-serve-code` — Starts a local MLX OpenAI-compatible LLM server
+- `enc` — Password-based file encryption via openssl
+
+See `dot_local/bin/` for the full list.
 
 ## Common Commands
 

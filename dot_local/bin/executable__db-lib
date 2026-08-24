@@ -2,6 +2,8 @@
 # vim: set ft=sh :
 # Shared helpers for db-create and db-connect
 
+set -euo pipefail
+
 db_dsn() {
   local engine="$1" db_name="${2:-}"
   case "$engine" in

@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(shellcheck:*)",
+      "Bash(ruff check:*)",
+      "Bash(npm view:*)",
+      "Bash(brew info:*)"
+    ]
+  }
+}

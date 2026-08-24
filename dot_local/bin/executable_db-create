@@ -20,6 +20,11 @@ db_create() {
     return 1
   fi
 
+  if [[ ! "$db_name" =~ ^[A-Za-z0-9_]+$ ]]; then
+    echo "Error: invalid db name '$db_name' (use letters, digits, underscore only)" >&2
+    return 1
+  fi
+
   case "$engine" in
     postgres)
       dsn=$(db_dsn postgres)

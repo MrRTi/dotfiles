@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # Clones a repo into a worktree layout and prints the final path to cd into.
+set -euo pipefail
+
 repo_name=$(basename "$1" .git)
 target="${2:-$repo_name}"
 
-git clone "$1" "$target/main" || exit 1
+git clone "$1" "$target/main"
 
 cd "$target/main" && pwd

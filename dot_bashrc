@@ -93,6 +93,20 @@ chezmoi_cd() {
 	cd "$(chezmoi source-path)" || return 1
 }
 
+gpf() {
+	local branch
+	branch=$(git current-branch) || return 1
+	[ -z "$branch" ] && { echo "gpf: no current branch (detached HEAD?)" >&2; return 1; }
+	git push --force-with-lease origin "$branch"
+}
+
+gres() {
+	local branch
+	branch=$(git current-branch) || return 1
+	[ -z "$branch" ] && { echo "gres: no current branch (detached HEAD?)" >&2; return 1; }
+	git reset --hard "origin/$branch"
+}
+
 venv_init() {
 	local root
 	root=$(git rev-parse --show-toplevel 2>/dev/null) || {
@@ -150,10 +164,8 @@ alias gb='git branch'
 alias gco='git checkout'
 alias gc='git commit'
 alias glol='git log-pretty'
-alias gpf='git push --force-with-lease origin $(git current-branch)'
 alias gpu='git push -u origin $(git current-branch)'
 alias grup='git remote update'
-alias gres='git reset --hard origin/$(git current-branch)'
 alias gs='git status'
 alias gw='git worktree'
 alias g='git'
@@ -167,6 +179,7 @@ alias hl='rg --passthru'
 
 # Aliases to custom scripts
 alias gwa='git_worktree_add_query'
+alias gwb='git_worktree_base'
 alias gwr='git_worktree_remove'
 alias gws='git_worktree_switch'
 alias tn='tmux-sessionizer'

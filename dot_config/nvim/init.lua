@@ -269,7 +269,7 @@ vim.keymap.set("n", "<leader>st", "<cmd>TodoFzfLua<CR>", { desc = "Search todos/
 -- NOTE: nvim-treesitter main branch (Neovim 0.12+) only manages parser installation.
 -- Highlighting is handled natively by Neovim.
 
-require("nvim-treesitter").install({ "lua", "ruby", "python", "javascript", "yaml", "json" })
+require("nvim-treesitter").install({ "lua", "ruby", "python", "javascript", "yaml", "json", "go", "markdown", "markdown_inline" })
 
 -- LSP
 
@@ -286,6 +286,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
     if client and client.server_capabilities.completionProvider then
       vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
+    end
+    -- ruff is the sole Python formatter (see null-ls sources below, which
+    -- intentionally has no black/isort) — wire its format-on-save here
+    -- since it's a plain LSP client, not routed through null-ls.
+    if client and client.name == "ruff" and client.server_capabilities.documentFormattingProvider then
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = ev.buf,
+        callback = function()
+          vim.lsp.buf.format({ bufnr = ev.buf, id = client.id })
+        end,
+      })
     end
   end,
 })
@@ -326,17 +337,15 @@ null_ls.setup({
   sources = {
     null_ls.builtins.formatting.stylua,
     -- null_ls.builtins.completion.spell,
-    -- Python
-    null_ls.builtins.formatting.black,
-    null_ls.builtins.formatting.isort,
-    require("none-ls.diagnostics.flake8"),
+    -- Python: formatting + linting handled by ruff (LSP, see vim.lsp.enable
+    -- above and the ruff format-on-save hook in the LspAttach autocmd).
     -- Ruby
     null_ls.builtins.formatting.rubocop,
     null_ls.builtins.diagnostics.rubocop,
     -- JSON
     require("none-ls.formatting.jq"),
     -- YAML
-    -- null_ls.builtins.formatting.yamlfmt,
+    null_ls.builtins.formatting.yamlfmt,
     -- Shell
     null_ls.builtins.formatting.shfmt,
     require("none-ls-shellcheck.diagnostics"),
@@ -461,9 +470,6 @@ require("codecompanion").setup({
   },
 })
 
--- <leader>a is avante's own namespace (its default mappings, e.g. <leader>ac
--- "add current buffer", live there and aren't declared in this file) — moved
--- codecompanion under <leader>v instead of fighting over the same keys.
 vim.keymap.set("n", "<leader>vc", "<cmd>CodeCompanionChat Toggle<CR>", { desc = "Toggle AI chat" })
 vim.keymap.set("v", "<leader>vi", "<cmd>CodeCompanion<CR>", { desc = "AI inline edit" })
 vim.keymap.set("n", "<leader>vm", "<cmd>MCPHub<CR>", { desc = "MCP Hub panel" })

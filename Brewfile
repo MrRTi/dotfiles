@@ -77,10 +77,14 @@ brew "lazygit"
 brew "libpq"
 # YAML Parser
 brew "libyaml"
+# LLM inference in C/C++
+brew "llama.cpp"
 # Mac App Store command-line interface
 brew "mas"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
+# Run LLMs with MLX
+brew "mlx-lm"
 # MongoDB CLI enables you to manage your MongoDB in the Cloud
 brew "mongocli"
 # MongoDB Shell to connect, configure, query, and work with your MongoDB database

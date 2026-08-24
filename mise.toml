@@ -1,4 +1,4 @@
 [tools]
-lua-language-server = "latest"
-marksman = "latest"
-shellcheck = "latest"
+lua-language-server = "3.17.1"
+marksman = "2026-02-08"
+shellcheck = "0.11.0"
