@@ -83,6 +83,7 @@ vim.pack.add({
   { src = "https://github.com/nvim-neotest/neotest" },
   { src = "https://github.com/olimorris/codecompanion.nvim" },
   { src = "https://github.com/ravitemer/mcphub.nvim" },
+  { src = "https://github.com/saghen/blink.cmp", version = "v1.10.2" },
   -- deps
   { src = "https://github.com/nvim-lua/plenary.nvim" },
   { src = "https://github.com/nvim-neotest/nvim-nio" },
@@ -392,6 +393,17 @@ end, { desc = "Next harpoon file" })
 
 require("mcphub").setup()
 
+-- blink.cmp: used only for codecompanion's chat buffer (@tool/#var/slash-command
+-- popup) — sources.default stays empty so it stays inert in normal buffers and
+-- doesn't fight the native LSP completion set up above. codecompanion registers
+-- its own filetype-scoped source at runtime (providers/completion/blink/setup.lua).
+-- fuzzy.implementation = "lua" avoids the Rust prebuilt/build-step blink.cmp
+-- normally wants — vim.pack.add has no build-hook mechanism to run it.
+require("blink.cmp").setup({
+  sources = { default = {} },
+  fuzzy = { implementation = "lua" },
+})
+
 require("codecompanion").setup({
   extensions = {
     mcphub = {
@@ -441,7 +453,10 @@ require("codecompanion").setup({
     },
   },
   interactions = {
-    chat = { adapter = "llm_serve" },
+    chat = {
+      adapter = "llm_serve",
+      opts = { completion_provider = "blink" },
+    },
     inline = { adapter = "llm_serve" },
   },
 })
@@ -453,28 +468,66 @@ vim.keymap.set("n", "<leader>vc", "<cmd>CodeCompanionChat Toggle<CR>", { desc = 
 vim.keymap.set("v", "<leader>vi", "<cmd>CodeCompanion<CR>", { desc = "AI inline edit" })
 vim.keymap.set("n", "<leader>vm", "<cmd>MCPHub<CR>", { desc = "MCP Hub panel" })
 
+-- In-buffer spinner: vim.notify alone was easy to miss (no notify UI plugin
+-- installed, just a cmdline echo that gets overwritten). This puts an animated
+-- "generating…" virtual line at the bottom of the chat buffer itself for the
+-- duration of the request, so there's visible feedback right where you're
+-- looking after <C-s>.
 local codecompanion_group = vim.api.nvim_create_augroup("CodeCompanionNotify", { clear = true })
+local codecompanion_spinner_ns = vim.api.nvim_create_namespace("codecompanion_spinner")
+local codecompanion_spinner_frames = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+local codecompanion_spinner_timer = nil
+
+local function codecompanion_spinner_stop(bufnr)
+  if codecompanion_spinner_timer then
+    codecompanion_spinner_timer:stop()
+    codecompanion_spinner_timer:close()
+    codecompanion_spinner_timer = nil
+  end
+  if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+    vim.api.nvim_buf_clear_namespace(bufnr, codecompanion_spinner_ns, 0, -1)
+  end
+end
+
 vim.api.nvim_create_autocmd("User", {
   pattern = "CodeCompanionRequestStarted",
   group = codecompanion_group,
-  callback = function()
-    vim.schedule(function()
-      vim.notify("CodeCompanion: request sent...", vim.log.levels.INFO)
+  callback = function(request)
+    local bufnr = request.data and request.data.bufnr
+    if not bufnr or not vim.api.nvim_buf_is_valid(bufnr) then
+      return
+    end
+    codecompanion_spinner_stop(bufnr)
+    local frame = 1
+    codecompanion_spinner_timer = vim.uv.new_timer()
+    codecompanion_spinner_timer:start(0, 100, function()
+      vim.schedule(function()
+        if not vim.api.nvim_buf_is_valid(bufnr) then
+          return codecompanion_spinner_stop()
+        end
+        vim.api.nvim_buf_clear_namespace(bufnr, codecompanion_spinner_ns, 0, -1)
+        local last_line = vim.api.nvim_buf_line_count(bufnr) - 1
+        vim.api.nvim_buf_set_extmark(bufnr, codecompanion_spinner_ns, last_line, 0, {
+          virt_lines = { { { codecompanion_spinner_frames[frame] .. " generating…", "Comment" } } },
+        })
+        frame = (frame % #codecompanion_spinner_frames) + 1
+      end)
     end)
   end,
 })
+
 vim.api.nvim_create_autocmd("User", {
   pattern = "CodeCompanionRequestFinished",
   group = codecompanion_group,
   callback = function(request)
+    local bufnr = request.data and request.data.bufnr
+    codecompanion_spinner_stop(bufnr)
     local status = request.data and request.data.status
-    vim.schedule(function()
-      if status == "success" then
-        vim.notify("CodeCompanion: response received", vim.log.levels.INFO)
-      else
+    if status ~= "success" then
+      vim.schedule(function()
         vim.notify("CodeCompanion: request failed (" .. tostring(status) .. ")", vim.log.levels.WARN)
-      end
-    end)
+      end)
+    end
   end,
 })
 
