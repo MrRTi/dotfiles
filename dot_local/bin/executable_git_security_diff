@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# Prints the full set of pending changes on the current branch, for security
+# review: committed-but-unmerged commits (if a safe base can be found) +
+# working tree (staged/unstaged) changes + untracked files. Never fails
+# silently — prints an explicit skip note instead of omitting a section.
+set -uo pipefail
+
+repo_root=$(git rev-parse --show-toplevel 2>/dev/null) || {
+	echo "not a git repository" >&2
+	exit 2
+}
+cd "$repo_root" || exit 2
+
+remote=$(git remote | grep -x origin || git remote | head -n1)
+current_branch=$(git branch --show-current)
+
+base=""
+if git rev-parse --abbrev-ref --symbolic-full-name '@{u}' >/dev/null 2>&1; then
+	base=$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}')
+elif [ -n "$remote" ] && [ -n "$current_branch" ] && git rev-parse --verify "${remote}/${current_branch}^{commit}" >/dev/null 2>&1; then
+	base="${remote}/${current_branch}"
+elif [ -n "$remote" ] && git rev-parse --verify "${remote}/HEAD^{commit}" >/dev/null 2>&1; then
+	base="${remote}/HEAD"
+fi
+
+has_head=1
+git rev-parse --verify HEAD >/dev/null 2>&1 || has_head=0
+
+echo "=== Committed changes on this branch (vs ${base:-no base found}) ==="
+if [ -n "$base" ] && [ "$has_head" = 1 ]; then
+	merge_base=$(git merge-base "$base" HEAD 2>/dev/null)
+	if [ -n "$merge_base" ]; then
+		git diff "$merge_base" HEAD
+	else
+		echo "(skipped: '$base' and HEAD share no common ancestor — cannot safely diff)"
+	fi
+else
+	echo "(skipped: no upstream/remote base resolved, or repo has no commits yet)"
+fi
+
+echo
+echo "=== Working tree changes (staged + unstaged) ==="
+if [ "$has_head" = 1 ]; then
+	git diff HEAD
+else
+	echo "(no commits yet — showing staged and unstaged changes)"
+	git diff --cached
+	git diff
+fi
+
+echo
+echo "=== Untracked files ==="
+found_untracked=0
+while IFS= read -r -d '' f; do
+	found_untracked=1
+	echo "--- $f (untracked) ---"
+	git diff --no-index /dev/null -- "$f"
+done < <(git ls-files --others --exclude-standard -z)
+if [ "$found_untracked" = 0 ]; then
+	echo "(none)"
+fi
+exit 0

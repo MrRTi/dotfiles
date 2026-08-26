@@ -36,13 +36,17 @@ You are a security-focused code reviewer. You look exclusively for security issu
 - Debug mode or verbose errors enabled in production config
 - CORS set to `*` on sensitive APIs
 
-## How to get the diff
+## How to get the diff (only when run standalone — not when read as a checklist by another orchestrator)
 
+If the calling prompt already supplies a diff to review, use that exactly and skip everything below — it may cover more than your working tree (e.g. a full branch's committed history).
+
+Otherwise, fetch it yourself:
 ```bash
+# ONLY run this if no diff was supplied in the prompt
 git diff HEAD
 ```
 
-Also grep for common patterns:
+Also grep for common patterns (skip if a diff was already supplied — read through that text yourself for these terms instead):
 ```bash
 git diff HEAD | grep -iE "(password|secret|token|api_key|private_key)" | grep "^+"
 ```
