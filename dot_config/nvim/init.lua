@@ -10,7 +10,9 @@ vim.o.wrap = false
 vim.o.swapfile = false
 vim.o.winborder = "rounded"
 vim.o.clipboard = "unnamedplus"
-vim.o.background = "dark"
+-- NOTE: no `vim.o.background` here on purpose. The TUI queries the terminal
+-- (OSC 11) at startup and sets it from the real background colour, so setting
+-- it explicitly would clobber that. See the Appearance section.
 
 vim.opt.scrolloff = 999
 -- NOTE: horizontal scrolling starts once the cursor passes (text area - sidescrolloff),
@@ -103,17 +105,12 @@ vim.pack.add({
 
 -- Appearance
 
-local function is_dark_local()
-  local handle =
-      io.popen([[osascript -e 'tell application "System Events" to tell appearance preferences to get dark mode']])
-  if not handle then
-    return false
-  end
-  local result = handle:read("*a")
-  handle:close()
-  return result:lower():gsub("%s+", "") == "true"
-end
-
+-- NOTE: 'background' is detected by the TUI, which queries the terminal for its
+-- background colour (OSC 11) at startup. Ghostty follows the macOS appearance
+-- (theme = dark:...,light:... in its config), so nvim tracks the system theme for
+-- free. This replaced an is_dark_local() helper that shelled out to `osascript`:
+-- that call blocked startup for ~104 ms, about half of total startup time.
+-- Verify with `:echo &background` under both macOS appearances.
 local function toggle_appearance(toggle_to)
   toggle_to = toggle_to or (vim.o.background == "light" and "dark" or "light")
   vim.o.background = toggle_to
@@ -127,12 +124,6 @@ vim.cmd("colorscheme kanagawa")
 
 vim.cmd("hi NormalFloat guibg=NONE")
 vim.cmd("hi FloatBorder guibg=NONE")
-
-if is_dark_local() then
-  toggle_appearance("dark")
-else
-  toggle_appearance("light")
-end
 
 -- UI
 
