@@ -1,0 +1,22 @@
+# NOTE: lazygit 0.65 renders diffs with its own built-in renderer
+# (`git.diffRenderers` is empty by default), so it ignores `core.pager = delta`
+# from ~/.config/git/config. Hunk colours are git's ANSI red/green drawn over
+# whatever `selectedLineBgColor` puts underneath them.
+#
+# NOTE: only one key is overridden here on purpose. lazygit's other theme
+# defaults are ANSI colour *names*, so they follow whichever palette Ghostty
+# swaps in (Kanagawa Dragon when macOS is dark, Lotus when light) and stay
+# readable in both. Hardcoding Kanagawa hex values would pin the theme to one
+# appearance -- measured against Lotus, a hardcoded dark selection put diff text
+# at 2.66:1 and the foreground at 1.40:1.
+#
+# The default `selectedLineBgColor` is `blue`, which is Dragon's ANSI blue
+# #8ba4b0 -- a *light* desaturated blue. Red/green diff text over it measures
+# 1.15-1.32:1, i.e. the line under the cursor is unreadable. `reverse` swaps
+# foreground and background per cell instead of picking a colour, so the
+# selected line always has the same contrast as ordinary diff text
+# (Dragon 5.21/6.00, Lotus 4.06/3.26) in either appearance.
+gui:
+  theme:
+    selectedLineBgColor:
+      - reverse
