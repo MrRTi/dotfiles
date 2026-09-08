@@ -13,7 +13,14 @@ vim.o.clipboard = "unnamedplus"
 vim.o.background = "dark"
 
 vim.opt.scrolloff = 999
-vim.opt.sidescrolloff = 999
+-- NOTE: horizontal scrolling starts once the cursor passes (text area - sidescrolloff),
+-- and from then on every column move repaints the whole window. At 999 the cursor is
+-- pinned mid-window, so that point is *half* the text area -- a 62-char line already
+-- scrolls in a 130-col terminal, and a vertical split drops it to ~col 36. At 20 the
+-- trigger tracks the window edge instead, so ordinary lines never scroll while still
+-- keeping 20 columns of lookahead. Costs the horizontal centering `scrolloff = 999`
+-- gives vertically.
+vim.opt.sidescrolloff = 20
 vim.opt.cursorline = true
 
 -- NOTE: Default indent: 2 spaces (covers ruby, lua, yaml, json, javascript, shell)
@@ -133,21 +140,45 @@ require("todo-comments").setup()
 require("mini.ai").setup()
 require("mini.splitjoin").setup()
 require("mini.indentscope").setup()
-local function colored_diagnostics()
-  local severities = {
-    [1] = { "E", "DiagnosticError" },
-    [2] = { "W", "DiagnosticWarn" },
-    [3] = { "I", "DiagnosticInfo" },
-    [4] = { "H", "DiagnosticHint" },
+-- NOTE: the statusline redraws on every cursor move, so counting diagnostics
+-- inline made each redraw cost O(#diagnostics). Render once when diagnostics
+-- actually change and let the statusline read the cached string.
+local diag_status = {}
+
+local function render_diag_status(bufnr)
+  local labels = {
+    { "E", "DiagnosticError" },
+    { "W", "DiagnosticWarn" },
+    { "I", "DiagnosticInfo" },
+    { "H", "DiagnosticHint" },
   }
+  local counts = vim.diagnostic.count(bufnr)
   local parts = {}
-  for sev, v in pairs(severities) do
-    local n = #vim.diagnostic.get(0, { severity = sev })
+  for sev, v in ipairs(labels) do
+    local n = counts[sev] or 0
     if n > 0 then
       table.insert(parts, string.format("%%#%s#%s:%d", v[2], v[1], n))
     end
   end
   return #parts > 0 and (" " .. table.concat(parts, " ") .. " %#MiniStatuslineDevinfo#") or ""
+end
+
+vim.api.nvim_create_autocmd({ "DiagnosticChanged", "BufEnter" }, {
+  callback = function(ev)
+    if vim.api.nvim_buf_is_valid(ev.buf) then
+      diag_status[ev.buf] = render_diag_status(ev.buf)
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
+  callback = function(ev)
+    diag_status[ev.buf] = nil
+  end,
+})
+
+local function colored_diagnostics()
+  return diag_status[vim.api.nvim_get_current_buf()] or ""
 end
 
 local function lsp_clients()
@@ -273,9 +304,19 @@ require("nvim-treesitter").install({ "lua", "ruby", "python", "javascript", "yam
 
 -- LSP
 
+-- NOTE: library is VIMRUNTIME only, not nvim_get_runtime_file("", true). Passing the
+-- whole runtimepath hands lua_ls every installed plugin -- 3849 .lua files, 19.1 MB --
+-- and it never reaches "Preload finish"; RSS peaks at ~765 MB vs ~287 MB, and the
+-- workspace stays unusable far longer. lspconfig's own lua_ls docs flag that exact
+-- call as "a lot slower" (neovim/nvim-lspconfig#3189). Trade-off: no completion or
+-- gd into plugin source, so `require("fzf-lua")` resolves to nothing. Add specific
+-- plugin dirs here if a particular API is worth the indexing cost.
 vim.lsp.config("lua_ls", {
   settings = {
-    Lua = { workspace = { library = vim.api.nvim_get_runtime_file("", true) } },
+    Lua = {
+      runtime = { version = "LuaJIT", path = { "lua/?.lua", "lua/?/init.lua" } },
+      workspace = { checkThirdParty = false, library = { vim.env.VIMRUNTIME } },
+    },
   },
 })
 
@@ -638,27 +679,76 @@ vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" }
 
 local dw_ns = vim.api.nvim_create_namespace("double_width_chars")
 
-local function check_double_width(bufnr)
+-- Cap on how many hits get reported. vim.diagnostic.set is O(n) in redraw work,
+-- so an unbounded list on a unicode-heavy file froze the UI for hundreds of ms.
+local dw_max_diagnostics = 200
+local dw_debounce_ms = 150
+local dw_timers = {}
+
+local function dw_collect(lines)
   local diagnostics = {}
-  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
   for lnum, line in ipairs(lines) do
-    for col, char in line:gmatch("()([\128-\255])") do
-      table.insert(diagnostics, {
-        lnum = lnum - 1,
-        col = col - 1,
-        end_col = col - 1 + #char,
-        severity = vim.diagnostic.severity.WARN,
-        message = "Non-ASCII character (double-width risk)",
-        source = "double-width",
-      })
+    if line:find("[\128-\255]") then
+      -- NOTE: match a whole UTF-8 sequence (lead byte + continuation bytes) so
+      -- one multibyte character yields one diagnostic. Matching bare bytes
+      -- reported 3-4 hits per character and blew up the diagnostic count.
+      for col, char in line:gmatch("()([\194-\244][\128-\191]*)") do
+        diagnostics[#diagnostics + 1] = {
+          lnum = lnum - 1,
+          col = col - 1,
+          end_col = col - 1 + #char,
+          severity = vim.diagnostic.severity.WARN,
+          message = "Non-ASCII character (double-width risk)",
+          source = "double-width",
+        }
+        if #diagnostics >= dw_max_diagnostics then
+          return diagnostics
+        end
+      end
     end
   end
-  vim.diagnostic.set(dw_ns, bufnr, diagnostics)
+  return diagnostics
 end
 
-vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged", "InsertLeave" }, {
+local function check_double_width(bufnr)
+  -- Only real file buffers: skips oil listings, fzf-lua previews, terminals and
+  -- other scratch buffers that used to get a full scan on every BufEnter.
+  if not vim.api.nvim_buf_is_valid(bufnr) or vim.bo[bufnr].buftype ~= "" then
+    return
+  end
+  vim.diagnostic.set(dw_ns, bufnr, dw_collect(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)))
+end
+
+local function schedule_double_width(bufnr)
+  local timer = dw_timers[bufnr]
+  if not timer then
+    timer = vim.uv.new_timer()
+    dw_timers[bufnr] = timer
+  end
+  timer:stop()
+  timer:start(dw_debounce_ms, 0, function()
+    vim.schedule(function()
+      check_double_width(bufnr)
+    end)
+  end)
+end
+
+-- BufReadPost, not BufEnter: content only changes on load or edit, so re-scanning
+-- on every buffer switch was pure waste.
+vim.api.nvim_create_autocmd({ "BufReadPost", "TextChanged", "InsertLeave" }, {
   callback = function(ev)
-    check_double_width(ev.buf)
+    schedule_double_width(ev.buf)
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
+  callback = function(ev)
+    local timer = dw_timers[ev.buf]
+    if timer then
+      timer:stop()
+      timer:close()
+      dw_timers[ev.buf] = nil
+    end
   end,
 })
 
