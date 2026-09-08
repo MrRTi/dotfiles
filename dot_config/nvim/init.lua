@@ -68,28 +68,85 @@ vim.keymap.set("n", "<leader>pu", function()
 end, { desc = "Update plugins" })
 
 vim.pack.add({
-	{ src = "https://github.com/stevearc/oil.nvim" },
-	{ src = "https://github.com/ibhagwan/fzf-lua" },
-	{ src = "https://github.com/echasnovski/mini.ai" },
-	{ src = "https://github.com/echasnovski/mini.splitjoin" },
-	{ src = "https://github.com/echasnovski/mini.indentscope" },
+	-- mini.statusline is drawn immediately, so it stays eager. The other three
+	-- mini modules only act on buffer contents -- see lazy_pack below.
 	{ src = "https://github.com/echasnovski/mini.statusline" },
 	{ src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
 	{ src = "https://github.com/neovim/nvim-lspconfig" },
-	{ src = "https://github.com/lewis6991/gitsigns.nvim" },
-	{
-		src = "https://github.com/ThePrimeagen/harpoon",
-		version = "harpoon2",
-	},
-	{ src = "https://github.com/nvimtools/none-ls.nvim" },
-	{ src = "https://github.com/nvimtools/none-ls-extras.nvim" },
-	{ src = "https://github.com/gbprod/none-ls-shellcheck.nvim" },
 	{ src = "https://github.com/folke/which-key.nvim" },
-	{ src = "https://github.com/folke/todo-comments.nvim" },
 	-- deps
 	{ src = "https://github.com/nvim-lua/plenary.nvim" },
 	-- Theme
 	{ src = "https://github.com/rebelot/kanagawa.nvim" },
+})
+
+-- NOTE: vim.pack has no lazy-loading of its own, and `load = false` is not it:
+-- that only skips `:packadd`'s own sourcing, while Nvim still sources the
+-- plugin's `plugin/` files at the normal rtp stage. That is how gitsigns loads
+-- itself no matter what -- its plugin/gitsigns.lua is a bare
+-- `require('gitsigns').setup()`. Passing a `load` *function* instead makes us
+-- "fully responsible for loading" (:h vim.pack.keyset.add), so the plugin stays
+-- off the runtimepath until lazy_load() runs `:packadd` for it.
+--
+-- Measured: deferring these six takes startup from 60 ms to ~36 ms with no file
+-- argument. Each `lazy_setup[name]` lives next to that plugin's own config
+-- below, so nothing moves except when it runs.
+local lazy_setup, lazy_loaded = {}, {}
+
+local function lazy_pack(name, spec)
+	vim.pack.add({ spec }, { load = function() end })
+	return name
+end
+
+local function lazy_load(name)
+	if lazy_loaded[name] then
+		return
+	end
+	lazy_loaded[name] = true
+	vim.cmd.packadd(name)
+	local setup = lazy_setup[name]
+	if setup then
+		setup()
+	end
+end
+
+lazy_pack("oil.nvim", { src = "https://github.com/stevearc/oil.nvim" })
+lazy_pack("fzf-lua", { src = "https://github.com/ibhagwan/fzf-lua" })
+lazy_pack("gitsigns.nvim", { src = "https://github.com/lewis6991/gitsigns.nvim" })
+lazy_pack("todo-comments.nvim", { src = "https://github.com/folke/todo-comments.nvim" })
+lazy_pack("conform.nvim", { src = "https://github.com/stevearc/conform.nvim" })
+lazy_pack("nvim-lint", { src = "https://github.com/mfussenegger/nvim-lint" })
+lazy_pack("mini.ai", { src = "https://github.com/echasnovski/mini.ai" })
+lazy_pack("mini.splitjoin", { src = "https://github.com/echasnovski/mini.splitjoin" })
+lazy_pack("mini.indentscope", { src = "https://github.com/echasnovski/mini.indentscope" })
+lazy_pack("harpoon", {
+	src = "https://github.com/ThePrimeagen/harpoon",
+	version = "harpoon2",
+})
+
+-- Plugins that only matter once there is a real buffer. BufReadPre fires before
+-- filetype detection, so nvim-lint's BufReadPost hook still fires for the very
+-- first file -- registering it any later would miss that buffer.
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
+	once = true,
+	callback = function()
+		lazy_load("gitsigns.nvim")
+		lazy_load("todo-comments.nvim")
+		lazy_load("conform.nvim")
+		lazy_load("nvim-lint")
+	end,
+})
+
+-- Editing helpers that only act on buffer contents. InsertEnter is in the list
+-- so they also come up in a scratch buffer typed into straight from the intro
+-- screen, which fires neither BufReadPre nor BufNewFile.
+vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile", "InsertEnter" }, {
+	once = true,
+	callback = function()
+		lazy_load("mini.ai")
+		lazy_load("mini.splitjoin")
+		lazy_load("mini.indentscope")
+	end,
 })
 
 -- Appearance
@@ -116,10 +173,22 @@ vim.cmd("hi FloatBorder guibg=NONE")
 
 -- UI
 
-require("todo-comments").setup()
-require("mini.ai").setup()
-require("mini.splitjoin").setup()
-require("mini.indentscope").setup()
+lazy_setup["todo-comments.nvim"] = function()
+	require("todo-comments").setup()
+end
+
+lazy_setup["mini.ai"] = function()
+	require("mini.ai").setup()
+end
+
+lazy_setup["mini.splitjoin"] = function()
+	require("mini.splitjoin").setup()
+end
+
+lazy_setup["mini.indentscope"] = function()
+	require("mini.indentscope").setup()
+end
+
 -- NOTE: the statusline redraws on every cursor move, so counting diagnostics
 -- inline made each redraw cost O(#diagnostics). Render once when diagnostics
 -- actually change and let the statusline read the cached string.
@@ -162,9 +231,9 @@ local function colored_diagnostics()
 end
 
 local function lsp_clients()
-	local clients = vim.tbl_filter(function(c)
-		return c.name ~= "null-ls"
-	end, vim.lsp.get_clients({ bufnr = 0 }))
+	-- NOTE: used to filter out a "null-ls" client here; conform and nvim-lint call
+	-- their tools directly, so every client listed now is a real language server.
+	local clients = vim.lsp.get_clients({ bufnr = 0 })
 	return #clients > 0 and table.concat(
 		vim.tbl_map(function(c)
 			return c.name
@@ -225,12 +294,20 @@ end, { desc = "Toggle treesitter highlight" })
 
 -- File explorer
 
-require("oil").setup({
-	view_options = { show_hidden = true },
-})
+lazy_setup["oil.nvim"] = function()
+	require("oil").setup({
+		view_options = { show_hidden = true },
+	})
+end
 
-vim.keymap.set("n", "<leader>e", "<cmd>Oil<CR>", { desc = "Open file explorer" })
-vim.keymap.set("n", "<leader>-", "<cmd>Oil<CR>", { desc = "Open file explorer" })
+-- NOTE: oil ships no plugin/ dir, so `:Oil` only exists once its setup has run.
+local function oil_open()
+	lazy_load("oil.nvim")
+	vim.cmd("Oil")
+end
+
+vim.keymap.set("n", "<leader>e", oil_open, { desc = "Open file explorer" })
+vim.keymap.set("n", "<leader>-", oil_open, { desc = "Open file explorer" })
 vim.keymap.set("n", "<leader>fp", '<cmd>let @+ = fnamemodify(expand("%:p"), ":~:.")<CR>', { desc = "Copy path" })
 
 -- Search
@@ -253,32 +330,52 @@ fzf_grep_multiline.actions = {
 		require("fzf-lua").live_grep(vim.tbl_extend("force", fzf_grep_normal, { resume = true }))
 	end,
 }
-require("fzf-lua").setup({
-	winopts = { preview = { layout = "vertical" } },
-	grep = fzf_grep_normal,
-	keymap = {
-		fzf = {
-			true,
-			-- NOTE: Use <c-q> to select all items and add them to the quickfix list
-			["ctrl-q"] = "select-all+accept",
+lazy_setup["fzf-lua"] = function()
+	require("fzf-lua").setup({
+		winopts = { preview = { layout = "vertical" } },
+		grep = fzf_grep_normal,
+		keymap = {
+			fzf = {
+				true,
+				-- NOTE: Use <c-q> to select all items and add them to the quickfix list
+				["ctrl-q"] = "select-all+accept",
+			},
 		},
-	},
-})
+	})
+end
 
-vim.keymap.set("n", "<leader><space>", "<cmd>FzfLua global<CR>", { desc = "Search files and buffers" })
-vim.keymap.set("n", "<leader>sf", "<cmd>FzfLua files<CR>", { desc = "Files" })
-vim.keymap.set("n", "<leader>sg", "<cmd>FzfLua live_grep<CR>", { desc = "Live grep" })
-vim.keymap.set("n", "<leader>sw", "<cmd>FzfLua grep_cword<CR>", { desc = "Word under cursor" })
-vim.keymap.set("n", "<leader>sh", "<cmd>FzfLua helptags<CR>", { desc = "Help tags" })
-vim.keymap.set("n", "<leader>sk", "<cmd>FzfLua keymaps<CR>", { desc = "Keymaps" })
-vim.keymap.set("n", "<leader>sr", "<cmd>FzfLua resume<CR>", { desc = "Resume last search" })
-vim.keymap.set("n", "<leader>st", "<cmd>TodoFzfLua<CR>", { desc = "Search todos/notes" })
+-- NOTE: :FzfLua comes from fzf-lua's own plugin/ file, which `:packadd` sources,
+-- but the winopts/grep config above only lands once setup has run -- so the
+-- keymaps must go through lazy_load rather than calling :FzfLua directly.
+local function fzf(subcommand)
+	return function()
+		lazy_load("fzf-lua")
+		vim.cmd("FzfLua " .. subcommand)
+	end
+end
+
+vim.keymap.set("n", "<leader><space>", fzf("global"), { desc = "Search files and buffers" })
+vim.keymap.set("n", "<leader>sf", fzf("files"), { desc = "Files" })
+vim.keymap.set("n", "<leader>sg", fzf("live_grep"), { desc = "Live grep" })
+vim.keymap.set("n", "<leader>sw", fzf("grep_cword"), { desc = "Word under cursor" })
+vim.keymap.set("n", "<leader>sh", fzf("helptags"), { desc = "Help tags" })
+vim.keymap.set("n", "<leader>sk", fzf("keymaps"), { desc = "Keymaps" })
+vim.keymap.set("n", "<leader>sr", fzf("resume"), { desc = "Resume last search" })
+vim.keymap.set("n", "<leader>st", function()
+	lazy_load("todo-comments.nvim")
+	lazy_load("fzf-lua")
+	vim.cmd("TodoFzfLua")
+end, { desc = "Search todos/notes" })
 
 -- Treesitter
 -- NOTE: nvim-treesitter main branch (Neovim 0.12+) only manages parser installation.
 -- Highlighting is handled natively by Neovim.
 
-require("nvim-treesitter").install({
+-- NOTE: install() re-checks every parser against the registry, which cost 2.6 ms
+-- on *every* startup to confirm parsers that were already on disk. Parsers only
+-- need installing when this list changes, so it is a command now. Run
+-- :TSInstallParsers after editing the list (or on a fresh machine).
+local ts_parsers = {
 	"lua",
 	"ruby",
 	"python",
@@ -288,7 +385,11 @@ require("nvim-treesitter").install({
 	"go",
 	"markdown",
 	"markdown_inline",
-})
+}
+
+vim.api.nvim_create_user_command("TSInstallParsers", function()
+	require("nvim-treesitter").install(ts_parsers)
+end, { desc = "Install the treesitter parsers this config expects" })
 
 -- LSP
 
@@ -316,9 +417,9 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		if client and client.server_capabilities.completionProvider then
 			vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
 		end
-		-- ruff is the sole Python formatter (see null-ls sources below, which
-		-- intentionally has no black/isort) — wire its format-on-save here
-		-- since it's a plain LSP client, not routed through null-ls.
+		-- ruff is the sole Python formatter (conform's formatters_by_ft below
+		-- intentionally has no python entry, and no black/isort) — wire its
+		-- format-on-save here since it's a plain LSP client.
 		if client and client.name == "ruff" and client.server_capabilities.documentFormattingProvider then
 			vim.api.nvim_create_autocmd("BufWritePre", {
 				buffer = ev.buf,
@@ -344,7 +445,8 @@ vim.opt.completeopt = { "menu", "menuone", "noinsert", "noselect", "fuzzy" }
 -- NOTE: grr (references), grn (rename), gra (code action), gri (implementation)
 --       are Neovim 0.11 built-ins and appear in which-key automatically.
 vim.keymap.set({ "n", "v" }, "<leader>lf", function()
-	vim.lsp.buf.format({ async = true })
+	lazy_load("conform.nvim")
+	require("conform").format({ async = true, lsp_format = "fallback" })
 end, { desc = "Format" })
 vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover docs" })
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
@@ -357,41 +459,46 @@ vim.keymap.set("n", "]d", function()
 	vim.diagnostic.jump({ count = 1 })
 end, { desc = "Next diagnostic" })
 
--- Formatting & diagnostics (null-ls)
+-- Formatting & diagnostics
 
-local null_ls = require("null-ls")
-local augroup_format = vim.api.nvim_create_augroup("NullLsFormat", { clear = true })
+-- NOTE: replaced none-ls.nvim (plus none-ls-extras and none-ls-shellcheck).
+-- none-ls bridges CLI tools by standing up a fake LSP client; conform and
+-- nvim-lint invoke them directly. Three plugins became two, and the work moved
+-- off startup entirely -- see the BufReadPre trigger above.
+lazy_setup["conform.nvim"] = function()
+	require("conform").setup({
+		formatters_by_ft = {
+			lua = { "stylua" },
+			ruby = { "rubocop" },
+			json = { "jq" },
+			yaml = { "yamlfmt" },
+			sh = { "shfmt" },
+			bash = { "shfmt" },
+		},
+		-- NOTE: lsp_format = "never" on purpose. Python is formatted by ruff via its
+		-- own LspAttach hook above; letting conform fall back to LSP here would run
+		-- both and format the buffer twice. Manual <leader>lf below still falls back
+		-- to LSP, which is what formats go/python on demand.
+		format_on_save = { timeout_ms = 3000, lsp_format = "never" },
+	})
+end
 
-null_ls.setup({
-	sources = {
-		null_ls.builtins.formatting.stylua,
-		-- null_ls.builtins.completion.spell,
-		-- Python: formatting + linting handled by ruff (LSP, see vim.lsp.enable
-		-- above and the ruff format-on-save hook in the LspAttach autocmd).
-		-- Ruby
-		null_ls.builtins.formatting.rubocop,
-		null_ls.builtins.diagnostics.rubocop,
-		-- JSON
-		require("none-ls.formatting.jq"),
-		-- YAML
-		null_ls.builtins.formatting.yamlfmt,
-		-- Shell
-		null_ls.builtins.formatting.shfmt,
-		require("none-ls-shellcheck.diagnostics"),
-	},
-	on_attach = function(client, bufnr)
-		if client.server_capabilities.documentFormattingProvider then
-			vim.api.nvim_clear_autocmds({ group = augroup_format, buffer = bufnr })
-			vim.api.nvim_create_autocmd("BufWritePre", {
-				group = augroup_format,
-				buffer = bufnr,
-				callback = function()
-					vim.lsp.buf.format({ bufnr = bufnr })
-				end,
-			})
-		end
-	end,
-})
+lazy_setup["nvim-lint"] = function()
+	local lint = require("lint")
+	lint.linters_by_ft = {
+		ruby = { "rubocop" },
+		sh = { "shellcheck" },
+		bash = { "shellcheck" },
+	}
+	-- NOTE: registered during BufReadPre, so the BufReadPost for the file that
+	-- triggered this load still fires afterwards and lints it.
+	vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "InsertLeave" }, {
+		group = vim.api.nvim_create_augroup("NvimLint", { clear = true }),
+		callback = function()
+			lint.try_lint()
+		end,
+	})
+end
 
 -- Navigation (tmux + harpoon)
 
@@ -411,25 +518,58 @@ for _, dir in ipairs({ "h", "j", "k", "l" }) do
 	end, { desc = "Navigate " .. dir })
 end
 
-local harpoon = require("harpoon")
-harpoon.setup()
+lazy_setup["harpoon"] = function()
+	require("harpoon").setup()
+end
 
-vim.keymap.set("n", "<leader>H", function()
-	harpoon:list():add()
-end, { desc = "Add file to harpoon" })
-vim.keymap.set("n", "<leader>h", function()
-	harpoon.ui:toggle_quick_menu(harpoon:list())
-end, { desc = "Toggle harpoon menu" })
-vim.keymap.set("n", "[H", function()
-	harpoon:list():prev()
-end, { desc = "Previous harpoon file" })
-vim.keymap.set("n", "]H", function()
-	harpoon:list():next()
-end, { desc = "Next harpoon file" })
+-- NOTE: harpoon is resolved per keypress rather than held in an upvalue, so the
+-- plugin stays unloaded until one of these maps is actually used.
+local function harpoon_do(fn)
+	return function()
+		lazy_load("harpoon")
+		fn(require("harpoon"))
+	end
+end
+
+vim.keymap.set(
+	"n",
+	"<leader>H",
+	harpoon_do(function(h)
+		h:list():add()
+	end),
+	{ desc = "Add file to harpoon" }
+)
+vim.keymap.set(
+	"n",
+	"<leader>h",
+	harpoon_do(function(h)
+		h.ui:toggle_quick_menu(h:list())
+	end),
+	{ desc = "Toggle harpoon menu" }
+)
+vim.keymap.set(
+	"n",
+	"[H",
+	harpoon_do(function(h)
+		h:list():prev()
+	end),
+	{ desc = "Previous harpoon file" }
+)
+vim.keymap.set(
+	"n",
+	"]H",
+	harpoon_do(function(h)
+		h:list():next()
+	end),
+	{ desc = "Next harpoon file" }
+)
 
 -- Git
 
-require("gitsigns").setup()
+-- NOTE: no lazy_setup entry needed -- gitsigns' own plugin/gitsigns.lua is a bare
+-- `require('gitsigns').setup()`, so `:packadd` from the BufReadPre trigger above
+-- configures it. Its keymaps below are :Gitsigns subcommands, which that same
+-- plugin/ file registers, so they resolve once a buffer has been read.
 
 vim.keymap.set("n", "<leader>gg", function()
 	vim.cmd("tabnew | terminal lazygit")
@@ -540,7 +680,7 @@ end, { desc = "Find double-width chars" })
 vim.api.nvim_create_autocmd("TextYankPost", {
 	pattern = "*",
 	callback = function()
-		vim.highlight.on_yank({ higroup = "IncSearch", timeout = 200 })
+		vim.hl.hl_op({ higroup = "IncSearch", timeout = 200 })
 	end,
 })
 
