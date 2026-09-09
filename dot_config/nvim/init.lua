@@ -33,13 +33,20 @@ vim.o.signcolumn = "yes"
 vim.o.termguicolors = true
 vim.o.wrap = false
 vim.o.swapfile = false
+-- swapfile is off, so without this undo history dies with the session.
+vim.o.undofile = true
 vim.o.winborder = "rounded"
 vim.o.clipboard = "unnamedplus"
+vim.o.cursorline = true
+vim.o.ignorecase = true
+vim.o.smartcase = true
+vim.o.splitbelow = true
+vim.o.splitright = true
 -- NOTE: no `vim.o.background` here on purpose. The TUI queries the terminal
 -- (OSC 11) at startup and sets it from the real background colour, so setting
 -- it explicitly would clobber that. See the Appearance section.
 
-vim.opt.scrolloff = 999
+vim.o.scrolloff = 999
 -- NOTE: horizontal scrolling starts once the cursor passes (text area - sidescrolloff),
 -- and from then on every column move repaints the whole window. At 999 the cursor is
 -- pinned mid-window, so that point is *half* the text area -- a 62-char line already
@@ -47,8 +54,11 @@ vim.opt.scrolloff = 999
 -- trigger tracks the window edge instead, so ordinary lines never scroll while still
 -- keeping 20 columns of lookahead. Costs the horizontal centering `scrolloff = 999`
 -- gives vertically.
-vim.opt.sidescrolloff = 20
-vim.opt.cursorline = true
+vim.o.sidescrolloff = 20
+
+-- Built-in LSP completion: fuzzy matching, show menu, don't auto-insert.
+-- vim.opt rather than vim.o because this one takes a list.
+vim.opt.completeopt = { "menu", "menuone", "noinsert", "noselect", "fuzzy" }
 
 -- NOTE: Default indent: 2 spaces (covers ruby, lua, yaml, json, javascript, shell)
 vim.o.tabstop = 2
@@ -63,17 +73,17 @@ local indent_overrides = {
 	dockerfile = { tabstop = 4, shiftwidth = 4, softtabstop = 4, expandtab = true },
 }
 
-for filetype, opts in pairs(indent_overrides) do
-	vim.api.nvim_create_autocmd("FileType", {
-		pattern = filetype,
-		callback = function()
-			vim.bo.tabstop = opts.tabstop
-			vim.bo.shiftwidth = opts.shiftwidth
-			vim.bo.softtabstop = opts.softtabstop
-			vim.bo.expandtab = opts.expandtab
-		end,
-	})
-end
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("Indent", { clear = true }),
+	pattern = vim.tbl_keys(indent_overrides),
+	callback = function()
+		local opts = indent_overrides[vim.bo.filetype]
+		vim.bo.tabstop = opts.tabstop
+		vim.bo.shiftwidth = opts.shiftwidth
+		vim.bo.softtabstop = opts.softtabstop
+		vim.bo.expandtab = opts.expandtab
+	end,
+})
 
 -- Folds via treesitter; start with all folds open
 vim.o.foldmethod = "expr"
@@ -104,6 +114,10 @@ vim.o.foldlevel = 99
 -- (lazy) with no file, 41.40 vs 41.66 opening one. A dead heat, inside
 -- run-to-run noise. So this move buys readability at no measurable cost; it is
 -- not a performance change.
+--
+-- Every plugin's own config, keymaps and highlight tweaks live inside its spec
+-- below -- that co-location is the entire point of being on lazy. Keep it that
+-- way; anything that drifts back out here loses the guarantee above.
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
 	local out = vim.fn.system({
@@ -124,10 +138,58 @@ vim.keymap.set("n", "<leader>pu", "<cmd>Lazy update<CR>", { desc = "Update plugi
 
 require("lazy").setup({
 	-- Eager. Each of these is needed before the first redraw, so there is nothing
-	-- to defer; their setup() calls stay in the sections below that own them.
-	{ "rebelot/kanagawa.nvim", lazy = false, priority = 1000 },
-	{ "echasnovski/mini.statusline", lazy = false },
-	{ "folke/which-key.nvim", lazy = false },
+	-- to defer.
+	{
+		"rebelot/kanagawa.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("kanagawa").setup({
+				transparent = true,
+				background = { dark = "dragon", light = "lotus" },
+			})
+			-- NOTE: a ColorScheme autocmd, not two bare `hi` calls. `transparent`
+			-- leaves the float highlights opaque, and toggling 'background' via
+			-- <leader>ut re-applies kanagawa -- which used to clobber one-shot
+			-- overrides set at startup (NormalFloat guibg went from NONE back to the
+			-- lotus background). Registered before `colorscheme` so the first apply
+			-- fires it too.
+			vim.api.nvim_create_autocmd("ColorScheme", {
+				group = vim.api.nvim_create_augroup("Appearance", { clear = true }),
+				pattern = "kanagawa",
+				callback = function()
+					vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
+					vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+				end,
+			})
+			vim.cmd("colorscheme kanagawa")
+		end,
+	},
+	{
+		"echasnovski/mini.statusline",
+		lazy = false,
+		config = function()
+			require("user.statusline").setup()
+		end,
+	},
+	{
+		"folke/which-key.nvim",
+		lazy = false,
+		config = function()
+			require("which-key").setup()
+			require("which-key").add({
+				{ "<leader>b", group = "buffer" },
+				{ "<leader>f", group = "file" },
+				{ "<leader>g", group = "git" },
+				{ "<leader>l", group = "lsp" },
+				{ "<leader>s", group = "search" },
+				{ "<leader>p", group = "plugins" },
+				{ "<leader>u", group = "ui" },
+				{ "[", group = "prev" },
+				{ "]", group = "next" },
+			})
+		end,
+	},
 	-- Supplies the lsp/*.lua server definitions vim.lsp.enable() reads, so it only
 	-- has to be on the runtimepath -- nothing requires it.
 	{ "neovim/nvim-lspconfig", lazy = false },
@@ -245,7 +307,26 @@ require("lazy").setup({
 	-- NOTE: gitsigns needs no opts here -- its plugin/gitsigns.lua, which lazy
 	-- sources on load, is itself a bare `require('gitsigns').setup()`. Passing
 	-- opts as well would just run setup twice.
-	{ "lewis6991/gitsigns.nvim", event = { "BufReadPre", "BufNewFile" } },
+	--
+	-- NOTE: the keymaps belong here, not in a Git section further down. They are
+	-- `<cmd>Gitsigns ...<CR>` strings, so registering them at startup left them
+	-- dead until a file was read -- pressing <leader>gb from the intro screen gave
+	-- "E492: Not an editor command: Gitsigns blame_line". As `keys` they double as
+	-- a load trigger, so the command exists by the time the key is re-fed.
+	{
+		"lewis6991/gitsigns.nvim",
+		event = { "BufReadPre", "BufNewFile" },
+		keys = {
+			{ "<leader>gb", "<cmd>Gitsigns blame_line<CR>", mode = { "n", "v" }, desc = "Blame line" },
+			{ "<leader>gp", "<cmd>Gitsigns preview_hunk_inline<CR>", mode = { "n", "v" }, desc = "Preview hunk" },
+			{ "<leader>gs", "<cmd>Gitsigns stage_hunk<CR>", mode = { "n", "v" }, desc = "Stage hunk" },
+			{ "<leader>gS", "<cmd>Gitsigns stage_buffer<CR>", desc = "Stage buffer" },
+			{ "<leader>gu", "<cmd>Gitsigns undo_stage_hunk<CR>", desc = "Undo stage hunk" },
+			{ "<leader>gq", "<cmd>Gitsigns setqflist<CR>", desc = "Hunks to quickfix" },
+			{ "[h", "<cmd>Gitsigns prev_hunk<CR>", desc = "Previous hunk" },
+			{ "]h", "<cmd>Gitsigns next_hunk<CR>", desc = "Next hunk" },
+		},
+	},
 	{
 		"folke/todo-comments.nvim",
 		dependencies = { "nvim-lua/plenary.nvim" },
@@ -331,7 +412,7 @@ require("lazy").setup({
 	rocks = { enabled = false },
 })
 
--- Appearance
+-- UI
 
 -- NOTE: 'background' is detected by the TUI, which queries the terminal for its
 -- background colour (OSC 11) at startup. Ghostty follows the macOS appearance
@@ -339,116 +420,12 @@ require("lazy").setup({
 -- free. This replaced an is_dark_local() helper that shelled out to `osascript`:
 -- that call blocked startup for ~104 ms, about half of total startup time.
 -- Verify with `:echo &background` under both macOS appearances.
-local function toggle_appearance(toggle_to)
-	toggle_to = toggle_to or (vim.o.background == "light" and "dark" or "light")
-	vim.o.background = toggle_to
-end
+-- The float transparency that this toggle would otherwise clobber is re-applied
+-- by the ColorScheme autocmd in the kanagawa spec above.
+vim.keymap.set("n", "<leader>ut", function()
+	vim.o.background = vim.o.background == "light" and "dark" or "light"
+end, { desc = "Toggle light/dark" })
 
-require("kanagawa").setup({
-	transparent = true,
-	background = { dark = "dragon", light = "lotus" },
-})
-vim.cmd("colorscheme kanagawa")
-
-vim.cmd("hi NormalFloat guibg=NONE")
-vim.cmd("hi FloatBorder guibg=NONE")
-
--- UI
-
--- NOTE: the statusline redraws on every cursor move, so counting diagnostics
--- inline made each redraw cost O(#diagnostics). Render once when diagnostics
--- actually change and let the statusline read the cached string.
-local diag_status = {}
-
-local function render_diag_status(bufnr)
-	local labels = {
-		{ "E", "DiagnosticError" },
-		{ "W", "DiagnosticWarn" },
-		{ "I", "DiagnosticInfo" },
-		{ "H", "DiagnosticHint" },
-	}
-	local counts = vim.diagnostic.count(bufnr)
-	local parts = {}
-	for sev, v in ipairs(labels) do
-		local n = counts[sev] or 0
-		if n > 0 then
-			table.insert(parts, string.format("%%#%s#%s:%d", v[2], v[1], n))
-		end
-	end
-	return #parts > 0 and (" " .. table.concat(parts, " ") .. " %#MiniStatuslineDevinfo#") or ""
-end
-
-vim.api.nvim_create_autocmd({ "DiagnosticChanged", "BufEnter" }, {
-	callback = function(ev)
-		if vim.api.nvim_buf_is_valid(ev.buf) then
-			diag_status[ev.buf] = render_diag_status(ev.buf)
-		end
-	end,
-})
-
-vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
-	callback = function(ev)
-		diag_status[ev.buf] = nil
-	end,
-})
-
-local function colored_diagnostics()
-	return diag_status[vim.api.nvim_get_current_buf()] or ""
-end
-
-local function lsp_clients()
-	-- NOTE: used to filter out a "null-ls" client here; conform and nvim-lint call
-	-- their tools directly, so every client listed now is a real language server.
-	local clients = vim.lsp.get_clients({ bufnr = 0 })
-	return #clients > 0 and table.concat(
-		vim.tbl_map(function(c)
-			return c.name
-		end, clients),
-		" "
-	) or ""
-end
-
-require("mini.statusline").setup({
-	use_icons = true,
-	content = {
-		active = function()
-			local mode, mode_hl = MiniStatusline.section_mode({ trunc_width = 120 })
-			local git = MiniStatusline.section_git({ trunc_width = 75 })
-			local filename = MiniStatusline.section_filename({ trunc_width = 140 })
-			local location = MiniStatusline.section_location({ trunc_width = 75 })
-
-			local lsp = lsp_clients()
-			local ft = vim.bo.filetype
-			local lsp_ft = lsp ~= "" and (lsp .. " · " .. ft) or ft
-
-			return MiniStatusline.combine_groups({
-				{ hl = mode_hl, strings = { mode } },
-				{ hl = "MiniStatuslineDevinfo", strings = { git } },
-				"%<",
-				{ hl = "MiniStatuslineFilename", strings = { filename } },
-				"%=",
-				colored_diagnostics(),
-				{ hl = "MiniStatuslineDevinfo", strings = { lsp_ft } },
-				{ hl = mode_hl, strings = { "󰡏 %l/%L 󰡎 %c/%{col('$')-1}" } },
-			})
-		end,
-	},
-})
-
-require("which-key").setup()
-require("which-key").add({
-	{ "<leader>b", group = "buffer" },
-	{ "<leader>f", group = "file" },
-	{ "<leader>g", group = "git" },
-	{ "<leader>l", group = "lsp" },
-	{ "<leader>s", group = "search" },
-	{ "<leader>p", group = "plugins" },
-	{ "<leader>u", group = "ui" },
-	{ "[", group = "prev" },
-	{ "]", group = "next" },
-})
-
-vim.keymap.set("n", "<leader>ut", toggle_appearance, { desc = "Toggle light/dark" })
 vim.keymap.set("n", "<leader>uT", function()
 	local buf = vim.api.nvim_get_current_buf()
 	if vim.treesitter.highlighter.active[buf] then
@@ -473,8 +450,6 @@ end, { desc = "Toggle treesitter highlight" })
 -- See the netrw NOTE at the top of this file for why netrw must stay disabled.
 
 vim.keymap.set("n", "<leader>fp", '<cmd>let @+ = fnamemodify(expand("%:p"), ":~:.")<CR>', { desc = "Copy path" })
-
--- Search
 
 -- Treesitter
 -- NOTE: nvim-treesitter main branch (Neovim 0.12+) only manages parser installation.
@@ -520,17 +495,24 @@ vim.lsp.config("lua_ls", {
 
 vim.lsp.enable({ "lua_ls", "ruby_lsp", "pyright", "ruff", "yamlls", "marksman", "gopls" })
 
+local lsp_group = vim.api.nvim_create_augroup("Lsp", { clear = true })
+
 vim.api.nvim_create_autocmd("LspAttach", {
+	group = lsp_group,
 	callback = function(ev)
 		local client = vim.lsp.get_client_by_id(ev.data.client_id)
 		if client and client.server_capabilities.completionProvider then
 			vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
 		end
-		-- ruff is the sole Python formatter (conform's formatters_by_ft below
-		-- intentionally has no python entry, and no black/isort) — wire its
+		-- ruff is the sole Python formatter (conform's formatters_by_ft above
+		-- intentionally has no python entry, and no black/isort) -- wire its
 		-- format-on-save here since it's a plain LSP client.
+		--
+		-- NOTE: grouped per buffer and cleared, so re-attaching (LSP restart, :e)
+		-- replaces the hook instead of stacking another format pass onto the save.
 		if client and client.name == "ruff" and client.server_capabilities.documentFormattingProvider then
 			vim.api.nvim_create_autocmd("BufWritePre", {
+				group = vim.api.nvim_create_augroup("LspRuffFormat" .. ev.buf, { clear = true }),
 				buffer = ev.buf,
 				callback = function()
 					vim.lsp.buf.format({ bufnr = ev.buf, id = client.id })
@@ -541,6 +523,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 vim.api.nvim_create_autocmd("VimLeavePre", {
+	group = lsp_group,
 	callback = function()
 		for _, client in ipairs(vim.lsp.get_clients()) do
 			client:stop()
@@ -548,11 +531,9 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
 	end,
 })
 
--- Built-in LSP completion: fuzzy matching, show menu, don't auto-insert
-vim.opt.completeopt = { "menu", "menuone", "noinsert", "noselect", "fuzzy" }
-
 -- NOTE: grr (references), grn (rename), gra (code action), gri (implementation)
 --       are Neovim 0.11 built-ins and appear in which-key automatically.
+
 -- Navigation (tmux + harpoon)
 
 -- NOTE: Tmux-aware pane navigation (replaces vim-tmux-navigator plugin)
@@ -573,6 +554,8 @@ end
 
 -- Git
 
+-- NOTE: the Gitsigns maps live in the gitsigns spec above. This one is a plain
+-- terminal command with no plugin behind it, so it stays here.
 vim.keymap.set("n", "<leader>gg", function()
 	vim.cmd("tabnew | terminal lazygit")
 	vim.cmd("startinsert")
@@ -583,14 +566,6 @@ vim.keymap.set("n", "<leader>gg", function()
 		end,
 	})
 end, { desc = "LazyGit" })
-vim.keymap.set({ "n", "v" }, "<leader>gb", "<cmd>Gitsigns blame_line<CR>", { desc = "Blame line" })
-vim.keymap.set({ "n", "v" }, "<leader>gp", "<cmd>Gitsigns preview_hunk_inline<CR>", { desc = "Preview hunk" })
-vim.keymap.set({ "n", "v" }, "<leader>gs", "<cmd>Gitsigns stage_hunk<CR>", { desc = "Stage hunk" })
-vim.keymap.set("n", "<leader>gS", "<cmd>Gitsigns stage_buffer<CR>", { desc = "Stage buffer" })
-vim.keymap.set("n", "<leader>gu", "<cmd>Gitsigns undo_stage_hunk<CR>", { desc = "Undo stage hunk" })
-vim.keymap.set("n", "<leader>gq", "<cmd>Gitsigns setqflist<CR>", { desc = "Hunks to quickfix" })
-vim.keymap.set("n", "[h", "<cmd>Gitsigns prev_hunk<CR>", { desc = "Previous hunk" })
-vim.keymap.set("n", "]h", "<cmd>Gitsigns next_hunk<CR>", { desc = "Next hunk" })
 
 -- Buffer
 
@@ -598,89 +573,10 @@ vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" }
 
 -- Autocmds
 
-local dw_ns = vim.api.nvim_create_namespace("double_width_chars")
-
--- Cap on how many hits get reported. vim.diagnostic.set is O(n) in redraw work,
--- so an unbounded list on a unicode-heavy file froze the UI for hundreds of ms.
-local dw_max_diagnostics = 200
-local dw_debounce_ms = 150
-local dw_timers = {}
-
-local function dw_collect(lines)
-	local diagnostics = {}
-	for lnum, line in ipairs(lines) do
-		if line:find("[\128-\255]") then
-			-- NOTE: match a whole UTF-8 sequence (lead byte + continuation bytes) so
-			-- one multibyte character yields one diagnostic. Matching bare bytes
-			-- reported 3-4 hits per character and blew up the diagnostic count.
-			for col, char in line:gmatch("()([\194-\244][\128-\191]*)") do
-				diagnostics[#diagnostics + 1] = {
-					lnum = lnum - 1,
-					col = col - 1,
-					end_col = col - 1 + #char,
-					severity = vim.diagnostic.severity.WARN,
-					message = "Non-ASCII character (double-width risk)",
-					source = "double-width",
-				}
-				if #diagnostics >= dw_max_diagnostics then
-					return diagnostics
-				end
-			end
-		end
-	end
-	return diagnostics
-end
-
-local function check_double_width(bufnr)
-	-- Only real file buffers: skips directory listings (nvim.dir sets buftype =
-	-- "nowrite"), fzf-lua previews, terminals and
-	-- other scratch buffers that used to get a full scan on every BufEnter.
-	if not vim.api.nvim_buf_is_valid(bufnr) or vim.bo[bufnr].buftype ~= "" then
-		return
-	end
-	vim.diagnostic.set(dw_ns, bufnr, dw_collect(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)))
-end
-
-local function schedule_double_width(bufnr)
-	local timer = dw_timers[bufnr]
-	if not timer then
-		timer = vim.uv.new_timer()
-		dw_timers[bufnr] = timer
-	end
-	timer:stop()
-	timer:start(dw_debounce_ms, 0, function()
-		vim.schedule(function()
-			check_double_width(bufnr)
-		end)
-	end)
-end
-
--- BufReadPost, not BufEnter: content only changes on load or edit, so re-scanning
--- on every buffer switch was pure waste.
-vim.api.nvim_create_autocmd({ "BufReadPost", "TextChanged", "InsertLeave" }, {
-	callback = function(ev)
-		schedule_double_width(ev.buf)
-	end,
-})
-
-vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
-	callback = function(ev)
-		local timer = dw_timers[ev.buf]
-		if timer then
-			timer:stop()
-			timer:close()
-			dw_timers[ev.buf] = nil
-		end
-	end,
-})
-
-vim.keymap.set("n", "<leader>fd", function()
-	vim.fn.setreg("/", [=[[^\x00-\x7E]]=])
-	vim.o.hlsearch = true
-	vim.diagnostic.setqflist({ namespace = dw_ns, open = true })
-end, { desc = "Find double-width chars" })
+require("user.doublewidth").setup()
 
 vim.api.nvim_create_autocmd("TextYankPost", {
+	group = vim.api.nvim_create_augroup("YankHighlight", { clear = true }),
 	pattern = "*",
 	callback = function()
 		vim.hl.hl_op({ higroup = "IncSearch", timeout = 200 })
@@ -690,6 +586,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 -- Startup report, echoed under the intro screen. Skipped when nvim was given a
 -- file (no intro to annotate) or has no UI (--headless).
 vim.api.nvim_create_autocmd("VimEnter", {
+	group = vim.api.nvim_create_augroup("Startup", { clear = true }),
 	callback = function()
 		if vim.fn.argc() > 0 or #vim.api.nvim_list_uis() == 0 then
 			return

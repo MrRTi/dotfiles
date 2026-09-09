@@ -5,3 +5,5 @@ configure-git-for-dev-folders.sh
 CLAUDE.md
 justfile
 */.keep
+stylua.toml
+.luarc.json

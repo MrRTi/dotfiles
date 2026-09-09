@@ -1,0 +1,5 @@
+# Pins the defaults dot_config/nvim already satisfies, so a stylua version bump
+# cannot silently reformat the whole config.
+indent_type = "Tabs"
+indent_width = 4
+column_width = 120
