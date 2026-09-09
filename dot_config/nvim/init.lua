@@ -21,7 +21,7 @@ vim.loader.enable()
 -- `:file <dir>` while netrw has already claimed that name, so `-` on a file
 -- buffer died with "E95: Buffer with this name already exists".
 -- Setting these makes runtime/plugin/netrwPlugin.vim bail before `packadd netrw`.
--- Directories then go to oil when it is loaded, and to nvim.dir otherwise.
+-- Directories are then handled by Nvim's built-in nvim.dir browser.
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
@@ -136,26 +136,6 @@ require("lazy").setup({
 	{ "nvim-treesitter/nvim-treesitter", branch = "main", lazy = false },
 
 	-- Deferred until a key is pressed.
-	{
-		"stevearc/oil.nvim",
-		opts = { view_options = { show_hidden = true } },
-		keys = {
-			{ "<leader>e", "<cmd>Oil<CR>", desc = "Open file explorer" },
-			{ "<leader>-", "<cmd>Oil<CR>", desc = "Open file explorer" },
-		},
-		-- NOTE: oil takes over directory buffers only once it is loaded, so with the
-		-- keys above as the sole trigger `nvim .` fell through to netrw. `init` runs
-		-- during startup even for a lazy plugin, which is early enough to claim the
-		-- directory before netrw does.
-		init = function()
-			for i = 0, vim.fn.argc(-1) - 1 do
-				if vim.fn.isdirectory(vim.fn.argv(i)) == 1 then
-					require("lazy").load({ plugins = { "oil.nvim" } })
-					return
-				end
-			end
-		end,
-	},
 	{
 		"ibhagwan/fzf-lua",
 		keys = {
@@ -459,6 +439,18 @@ end, { desc = "Toggle treesitter highlight" })
 
 -- File explorer
 
+-- NOTE: no keymaps here on purpose. Nvim 0.13's built-in nvim.dir browser
+-- (which replaced oil.nvim) already provides a global `-` for the parent
+-- directory -- from a file buffer, from a listing, and from a no-name buffer,
+-- where it falls back to the cwd. It takes a count, so `1-` jumps to the cwd and
+-- `2-` goes up two levels. Inside a listing: `<CR>` opens an entry, `R` reloads.
+--
+-- The listing is readonly -- it browses, it does not edit. Create/rename/move
+-- with :!mkdir, :!mv or :e <name>, then `R`. Renaming a file that is currently
+-- open leaves its buffer on the old path, so follow up with :e <newname>.
+--
+-- See the netrw NOTE at the top of this file for why netrw must stay disabled.
+
 vim.keymap.set("n", "<leader>fp", '<cmd>let @+ = fnamemodify(expand("%:p"), ":~:.")<CR>', { desc = "Copy path" })
 
 -- Search
@@ -619,7 +611,8 @@ local function dw_collect(lines)
 end
 
 local function check_double_width(bufnr)
-	-- Only real file buffers: skips oil listings, fzf-lua previews, terminals and
+	-- Only real file buffers: skips directory listings (nvim.dir sets buftype =
+	-- "nowrite"), fzf-lua previews, terminals and
 	-- other scratch buffers that used to get a full scan on every BufEnter.
 	if not vim.api.nvim_buf_is_valid(bufnr) or vim.bo[bufnr].buftype ~= "" then
 		return
