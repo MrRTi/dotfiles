@@ -140,30 +140,41 @@ require("lazy").setup({
 	-- Eager. Each of these is needed before the first redraw, so there is nothing
 	-- to defer.
 	{
-		"ellisonleao/gruvbox.nvim",
-		name = "gruvbox",
+		"EdenEast/nightfox.nvim",
+		name = "nightfox",
 		lazy = false,
 		priority = 1000,
 		config = function()
-			require("gruvbox").setup({
-				contrast = "hard",
-				transparent_mode = true,
+			require("nightfox").setup({
+				options = { transparent = true },
 			})
-			-- NOTE: a ColorScheme autocmd, not two bare `hi` calls. `transparent_mode`
-			-- leaves the float highlights opaque, and toggling 'background' via
-			-- <leader>ut re-applies gruvbox -- which used to clobber one-shot
-			-- overrides set at startup (NormalFloat guibg went from NONE back to the
-			-- light background). Registered before `colorscheme` so the first apply
-			-- fires it too.
+			-- NOTE: unlike kanagawa/rose-pine/catppuccin/gruvbox, nightfox has no
+			-- single-name auto light/dark switch -- nightfox (dark) and dayfox
+			-- (light) are separate colorscheme names. This OptionSet autocmd does
+			-- what those plugins did internally, so <leader>ut still works.
+			-- The ColorScheme autocmd (not two bare `hi` calls) is because
+			-- `transparent` leaves the float highlights opaque, and re-applying the
+			-- colorscheme on toggle would otherwise clobber one-shot overrides set
+			-- at startup (NormalFloat guibg went from NONE back to the dayfox
+			-- background). Registered before the first colorscheme call so that
+			-- apply fires it too.
 			vim.api.nvim_create_autocmd("ColorScheme", {
 				group = vim.api.nvim_create_augroup("Appearance", { clear = true }),
-				pattern = "gruvbox",
+				pattern = "nightfox,dayfox",
 				callback = function()
 					vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 					vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
 				end,
 			})
-			vim.cmd("colorscheme gruvbox")
+			local function apply_nightfox()
+				vim.cmd.colorscheme(vim.o.background == "light" and "dayfox" or "nightfox")
+			end
+			vim.api.nvim_create_autocmd("OptionSet", {
+				pattern = "background",
+				group = "Appearance",
+				callback = apply_nightfox,
+			})
+			apply_nightfox()
 		end,
 	},
 	{
@@ -422,7 +433,7 @@ require("lazy").setup({
 -- that call blocked startup for ~104 ms, about half of total startup time.
 -- Verify with `:echo &background` under both macOS appearances.
 -- The float transparency that this toggle would otherwise clobber is re-applied
--- by the ColorScheme autocmd in the gruvbox spec above.
+-- by the ColorScheme autocmd in the nightfox spec above.
 vim.keymap.set("n", "<leader>ut", function()
 	vim.o.background = vim.o.background == "light" and "dark" or "light"
 end, { desc = "Toggle light/dark" })

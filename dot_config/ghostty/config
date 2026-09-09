@@ -10,8 +10,8 @@ maximize = true
 window-padding-x = 10
 window-padding-y = 5
 
-theme = dark:Gruvbox Dark Hard,light:Gruvbox Light Hard
-cursor-color = #fb4934
+theme = dark:Nightfox,light:Dayfox
+cursor-color = #c94f6d
 background-opacity = 0.93
 background-blur = 10
 
