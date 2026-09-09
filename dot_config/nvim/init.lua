@@ -174,6 +174,22 @@ require("lazy").setup({
 				end,
 			}
 			require("fzf-lua").setup({
+				-- <leader><space> is the `global` picker: a prefix-switched combination of
+				-- sources. Defaults are no-prefix = files, `$` = buffers, `@` = symbols in
+				-- the current buffer, `#` = symbols across the project (the last two fall
+				-- back to btags/tags when no LSP client supports them). `%` adds git-tracked
+				-- files, which unlike the fd-backed default leaves out untracked ones.
+				--
+				-- NOTE: the default `pickers` is a *function*, evaluated per invocation so it
+				-- can branch on which LSP methods the attached clients support. Call it and
+				-- append rather than replacing the list, or `@` and `#` lose that branching.
+				global = {
+					pickers = function()
+						local pickers = require("fzf-lua.defaults").defaults.global.pickers()
+						table.insert(pickers, { "git_files", desc = "Git files", prefix = "%" })
+						return pickers
+					end,
+				},
 				winopts = { preview = { layout = "vertical" } },
 				grep = normal,
 				keymap = {
