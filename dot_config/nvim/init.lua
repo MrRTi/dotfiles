@@ -3,7 +3,27 @@
 -- so it reads slightly low against `nvim --startuptime`.
 local start_time = vim.uv.hrtime()
 
+-- Byte-compile cache for Lua modules, kept in stdpath("cache")/luac and
+-- invalidated automatically when a file changes. Not on by default; this is the
+-- same cache lazy.nvim turns on for you, which is most of what a plugin manager
+-- buys performance-wise. Measured -15%: 29 -> 25 ms with no file, 54 -> 45 ms
+-- opening one. Documented as "experimental" but the API is stable (@since 0).
+-- Placed after start_time so the startup report includes its own cost.
+vim.loader.enable()
+
 -- Options
+
+-- NOTE: netrw is legacy in 0.13 (moved to an optional package; `:packadd netrw`)
+-- and Nvim's own nvim.dir browser replaces it. Nvim normally suppresses netrw by
+-- clearing the FileExplorer augroup from runtime/plugin/dir.lua, but under this
+-- config netrw ends up registering *after* that clear, leaving both live. They
+-- then race for the same directory buffer: nvim.dir renames its buffer with
+-- `:file <dir>` while netrw has already claimed that name, so `-` on a file
+-- buffer died with "E95: Buffer with this name already exists".
+-- Setting these makes runtime/plugin/netrwPlugin.vim bail before `packadd netrw`.
+-- Directories then go to oil when it is loaded, and to nvim.dir otherwise.
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 vim.g.mapleader = " "
 
@@ -63,90 +83,251 @@ vim.o.foldlevel = 99
 
 -- Plugins
 
-vim.keymap.set("n", "<leader>pu", function()
-	vim.pack.update()
-end, { desc = "Update plugins" })
-
-vim.pack.add({
-	-- mini.statusline is drawn immediately, so it stays eager. The other three
-	-- mini modules only act on buffer contents -- see lazy_pack below.
-	{ src = "https://github.com/echasnovski/mini.statusline" },
-	{ src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
-	{ src = "https://github.com/neovim/nvim-lspconfig" },
-	{ src = "https://github.com/folke/which-key.nvim" },
-	-- deps
-	{ src = "https://github.com/nvim-lua/plenary.nvim" },
-	-- Theme
-	{ src = "https://github.com/rebelot/kanagawa.nvim" },
-})
-
--- NOTE: vim.pack has no lazy-loading of its own, and `load = false` is not it:
--- that only skips `:packadd`'s own sourcing, while Nvim still sources the
--- plugin's `plugin/` files at the normal rtp stage. That is how gitsigns loads
--- itself no matter what -- its plugin/gitsigns.lua is a bare
--- `require('gitsigns').setup()`. Passing a `load` *function* instead makes us
--- "fully responsible for loading" (:h vim.pack.keyset.add), so the plugin stays
--- off the runtimepath until lazy_load() runs `:packadd` for it.
+-- NOTE: managed by lazy.nvim, after a stint on Nvim's built-in vim.pack.
+-- vim.pack is fine and its lockfile is native, but it has no lazy-loading.
+-- `load = false` is not it -- that only skips `:packadd`'s own sourcing while
+-- Nvim still sources the plugin's `plugin/` files at the normal rtp stage (which
+-- is how gitsigns loaded itself regardless: its plugin/gitsigns.lua is a bare
+-- `require('gitsigns').setup()`). The only real lever is handing `add()` a
+-- `load` *function* and taking over loading yourself, which came to ~80 lines of
+-- bespoke helper plus one `lazy_setup[name]` wrapper per plugin -- each sitting
+-- far from the trigger that fired it, joined only by a name string.
 --
--- Measured: deferring these six takes startup from 60 ms to ~36 ms with no file
--- argument. Each `lazy_setup[name]` lives next to that plugin's own config
--- below, so nothing moves except when it runs.
-local lazy_setup, lazy_loaded = {}, {}
-
-local function lazy_pack(name, spec)
-	vim.pack.add({ spec }, { load = function() end })
-	return name
-end
-
-local function lazy_load(name)
-	if lazy_loaded[name] then
-		return
+-- That distance caused actual bugs: `<cmd>FzfLua files<CR>` ran before its own
+-- setup and silently lost the winopts/grep config, a `local harpoon =
+-- require(...)` upvalue defeated the deferral entirely, and a scratch buffer
+-- typed into from the intro screen loaded none of the editing modules. `keys =`
+-- next to `config =` makes all three impossible to express.
+--
+-- Startup was benchmarked both ways on this exact config -- isolated XDG dirs,
+-- same eager/deferred split, median of 15 runs: 24.65 ms (vim.pack) vs 24.26 ms
+-- (lazy) with no file, 41.40 vs 41.66 opening one. A dead heat, inside
+-- run-to-run noise. So this move buys readability at no measurable cost; it is
+-- not a performance change.
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.uv.fs_stat(lazypath) then
+	local out = vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"--branch=stable",
+		"https://github.com/folke/lazy.nvim.git",
+		lazypath,
+	})
+	if vim.v.shell_error ~= 0 then
+		error("Could not clone lazy.nvim:\n" .. out)
 	end
-	lazy_loaded[name] = true
-	vim.cmd.packadd(name)
-	local setup = lazy_setup[name]
-	if setup then
-		setup()
-	end
 end
+vim.opt.rtp:prepend(lazypath)
 
-lazy_pack("oil.nvim", { src = "https://github.com/stevearc/oil.nvim" })
-lazy_pack("fzf-lua", { src = "https://github.com/ibhagwan/fzf-lua" })
-lazy_pack("gitsigns.nvim", { src = "https://github.com/lewis6991/gitsigns.nvim" })
-lazy_pack("todo-comments.nvim", { src = "https://github.com/folke/todo-comments.nvim" })
-lazy_pack("conform.nvim", { src = "https://github.com/stevearc/conform.nvim" })
-lazy_pack("nvim-lint", { src = "https://github.com/mfussenegger/nvim-lint" })
-lazy_pack("mini.ai", { src = "https://github.com/echasnovski/mini.ai" })
-lazy_pack("mini.splitjoin", { src = "https://github.com/echasnovski/mini.splitjoin" })
-lazy_pack("mini.indentscope", { src = "https://github.com/echasnovski/mini.indentscope" })
-lazy_pack("harpoon", {
-	src = "https://github.com/ThePrimeagen/harpoon",
-	version = "harpoon2",
-})
+vim.keymap.set("n", "<leader>pu", "<cmd>Lazy update<CR>", { desc = "Update plugins" })
 
--- Plugins that only matter once there is a real buffer. BufReadPre fires before
--- filetype detection, so nvim-lint's BufReadPost hook still fires for the very
--- first file -- registering it any later would miss that buffer.
-vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile" }, {
-	once = true,
-	callback = function()
-		lazy_load("gitsigns.nvim")
-		lazy_load("todo-comments.nvim")
-		lazy_load("conform.nvim")
-		lazy_load("nvim-lint")
-	end,
-})
+require("lazy").setup({
+	-- Eager. Each of these is needed before the first redraw, so there is nothing
+	-- to defer; their setup() calls stay in the sections below that own them.
+	{ "rebelot/kanagawa.nvim", lazy = false, priority = 1000 },
+	{ "echasnovski/mini.statusline", lazy = false },
+	{ "folke/which-key.nvim", lazy = false },
+	-- Supplies the lsp/*.lua server definitions vim.lsp.enable() reads, so it only
+	-- has to be on the runtimepath -- nothing requires it.
+	{ "neovim/nvim-lspconfig", lazy = false },
+	-- On `main` this only installs parsers; highlighting is native. Needed just for
+	-- :TSInstallParsers below.
+	{ "nvim-treesitter/nvim-treesitter", branch = "main", lazy = false },
 
--- Editing helpers that only act on buffer contents. InsertEnter is in the list
--- so they also come up in a scratch buffer typed into straight from the intro
--- screen, which fires neither BufReadPre nor BufNewFile.
-vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile", "InsertEnter" }, {
-	once = true,
-	callback = function()
-		lazy_load("mini.ai")
-		lazy_load("mini.splitjoin")
-		lazy_load("mini.indentscope")
-	end,
+	-- Deferred until a key is pressed.
+	{
+		"stevearc/oil.nvim",
+		opts = { view_options = { show_hidden = true } },
+		keys = {
+			{ "<leader>e", "<cmd>Oil<CR>", desc = "Open file explorer" },
+			{ "<leader>-", "<cmd>Oil<CR>", desc = "Open file explorer" },
+		},
+		-- NOTE: oil takes over directory buffers only once it is loaded, so with the
+		-- keys above as the sole trigger `nvim .` fell through to netrw. `init` runs
+		-- during startup even for a lazy plugin, which is early enough to claim the
+		-- directory before netrw does.
+		init = function()
+			for i = 0, vim.fn.argc(-1) - 1 do
+				if vim.fn.isdirectory(vim.fn.argv(i)) == 1 then
+					require("lazy").load({ plugins = { "oil.nvim" } })
+					return
+				end
+			end
+		end,
+	},
+	{
+		"ibhagwan/fzf-lua",
+		keys = {
+			{ "<leader><space>", "<cmd>FzfLua global<CR>", desc = "Search files and buffers" },
+			{ "<leader>sf", "<cmd>FzfLua files<CR>", desc = "Files" },
+			{ "<leader>sg", "<cmd>FzfLua live_grep<CR>", desc = "Live grep" },
+			{ "<leader>sw", "<cmd>FzfLua grep_cword<CR>", desc = "Word under cursor" },
+			{ "<leader>sh", "<cmd>FzfLua helptags<CR>", desc = "Help tags" },
+			{ "<leader>sk", "<cmd>FzfLua keymaps<CR>", desc = "Keymaps" },
+			{ "<leader>sr", "<cmd>FzfLua resume<CR>", desc = "Resume last search" },
+		},
+		config = function()
+			-- The two grep modes swap into each other via <alt-m>, so each needs a
+			-- reference to the other -- hence the tables before .actions is filled in.
+			local normal = {
+				rg_opts = "--column --line-number --no-heading --color=always --smart-case --max-columns=512",
+				header = ":: <ctrl-g> to Fuzzy Search | :: <alt-m> to Multiline Mode",
+			}
+			local multiline = {
+				rg_opts = "--multiline --column --line-number --no-heading --color=always --smart-case",
+				header = ":: <ctrl-g> to Fuzzy Search | :: <alt-m> to Normal Mode",
+			}
+			normal.actions = {
+				["alt-m"] = function()
+					require("fzf-lua").live_grep(vim.tbl_extend("force", multiline, { resume = true }))
+				end,
+			}
+			multiline.actions = {
+				["alt-m"] = function()
+					require("fzf-lua").live_grep(vim.tbl_extend("force", normal, { resume = true }))
+				end,
+			}
+			require("fzf-lua").setup({
+				winopts = { preview = { layout = "vertical" } },
+				grep = normal,
+				keymap = {
+					fzf = {
+						true,
+						-- NOTE: Use <c-q> to select all items and add them to the quickfix list
+						["ctrl-q"] = "select-all+accept",
+					},
+				},
+			})
+		end,
+	},
+	{
+		"ThePrimeagen/harpoon",
+		branch = "harpoon2",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = {},
+		keys = {
+			{
+				"<leader>H",
+				function()
+					require("harpoon"):list():add()
+				end,
+				desc = "Add file to harpoon",
+			},
+			{
+				"<leader>h",
+				function()
+					local h = require("harpoon")
+					h.ui:toggle_quick_menu(h:list())
+				end,
+				desc = "Toggle harpoon menu",
+			},
+			{
+				"[H",
+				function()
+					require("harpoon"):list():prev()
+				end,
+				desc = "Previous harpoon file",
+			},
+			{
+				"]H",
+				function()
+					require("harpoon"):list():next()
+				end,
+				desc = "Next harpoon file",
+			},
+		},
+	},
+
+	-- Deferred until there is a real buffer. BufReadPre (not BufReadPost) so
+	-- nvim-lint's own BufReadPost hook still fires for the very first file.
+	-- NOTE: gitsigns needs no opts here -- its plugin/gitsigns.lua, which lazy
+	-- sources on load, is itself a bare `require('gitsigns').setup()`. Passing
+	-- opts as well would just run setup twice.
+	{ "lewis6991/gitsigns.nvim", event = { "BufReadPre", "BufNewFile" } },
+	{
+		"folke/todo-comments.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		event = { "BufReadPre", "BufNewFile" },
+		opts = {},
+		keys = {
+			{
+				"<leader>st",
+				function()
+					-- :TodoFzfLua is todo-comments' command but needs fzf-lua present.
+					require("lazy").load({ plugins = { "fzf-lua" } })
+					vim.cmd("TodoFzfLua")
+				end,
+				desc = "Search todos/notes",
+			},
+		},
+	},
+	{
+		"stevearc/conform.nvim",
+		event = { "BufReadPre", "BufNewFile" },
+		keys = {
+			{
+				"<leader>lf",
+				function()
+					require("conform").format({ async = true, lsp_format = "fallback" })
+				end,
+				mode = { "n", "v" },
+				desc = "Format",
+			},
+		},
+		-- NOTE: replaced none-ls.nvim (plus none-ls-extras and none-ls-shellcheck),
+		-- which bridged these same CLI tools by standing up a fake LSP client.
+		-- conform and nvim-lint invoke them directly: three plugins became two.
+		opts = {
+			formatters_by_ft = {
+				lua = { "stylua" },
+				ruby = { "rubocop" },
+				json = { "jq" },
+				yaml = { "yamlfmt" },
+				sh = { "shfmt" },
+				bash = { "shfmt" },
+			},
+			-- NOTE: lsp_format = "never" on purpose. Python is formatted by ruff via
+			-- its own LspAttach hook below; letting conform fall back to LSP here
+			-- would run both and format the buffer twice. The <leader>lf map above
+			-- does fall back to LSP, which is what formats go/python on demand.
+			format_on_save = { timeout_ms = 3000, lsp_format = "never" },
+		},
+	},
+	{
+		"mfussenegger/nvim-lint",
+		event = { "BufReadPre", "BufNewFile" },
+		config = function()
+			local lint = require("lint")
+			lint.linters_by_ft = {
+				ruby = { "rubocop" },
+				sh = { "shellcheck" },
+				bash = { "shellcheck" },
+			}
+			vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "InsertLeave" }, {
+				group = vim.api.nvim_create_augroup("NvimLint", { clear = true }),
+				callback = function()
+					lint.try_lint()
+				end,
+			})
+		end,
+	},
+
+	-- Editing helpers that only act on buffer contents. InsertEnter is in the list
+	-- so they also come up in a scratch buffer typed into straight from the intro
+	-- screen, which fires neither BufReadPre nor BufNewFile.
+	{ "echasnovski/mini.ai", event = { "BufReadPre", "BufNewFile", "InsertEnter" }, opts = {} },
+	{ "echasnovski/mini.splitjoin", event = { "BufReadPre", "BufNewFile", "InsertEnter" }, opts = {} },
+	{ "echasnovski/mini.indentscope", event = { "BufReadPre", "BufNewFile", "InsertEnter" }, opts = {} },
+}, {
+	-- Lives next to init.lua so chezmoi manages it, replacing nvim-pack-lock.json.
+	lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json",
+	-- The config is chezmoi-deployed, so it changes under Nvim on every `chezmoi
+	-- apply`; the reload prompt that would cause is noise.
+	change_detection = { enabled = false },
+	-- Nothing here needs luarocks, and leaving it on makes :checkhealth fail on a
+	-- missing hererocks install.
+	rocks = { enabled = false },
 })
 
 -- Appearance
@@ -172,22 +353,6 @@ vim.cmd("hi NormalFloat guibg=NONE")
 vim.cmd("hi FloatBorder guibg=NONE")
 
 -- UI
-
-lazy_setup["todo-comments.nvim"] = function()
-	require("todo-comments").setup()
-end
-
-lazy_setup["mini.ai"] = function()
-	require("mini.ai").setup()
-end
-
-lazy_setup["mini.splitjoin"] = function()
-	require("mini.splitjoin").setup()
-end
-
-lazy_setup["mini.indentscope"] = function()
-	require("mini.indentscope").setup()
-end
 
 -- NOTE: the statusline redraws on every cursor move, so counting diagnostics
 -- inline made each redraw cost O(#diagnostics). Render once when diagnostics
@@ -294,78 +459,9 @@ end, { desc = "Toggle treesitter highlight" })
 
 -- File explorer
 
-lazy_setup["oil.nvim"] = function()
-	require("oil").setup({
-		view_options = { show_hidden = true },
-	})
-end
-
--- NOTE: oil ships no plugin/ dir, so `:Oil` only exists once its setup has run.
-local function oil_open()
-	lazy_load("oil.nvim")
-	vim.cmd("Oil")
-end
-
-vim.keymap.set("n", "<leader>e", oil_open, { desc = "Open file explorer" })
-vim.keymap.set("n", "<leader>-", oil_open, { desc = "Open file explorer" })
 vim.keymap.set("n", "<leader>fp", '<cmd>let @+ = fnamemodify(expand("%:p"), ":~:.")<CR>', { desc = "Copy path" })
 
 -- Search
-
-local fzf_grep_normal = {
-	rg_opts = "--column --line-number --no-heading --color=always --smart-case --max-columns=512",
-	header = ":: <ctrl-g> to Fuzzy Search | :: <alt-m> to Multiline Mode",
-}
-local fzf_grep_multiline = {
-	rg_opts = "--multiline --column --line-number --no-heading --color=always --smart-case",
-	header = ":: <ctrl-g> to Fuzzy Search | :: <alt-m> to Normal Mode",
-}
-fzf_grep_normal.actions = {
-	["alt-m"] = function(_, _)
-		require("fzf-lua").live_grep(vim.tbl_extend("force", fzf_grep_multiline, { resume = true }))
-	end,
-}
-fzf_grep_multiline.actions = {
-	["alt-m"] = function(_, _)
-		require("fzf-lua").live_grep(vim.tbl_extend("force", fzf_grep_normal, { resume = true }))
-	end,
-}
-lazy_setup["fzf-lua"] = function()
-	require("fzf-lua").setup({
-		winopts = { preview = { layout = "vertical" } },
-		grep = fzf_grep_normal,
-		keymap = {
-			fzf = {
-				true,
-				-- NOTE: Use <c-q> to select all items and add them to the quickfix list
-				["ctrl-q"] = "select-all+accept",
-			},
-		},
-	})
-end
-
--- NOTE: :FzfLua comes from fzf-lua's own plugin/ file, which `:packadd` sources,
--- but the winopts/grep config above only lands once setup has run -- so the
--- keymaps must go through lazy_load rather than calling :FzfLua directly.
-local function fzf(subcommand)
-	return function()
-		lazy_load("fzf-lua")
-		vim.cmd("FzfLua " .. subcommand)
-	end
-end
-
-vim.keymap.set("n", "<leader><space>", fzf("global"), { desc = "Search files and buffers" })
-vim.keymap.set("n", "<leader>sf", fzf("files"), { desc = "Files" })
-vim.keymap.set("n", "<leader>sg", fzf("live_grep"), { desc = "Live grep" })
-vim.keymap.set("n", "<leader>sw", fzf("grep_cword"), { desc = "Word under cursor" })
-vim.keymap.set("n", "<leader>sh", fzf("helptags"), { desc = "Help tags" })
-vim.keymap.set("n", "<leader>sk", fzf("keymaps"), { desc = "Keymaps" })
-vim.keymap.set("n", "<leader>sr", fzf("resume"), { desc = "Resume last search" })
-vim.keymap.set("n", "<leader>st", function()
-	lazy_load("todo-comments.nvim")
-	lazy_load("fzf-lua")
-	vim.cmd("TodoFzfLua")
-end, { desc = "Search todos/notes" })
 
 -- Treesitter
 -- NOTE: nvim-treesitter main branch (Neovim 0.12+) only manages parser installation.
@@ -444,62 +540,6 @@ vim.opt.completeopt = { "menu", "menuone", "noinsert", "noselect", "fuzzy" }
 
 -- NOTE: grr (references), grn (rename), gra (code action), gri (implementation)
 --       are Neovim 0.11 built-ins and appear in which-key automatically.
-vim.keymap.set({ "n", "v" }, "<leader>lf", function()
-	lazy_load("conform.nvim")
-	require("conform").format({ async = true, lsp_format = "fallback" })
-end, { desc = "Format" })
-vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Hover docs" })
-vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
-vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
-vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Diagnostic float" })
-vim.keymap.set("n", "[d", function()
-	vim.diagnostic.jump({ count = -1 })
-end, { desc = "Previous diagnostic" })
-vim.keymap.set("n", "]d", function()
-	vim.diagnostic.jump({ count = 1 })
-end, { desc = "Next diagnostic" })
-
--- Formatting & diagnostics
-
--- NOTE: replaced none-ls.nvim (plus none-ls-extras and none-ls-shellcheck).
--- none-ls bridges CLI tools by standing up a fake LSP client; conform and
--- nvim-lint invoke them directly. Three plugins became two, and the work moved
--- off startup entirely -- see the BufReadPre trigger above.
-lazy_setup["conform.nvim"] = function()
-	require("conform").setup({
-		formatters_by_ft = {
-			lua = { "stylua" },
-			ruby = { "rubocop" },
-			json = { "jq" },
-			yaml = { "yamlfmt" },
-			sh = { "shfmt" },
-			bash = { "shfmt" },
-		},
-		-- NOTE: lsp_format = "never" on purpose. Python is formatted by ruff via its
-		-- own LspAttach hook above; letting conform fall back to LSP here would run
-		-- both and format the buffer twice. Manual <leader>lf below still falls back
-		-- to LSP, which is what formats go/python on demand.
-		format_on_save = { timeout_ms = 3000, lsp_format = "never" },
-	})
-end
-
-lazy_setup["nvim-lint"] = function()
-	local lint = require("lint")
-	lint.linters_by_ft = {
-		ruby = { "rubocop" },
-		sh = { "shellcheck" },
-		bash = { "shellcheck" },
-	}
-	-- NOTE: registered during BufReadPre, so the BufReadPost for the file that
-	-- triggered this load still fires afterwards and lints it.
-	vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "InsertLeave" }, {
-		group = vim.api.nvim_create_augroup("NvimLint", { clear = true }),
-		callback = function()
-			lint.try_lint()
-		end,
-	})
-end
-
 -- Navigation (tmux + harpoon)
 
 -- NOTE: Tmux-aware pane navigation (replaces vim-tmux-navigator plugin)
@@ -518,58 +558,7 @@ for _, dir in ipairs({ "h", "j", "k", "l" }) do
 	end, { desc = "Navigate " .. dir })
 end
 
-lazy_setup["harpoon"] = function()
-	require("harpoon").setup()
-end
-
--- NOTE: harpoon is resolved per keypress rather than held in an upvalue, so the
--- plugin stays unloaded until one of these maps is actually used.
-local function harpoon_do(fn)
-	return function()
-		lazy_load("harpoon")
-		fn(require("harpoon"))
-	end
-end
-
-vim.keymap.set(
-	"n",
-	"<leader>H",
-	harpoon_do(function(h)
-		h:list():add()
-	end),
-	{ desc = "Add file to harpoon" }
-)
-vim.keymap.set(
-	"n",
-	"<leader>h",
-	harpoon_do(function(h)
-		h.ui:toggle_quick_menu(h:list())
-	end),
-	{ desc = "Toggle harpoon menu" }
-)
-vim.keymap.set(
-	"n",
-	"[H",
-	harpoon_do(function(h)
-		h:list():prev()
-	end),
-	{ desc = "Previous harpoon file" }
-)
-vim.keymap.set(
-	"n",
-	"]H",
-	harpoon_do(function(h)
-		h:list():next()
-	end),
-	{ desc = "Next harpoon file" }
-)
-
 -- Git
-
--- NOTE: no lazy_setup entry needed -- gitsigns' own plugin/gitsigns.lua is a bare
--- `require('gitsigns').setup()`, so `:packadd` from the BufReadPre trigger above
--- configures it. Its keymaps below are :Gitsigns subcommands, which that same
--- plugin/ file registers, so they resolve once a buffer has been read.
 
 vim.keymap.set("n", "<leader>gg", function()
 	vim.cmd("tabnew | terminal lazygit")
@@ -691,17 +680,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
 		if vim.fn.argc() > 0 or #vim.api.nvim_list_uis() == 0 then
 			return
 		end
-		-- NOTE: vim.pack.get() defaults to info = true, which shells out to git for
-		-- every plugin's branches and tags -- 363 ms here. info = false is a plain
-		-- read of the already-loaded specs, 0.1 ms.
-		-- NOTE: filtered on `active`, since get() also reports plugins still on disk
-		-- under pack/core/opt that vim.pack.add no longer lists.
-		local plugins = 0
-		for _, p in ipairs(vim.pack.get(nil, { info = false })) do
-			if p.active then
-				plugins = plugins + 1
-			end
-		end
+		-- Reports loaded/total rather than a bare count: with most plugins deferred,
+		-- how few are actually loaded is the interesting number.
+		local stats = require("lazy").stats()
 		local ms = (vim.uv.hrtime() - start_time) / 1e6
 		-- NOTE: scheduled so the echo lands after the intro screen is drawn;
 		-- echoing inside VimEnter itself suppresses it.
@@ -709,7 +690,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 			vim.api.nvim_echo({
 				{ "startup took ", "Comment" },
 				{ string.format("%.0f ms", ms), "Title" },
-				{ string.format("  \u{b7}  %d plugins", plugins), "Comment" },
+				{ string.format("  \u{b7}  %d/%d plugins", stats.loaded, stats.count), "Comment" },
 			}, false, {})
 		end)
 	end,
