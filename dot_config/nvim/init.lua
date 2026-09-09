@@ -141,6 +141,11 @@ require("lazy").setup({
 		keys = {
 			{ "<leader><space>", "<cmd>FzfLua global<CR>", desc = "Search files and buffers" },
 			{ "<leader>sf", "<cmd>FzfLua files<CR>", desc = "Files" },
+			-- NOTE: git_files lists via `git ls-files` instead of `fd`. Measured no
+			-- difference in open latency (120 ms vs 121 ms on a 14k-file repo, since
+			-- fzf-lua streams either way), and it returned 0 results in a git-worktree
+			-- checkout -- here to compare against <leader>sf.
+			{ "<leader>sF", "<cmd>FzfLua git_files<CR>", desc = "Files (git)" },
 			{ "<leader>sg", "<cmd>FzfLua live_grep<CR>", desc = "Live grep" },
 			{ "<leader>sw", "<cmd>FzfLua grep_cword<CR>", desc = "Word under cursor" },
 			{ "<leader>sh", "<cmd>FzfLua helptags<CR>", desc = "Help tags" },
