@@ -140,29 +140,30 @@ require("lazy").setup({
 	-- Eager. Each of these is needed before the first redraw, so there is nothing
 	-- to defer.
 	{
-		"rebelot/kanagawa.nvim",
+		"ellisonleao/gruvbox.nvim",
+		name = "gruvbox",
 		lazy = false,
 		priority = 1000,
 		config = function()
-			require("kanagawa").setup({
-				transparent = true,
-				background = { dark = "dragon", light = "lotus" },
+			require("gruvbox").setup({
+				contrast = "hard",
+				transparent_mode = true,
 			})
-			-- NOTE: a ColorScheme autocmd, not two bare `hi` calls. `transparent`
+			-- NOTE: a ColorScheme autocmd, not two bare `hi` calls. `transparent_mode`
 			-- leaves the float highlights opaque, and toggling 'background' via
-			-- <leader>ut re-applies kanagawa -- which used to clobber one-shot
+			-- <leader>ut re-applies gruvbox -- which used to clobber one-shot
 			-- overrides set at startup (NormalFloat guibg went from NONE back to the
-			-- lotus background). Registered before `colorscheme` so the first apply
+			-- light background). Registered before `colorscheme` so the first apply
 			-- fires it too.
 			vim.api.nvim_create_autocmd("ColorScheme", {
 				group = vim.api.nvim_create_augroup("Appearance", { clear = true }),
-				pattern = "kanagawa",
+				pattern = "gruvbox",
 				callback = function()
 					vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 					vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
 				end,
 			})
-			vim.cmd("colorscheme kanagawa")
+			vim.cmd("colorscheme gruvbox")
 		end,
 	},
 	{
@@ -421,7 +422,7 @@ require("lazy").setup({
 -- that call blocked startup for ~104 ms, about half of total startup time.
 -- Verify with `:echo &background` under both macOS appearances.
 -- The float transparency that this toggle would otherwise clobber is re-applied
--- by the ColorScheme autocmd in the kanagawa spec above.
+-- by the ColorScheme autocmd in the gruvbox spec above.
 vim.keymap.set("n", "<leader>ut", function()
 	vim.o.background = vim.o.background == "light" and "dark" or "light"
 end, { desc = "Toggle light/dark" })
@@ -504,6 +505,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		if client and client.server_capabilities.completionProvider then
 			vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
 		end
+		-- NOTE: gd is not one of the 0.11 built-in LSP defaults (grr/grn/gra/gri/gO
+		-- are, see the comment near those below) -- it stays bound to core Vim's
+		-- "goto local Declaration", which only searches the current file and no-ops
+		-- (or jumps wrong) once the real definition lives elsewhere. Rebind it
+		-- buffer-locally to the LSP definition jump instead.
+		if client and client.server_capabilities.definitionProvider then
+			vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = ev.buf, desc = "Goto definition" })
+		end
 		-- ruff is the sole Python formatter (conform's formatters_by_ft above
 		-- intentionally has no python entry, and no black/isort) -- wire its
 		-- format-on-save here since it's a plain LSP client.
@@ -532,7 +541,9 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
 })
 
 -- NOTE: grr (references), grn (rename), gra (code action), gri (implementation)
---       are Neovim 0.11 built-ins and appear in which-key automatically.
+--       are Neovim 0.11 built-ins and appear in which-key automatically. gd is
+--       not one of them -- rebound to vim.lsp.buf.definition in the LspAttach
+--       autocmd above, since core Vim's own gd only searches the current file.
 
 -- Navigation (tmux + harpoon)
 
