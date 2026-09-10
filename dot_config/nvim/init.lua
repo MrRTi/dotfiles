@@ -136,6 +136,13 @@ vim.opt.rtp:prepend(lazypath)
 
 vim.keymap.set("n", "<leader>pu", "<cmd>Lazy update<CR>", { desc = "Update plugins" })
 
+-- Single source of truth for which servers vim.lsp.enable() turns on, down at
+-- the LSP section below -- declared up here too because mini.statusline's
+-- config() (eager, runs during this require("lazy").setup() call) needs it
+-- to know which server names to expect per filetype, and Lua closures can't
+-- see a local declared later in the file.
+local lsp_servers = { "lua_ls", "ruby_lsp", "pyright", "ruff", "yamlls", "marksman", "gopls" }
+
 require("lazy").setup({
 	-- Eager. Each of these is needed before the first redraw, so there is nothing
 	-- to defer.
@@ -181,7 +188,7 @@ require("lazy").setup({
 		"echasnovski/mini.statusline",
 		lazy = false,
 		config = function()
-			require("user.statusline").setup()
+			require("user.statusline").setup({ servers = lsp_servers })
 		end,
 	},
 	{
@@ -505,7 +512,7 @@ vim.lsp.config("lua_ls", {
 	},
 })
 
-vim.lsp.enable({ "lua_ls", "ruby_lsp", "pyright", "ruff", "yamlls", "marksman", "gopls" })
+vim.lsp.enable(lsp_servers)
 
 local lsp_group = vim.api.nvim_create_augroup("Lsp", { clear = true })
 
