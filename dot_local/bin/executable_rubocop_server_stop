@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+ps aux |
+	grep 'rubocop --server' |
+	grep -v grep |
+	sed 's/^.*rubocop --server //' |
+	grep -vE '^/{1,2}$' |
+	fzf --multi --header "Rubocop servers" |
+	while read -r dir; do
+		if [[ -d "$dir" ]]; then
+			(cd "$dir" && rubocop --stop-server)
+		else
+			pkill -f "rubocop --server $dir"
+		fi
+		echo "Rubocop server for '${dir}' stopped"
+	done

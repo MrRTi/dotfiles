@@ -558,6 +558,27 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
 	end,
 })
 
+-- NOTE: rubocop defaults to ServerMode (a background `rubocop --server`
+-- daemon per cwd, spawned transparently by conform/nvim-lint's plain CLI
+-- calls above). It never stops itself and outlives this session, so stop
+-- it here -- but only if a ruby buffer was actually opened, to avoid
+-- paying rubocop's ~1s boot cost on every quit of a non-ruby project.
+vim.api.nvim_create_autocmd("VimLeavePre", {
+	group = vim.api.nvim_create_augroup("RubocopStopServer", { clear = true }),
+	callback = function()
+		local used_ruby = false
+		for _, buf in ipairs(vim.fn.getbufinfo({ buflisted = 1 })) do
+			if vim.bo[buf.bufnr].filetype == "ruby" then
+				used_ruby = true
+				break
+			end
+		end
+		if used_ruby and vim.fn.executable("rubocop") == 1 then
+			vim.fn.system({ "rubocop", "--stop-server" })
+		end
+	end,
+})
+
 -- NOTE: grr (references), grn (rename), gra (code action), gri (implementation)
 --       are Neovim 0.11 built-ins and appear in which-key automatically. gd is
 --       not one of them -- rebound to vim.lsp.buf.definition in the LspAttach
