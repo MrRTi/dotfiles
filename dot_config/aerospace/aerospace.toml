@@ -1,0 +1,166 @@
+# AeroSpace tiling window manager config.
+# Docs: https://nikitabobko.github.io/AeroSpace/guide
+
+config-version = 2
+
+# v2 requires explicit persistent workspaces (v1 inferred these from keybindings).
+# T=Terminal A=AI B=Browsers C=Calendar M=Mail+Messages+Telegram N=Notes 1=Rest
+persistent-workspaces = ['T', 'A', 'B', 'C', 'M', 'N', '1']
+
+# Run AeroSpace when logging in.
+start-at-login = true
+
+# Empty layout on startup, apps placed via on-window-detected rules below.
+after-login-command = []
+after-startup-command = []
+
+# Notify sketchybar/etc on workspace change (unused for now, harmless if absent).
+exec-on-workspace-change = []
+
+# Fallback layout used by 'workspace-back-and-forth' etc.
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+# Mouse follows focus when switching workspaces/windows.
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+accordion-padding = 30
+
+[gaps]
+inner.horizontal = 8
+inner.vertical = 8
+outer.left = 8
+outer.bottom = 8
+outer.top = 8
+outer.right = 8
+
+# Main mode (always active).
+[mode.main.binding]
+alt-slash = 'layout tiles horizontal vertical'
+alt-comma = 'layout accordion horizontal vertical'
+
+
+# --ignore-floating: floating windows are otherwise woven into the tiling
+# tree by AeroSpace (positioned by which container contains their center),
+# which was corrupting their frame/visibility on focus-left/right.
+alt-h = 'focus --ignore-floating left'
+alt-j = 'focus --ignore-floating down'
+alt-k = 'focus --ignore-floating up'
+alt-l = 'focus --ignore-floating right'
+
+alt-shift-h = 'move left'
+alt-shift-j = 'move down'
+alt-shift-k = 'move up'
+alt-shift-l = 'move right'
+
+alt-minus = 'resize smart -50'
+alt-equal = 'resize smart +50'
+
+alt-t = 'workspace T'
+alt-a = 'workspace A'
+alt-b = 'workspace B'
+alt-c = 'workspace C'
+alt-m = 'workspace M'
+alt-n = 'workspace N'
+alt-1 = 'workspace 1'
+
+alt-shift-t = 'move-node-to-workspace T'
+alt-shift-a = 'move-node-to-workspace A'
+alt-shift-b = 'move-node-to-workspace B'
+alt-shift-c = 'move-node-to-workspace C'
+alt-shift-m = 'move-node-to-workspace M'
+alt-shift-n = 'move-node-to-workspace N'
+alt-shift-1 = 'move-node-to-workspace 1'
+
+alt-tab = 'workspace-back-and-forth'
+alt-shift-tab = 'move-workspace-to-monitor --wrap-around next'
+
+alt-shift-semicolon = 'mode service'
+alt-shift-f = 'fullscreen'
+alt-shift-space = 'layout floating tiling'
+
+# Service mode: alt-shift-; to enter, esc to leave.
+[mode.service.binding]
+esc = ['reload-config', 'mode main']
+r = ['flatten-workspace-tree', 'mode main']
+f = ['layout floating tiling', 'mode main']
+backspace = ['close-all-windows-but-current', 'mode main']
+alt-shift-h = ['join-with left', 'mode main']
+alt-shift-j = ['join-with down', 'mode main']
+alt-shift-k = ['join-with up', 'mode main']
+alt-shift-l = ['join-with right', 'mode main']
+
+# --- App -> workspace pinning (mirrors previous macOS Space assignments) ---
+[[on-window-detected]]
+if = 'test %{app-bundle-id} = com.mitchellh.ghostty'
+run = 'move-node-to-workspace T'
+
+[[on-window-detected]]
+if = 'test %{app-bundle-id} = com.brave.Browser'
+run = 'move-node-to-workspace B'
+
+[[on-window-detected]]
+if = 'test %{app-bundle-id} = com.apple.Safari'
+run = 'move-node-to-workspace B'
+
+[[on-window-detected]]
+# Regex prefix match: covers Yandex Browser itself and any of its PWA
+# shortcuts (ru.yandex.desktop.yandex-browser.app.<id>, e.g. "LOOP").
+if = 'test %{app-bundle-id} ~= "^ru\.yandex\.desktop\.yandex-browser"'
+run = 'move-node-to-workspace B'
+
+[[on-window-detected]]
+if = 'test %{app-bundle-id} = com.apple.iCal'
+run = 'move-node-to-workspace C'
+
+[[on-window-detected]]
+if = 'test %{app-bundle-id} = com.apple.reminders'
+run = 'move-node-to-workspace C'
+
+[[on-window-detected]]
+# Mail/Messages/Telegram share workspace M but float rather than tile —
+# AeroSpace's tiling math breaks for this trio (Messages' frame ends up
+# computed ~2x off-canvas when unfocused). Floating sidesteps that.
+if = 'test %{app-bundle-id} = com.apple.mail'
+run = ['move-node-to-workspace M', 'layout floating']
+
+[[on-window-detected]]
+if = 'test %{app-name} ~= "^Messages$"'
+run = ['move-node-to-workspace M', 'layout floating']
+
+[[on-window-detected]]
+if = 'test %{app-bundle-id} = ru.keepcoder.Telegram'
+run = ['move-node-to-workspace M', 'layout floating']
+
+[[on-window-detected]]
+# Electron apps can report bundle-id late/incorrectly at window-creation
+# time; app-name regex is more reliable for these than app-bundle-id.
+if = 'test %{app-name} ~= "^Claude$"'
+run = 'move-node-to-workspace A'
+
+[[on-window-detected]]
+if = 'test %{app-name} ~= "^ChatGPT$"'
+run = 'move-node-to-workspace A'
+
+[[on-window-detected]]
+if = 'test %{app-bundle-id} = md.obsidian'
+run = 'move-node-to-workspace N'
+
+# Float instead of tile — these open on whatever workspace is active, unpinned.
+[[on-window-detected]]
+if = 'test %{app-bundle-id} = com.apple.Notes'
+run = 'layout floating'
+
+[[on-window-detected]]
+if = 'test %{app-bundle-id} = com.apple.systempreferences'
+run = 'layout floating'
+
+[[on-window-detected]]
+if = 'test %{app-bundle-id} = com.1password.1password'
+run = 'layout floating'
+
+# Catch-all: anything not matched above lands on workspace 1.
+# Must stay last — rules are evaluated top-down, first match wins.
+[[on-window-detected]]
+if = 'true'
+run = 'move-node-to-workspace 1'
