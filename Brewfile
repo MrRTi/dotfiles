@@ -1,6 +1,7 @@
 tap "anomalyco/tap"
 tap "d12frosted/emacs-plus", trusted: true
 tap "hashicorp/tap"
+tap "nikitabobko/tap"
 tap "vmware/pinniped"
 tap "xo/xo"
 # Search tool like grep, but optimized for programmers
@@ -55,6 +56,8 @@ brew "gnupg"
 brew "helm"
 # Deploy Kubernetes Helm Charts
 brew "helmfile"
+# YAML Parser
+brew "libyaml"
 # Easy plain text accounting with command-line, terminal and web UIs
 brew "hledger"
 # Improved top (interactive process viewer)
@@ -75,8 +78,6 @@ brew "kubeseal"
 brew "lazygit"
 # Postgres C API library
 brew "libpq"
-# YAML Parser
-brew "libyaml"
 # LLM inference in C/C++
 brew "llama.cpp"
 # Mac App Store command-line interface
@@ -133,12 +134,14 @@ brew "yq"
 brew "d12frosted/emacs-plus/emacs-plus@30"
 # Command-line interface for 1Password
 cask "1password-cli"
+# AeroSpace is an i3-like tiling window manager for macOS
+cask "nikitabobko/tap/aerospace", trusted: true
 # Automatic tiling window manager similar to xmonad
 cask "amethyst"
 # Terminal interface for Antigravity agents
 cask "antigravity-cli"
-# Chromium based browser
-cask "arc"
+# Web browser focusing on privacy
+cask "brave-browser"
 # E-books management software
 cask "calibre"
 # OpenAI's official ChatGPT desktop app
@@ -160,7 +163,6 @@ mas "1Password for Safari", id: 1569813296
 mas "Color Picker", id: 1545870783
 mas "Keynote", id: 409183694
 mas "Little Snitch Mini", id: 1629008763
-mas "Magnet", id: 441258766
 mas "Mattermost", id: 1614666244
 mas "Noir", id: 1592917505
 mas "Numbers", id: 409203825
