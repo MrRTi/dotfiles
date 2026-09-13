@@ -118,19 +118,16 @@ if = 'test %{app-bundle-id} = com.apple.reminders'
 run = 'move-node-to-workspace C'
 
 [[on-window-detected]]
-# Mail/Messages/Telegram share workspace M but float rather than tile —
-# AeroSpace's tiling math breaks for this trio (Messages' frame ends up
-# computed ~2x off-canvas when unfocused). Floating sidesteps that.
 if = 'test %{app-bundle-id} = com.apple.mail'
-run = ['move-node-to-workspace M', 'layout floating']
+run = 'move-node-to-workspace M'
 
 [[on-window-detected]]
 if = 'test %{app-name} ~= "^Messages$"'
-run = ['move-node-to-workspace M', 'layout floating']
+run = 'move-node-to-workspace M'
 
 [[on-window-detected]]
 if = 'test %{app-bundle-id} = ru.keepcoder.Telegram'
-run = ['move-node-to-workspace M', 'layout floating']
+run = 'move-node-to-workspace M'
 
 [[on-window-detected]]
 # Electron apps can report bundle-id late/incorrectly at window-creation
