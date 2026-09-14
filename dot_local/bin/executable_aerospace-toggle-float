@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Toggle an app's window between its default (pinned) workspace and the
+# currently focused workspace as a float with a fixed size. Bind a key to
+# `aerospace-toggle-float <bundle-id> <default-workspace> <width> <height>`
+# for a press-to-summon / press-again-to-stash workflow.
+set -euo pipefail
+
+bundle_id="$1"
+default_ws="$2"
+width="$3"
+height="$4"
+
+# Remembers which window had focus before the summon, so stashing can
+# restore it instead of leaving focus on whatever the stash lands next to.
+state_dir="${XDG_CACHE_HOME:-$HOME/.cache}/aerospace-toggle-float"
+mkdir -p "$state_dir"
+state_file="$state_dir/$bundle_id.prev-focus"
+
+# --monitor all: list-windows rejects --all combined with a filtering flag
+# like --app-bundle-id ("Please use '--monitor all' instead of '--all'").
+ids=$(aerospace list-windows --monitor all --app-bundle-id "$bundle_id" --format '%{window-id}')
+window_id="${ids%%$'\n'*}"
+[ -n "$window_id" ] || exit 0
+
+workspaces=$(aerospace list-windows --monitor all --app-bundle-id "$bundle_id" --format '%{workspace}')
+current_ws="${workspaces%%$'\n'*}"
+focused_ws=$(aerospace list-workspaces --focused)
+
+if [ "$current_ws" = "$default_ws" ]; then
+  # Summon: remember who's focused now, float+move+resize+focus the window.
+  # (float before move: resize only applies to floating windows.)
+  aerospace list-windows --focused --format '%{window-id}' >"$state_file" || true
+  aerospace layout floating --window-id "$window_id"
+  aerospace move-node-to-workspace --focus-follows-window --window-id "$window_id" "$focused_ws"
+  aerospace resize --window-id "$window_id" width "$width"
+  aerospace resize --window-id "$window_id" height "$height"
+  aerospace focus --window-id "$window_id"
+else
+  # Stash: send it back tiled (fills the ws like a "default/maximized" state),
+  # restore focus to whatever had it before summon.
+  aerospace move-node-to-workspace --window-id "$window_id" "$default_ws"
+  aerospace layout tiling --window-id "$window_id"
+  if [ -s "$state_file" ]; then
+    prev_id=$(cat "$state_file")
+    if aerospace list-windows --monitor all --format '%{window-id}' | grep -qx "$prev_id"; then
+      aerospace focus --window-id "$prev_id" || true
+    fi
+    rm -f "$state_file"
+  fi
+fi
