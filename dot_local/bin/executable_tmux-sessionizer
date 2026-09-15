@@ -73,9 +73,14 @@ __select_path() {
 		} |
 			sed "s:${HOME}:~:" |
 			sed 's|/$||' |
-			awk '{key=$0; sub(/^[%$]/, "", key); print key "\t" $0}' |
-			sort -t$'\t' -k1,1 -u |
-			cut -f2- |
+			awk '{
+				key=$0
+				prio = (substr($0,1,1)=="$") ? 0 : (substr($0,1,1)=="%") ? 1 : 2
+				sub(/^[%$]/, "", key)
+				print prio "\t" key "\t" $0
+			}' |
+			sort -t$'\t' -k1,1n -k2,2 -u |
+			cut -f3- |
 			awk '
 				/^%/ { printf "%%\x1b[35m%s\x1b[0m\n", substr($0,2); next }
 				/^\$/ { printf "$\x1b[36m%s\x1b[0m\n", substr($0,2); next }
