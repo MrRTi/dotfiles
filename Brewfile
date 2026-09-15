@@ -1,3 +1,4 @@
+tap "abue-ammar/tinycast", trusted: true
 tap "anomalyco/tap"
 tap "d12frosted/emacs-plus", trusted: true
 tap "hashicorp/tap"
@@ -94,8 +95,6 @@ brew "mongosh"
 brew "mysql"
 # Open source relational database management system
 brew "mysql@8.4"
-# Create, run, and share large language models (LLMs)
-brew "ollama"
 # Drop-in replacement for Terraform. Infrastructure as Code Tool
 brew "opentofu"
 # Execute binaries from Python packages in isolated environments
@@ -136,8 +135,6 @@ brew "d12frosted/emacs-plus/emacs-plus@30"
 cask "1password-cli"
 # AeroSpace is an i3-like tiling window manager for macOS
 cask "nikitabobko/tap/aerospace", trusted: true
-# Automatic tiling window manager similar to xmonad
-cask "amethyst"
 # Terminal interface for Antigravity agents
 cask "antigravity-cli"
 # Web browser focusing on privacy
@@ -151,8 +148,6 @@ cask "claude-code"
 cask "font-jetbrains-mono-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
-# Privacy-first, open-source platform for knowledge sharing and management
-cask "logseq"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
 # Replacement for Docker Desktop
