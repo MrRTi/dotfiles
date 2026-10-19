@@ -2,13 +2,20 @@ tap "abue-ammar/tinycast", trusted: true
 tap "anomalyco/tap"
 tap "d12frosted/emacs-plus", trusted: true
 tap "hashicorp/tap"
+tap "netbirdio/tap"
 tap "nikitabobko/tap"
+tap "osx-cross/avr", trusted: true
+tap "rhettbull/osxphotos", "https://github.com/RhetTbull/homebrew-osxphotos"
 tap "vmware/pinniped"
 tap "xo/xo"
 # Search tool like grep, but optimized for programmers
 brew "ack"
 # Automatic configure script builder
 brew "autoconf"
+# Zstandard is a real-time compression algorithm
+brew "zstd"
+# Atmel AVR MCU programmer
+brew "avrdude"
 # Library for command-line editing
 brew "readline"
 # Bourne-Again SHell, a UNIX command interpreter
@@ -16,7 +23,7 @@ brew "bash"
 # Programmable completion for Bash 4.2+
 brew "bash-completion@2"
 # Cryptography and SSL/TLS Toolkit
-brew "openssl@3"
+brew "openssl@3", link: true
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Manage your dotfiles across multiple diverse machines, securely
@@ -33,6 +40,8 @@ brew "direnv"
 brew "dive"
 # More intuitive version of du in rust
 brew "dust"
+# Perl lib for reading and writing EXIF metadata
+brew "exiftool"
 # Modern, maintained replacement for ls
 brew "eza"
 # Simple, fast and user-friendly alternative to find
@@ -41,8 +50,6 @@ brew "fd"
 brew "fish"
 # Command-line fuzzy finder written in Go
 brew "fzf"
-# Zstandard is a real-time compression algorithm
-brew "zstd"
 # TIFF library and utilities
 brew "libtiff"
 # Distributed revision control system
@@ -99,6 +106,8 @@ brew "mysql@8.4"
 brew "opentofu"
 # Execute binaries from Python packages in isolated environments
 brew "pipx"
+# Rsync for cloud storage
+brew "rclone"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Utility that provides fast incremental file transfer
@@ -129,8 +138,22 @@ brew "wget"
 brew "yamlfmt"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
+# The AI coding agent built for the terminal.
+brew "anomalyco/tap/opencode", trusted: true
 # GNU Emacs text editor
 brew "d12frosted/emacs-plus/emacs-plus@30"
+# Vault
+brew "hashicorp/tap/vault", trusted: true
+# Netbird project.
+brew "netbirdio/tap/netbird", trusted: true
+# GNU compiler collection for AVR 8-bit and 32-bit Microcontrollers
+brew "osx-cross/avr/avr-gcc@9", trusted: true
+# Export photos from Apple Photos app and query the Photos database
+brew "rhettbull/osxphotos/osxphotos", trusted: true
+# Pinniped CLI for Kubernetes cluster authentication
+brew "vmware/pinniped/pinniped-cli", trusted: true
+# universal command-line SQL client interface
+brew "xo/xo/usql", trusted: true
 # Command-line interface for 1Password
 cask "1password-cli"
 # AeroSpace is an i3-like tiling window manager for macOS
@@ -154,6 +177,8 @@ cask "obsidian"
 cask "orbstack"
 # System monitor for the menu bar
 cask "stats"
+# Tiny, fully native launcher, hotkeys, and clipboard history
+cask "abue-ammar/tinycast/tinycast"
 mas "1Password for Safari", id: 1569813296
 mas "Color Picker", id: 1545870783
 mas "Keynote", id: 409183694

@@ -1,0 +1,19 @@
+{
+  "trustedtaps": [
+    "abue-ammar/tinycast",
+    "d12frosted/emacs-plus",
+    "osx-cross/avr"
+  ],
+  "trustedcasks": [
+    "nikitabobko/tap/aerospace"
+  ],
+  "trustedformulae": [
+    "anomalyco/tap/opencode",
+    "hashicorp/tap/vault",
+    "netbirdio/tap/netbird",
+    "osx-cross/avr/avr-gcc@9",
+    "rhettbull/osxphotos/osxphotos",
+    "vmware/pinniped/pinniped-cli",
+    "xo/xo/usql"
+  ]
+}
