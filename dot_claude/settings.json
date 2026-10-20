@@ -1,4 +1,5 @@
 {
+  "model": "opus",
   "statusLine": {
     "type": "command",
     "command": "bash $HOME/.claude/statusline-command.sh"
@@ -22,5 +23,5 @@
     }
   },
   "theme": "light-daltonized",
-  "model": "opus"
+  "feedbackDrafts": "off"
 }
