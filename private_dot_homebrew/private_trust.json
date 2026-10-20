@@ -5,6 +5,7 @@
     "osx-cross/avr"
   ],
   "trustedcasks": [
+    "netbirdio/tap/netbird-ui",
     "nikitabobko/tap/aerospace"
   ],
   "trustedformulae": [
