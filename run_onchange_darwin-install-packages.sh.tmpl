@@ -6,7 +6,8 @@
 {{ if stat $brewfile -}}
 # Brewfile checksum: {{ include "Brewfile" | sha256sum }}
 
-brew bundle --file="{{ .chezmoi.homeDir }}/Brewfile"
+# Install missing entries only; upgrades are explicit: `just brew-upgrade`
+brew bundle install --no-upgrade --file="{{ .chezmoi.homeDir }}/Brewfile"
 
 # Register fish as a valid login shell
 FISH_PATH="$(brew --prefix)/bin/fish"

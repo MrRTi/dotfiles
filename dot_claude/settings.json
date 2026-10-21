@@ -22,6 +22,6 @@
       }
     }
   },
-  "theme": "light-daltonized",
-  "feedbackDrafts": "off"
+  "feedbackDrafts": "off",
+  "theme": "light-daltonized"
 }

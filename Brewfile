@@ -1,5 +1,5 @@
 tap "abue-ammar/tinycast", trusted: true
-tap "anomalyco/tap"
+tap "anomalyco/tap", trusted: { formulae: ["opencode"] }
 tap "d12frosted/emacs-plus", trusted: true
 tap "hashicorp/tap"
 tap "netbirdio/tap"
@@ -26,6 +26,8 @@ brew "bash-completion@2"
 brew "openssl@3", link: true
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Bash Automated Testing System
+brew "bats-core"
 # Manage your dotfiles across multiple diverse machines, securely
 brew "chezmoi"
 # Cross-platform make
@@ -102,14 +104,16 @@ brew "mongosh"
 brew "mysql"
 # Open source relational database management system
 brew "mysql@8.4"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# AI coding agent, built for the terminal
+brew "opencode"
 # Drop-in replacement for Terraform. Infrastructure as Code Tool
 brew "opentofu"
 # Execute binaries from Python packages in isolated environments
 brew "pipx"
 # Rsync for cloud storage
 brew "rclone"
-# Search tool like grep and The Silver Searcher
-brew "ripgrep"
 # Utility that provides fast incremental file transfer
 brew "rsync"
 # Safe, concurrent, practical language
@@ -138,8 +142,6 @@ brew "wget"
 brew "yamlfmt"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
-# The AI coding agent built for the terminal.
-brew "anomalyco/tap/opencode", trusted: true
 # GNU Emacs text editor
 brew "d12frosted/emacs-plus/emacs-plus@30"
 # Vault
@@ -171,6 +173,8 @@ cask "claude-code"
 cask "font-jetbrains-mono-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Speech to text application
+cask "handy"
 # Netbird UI Client
 cask "netbirdio/tap/netbird-ui", trusted: true
 # Knowledge base that works on top of a local folder of plain text Markdown files
@@ -179,8 +183,6 @@ cask "obsidian"
 cask "orbstack"
 # System monitor for the menu bar
 cask "stats"
-# Tiny, fully native launcher, hotkeys, and clipboard history
-cask "abue-ammar/tinycast/tinycast"
 mas "1Password for Safari", id: 1569813296
 mas "Color Picker", id: 1545870783
 mas "Keynote", id: 409183694
@@ -198,6 +200,7 @@ mas "Telegram", id: 747648890
 mas "Windows App", id: 1295203466
 mas "Wipr", id: 1662217862
 mas "Yubico Authenticator", id: 1497506650
+go "github.com/bootdotdev/bootdev"
 go "cmd/go"
 go "cmd/gofmt"
 go "golang.org/x/tools/gopls"
