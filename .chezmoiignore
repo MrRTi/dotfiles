@@ -4,6 +4,8 @@ mise.toml
 configure-git-for-dev-folders.sh
 CLAUDE.md
 justfile
+aibox
+tests
 */.keep
 stylua.toml
 .luarc.json
