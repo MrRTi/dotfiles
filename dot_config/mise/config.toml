@@ -12,6 +12,7 @@ show_tools = true
 
 [tools]
 black = "26.1.0"
+bun = "1.4.3"
 go = "1.25.7"
 jq = "1.8.1"
 lua-language-server = "3.17.1"
