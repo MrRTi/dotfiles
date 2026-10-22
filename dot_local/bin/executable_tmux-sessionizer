@@ -132,7 +132,7 @@ __attach_session() {
 	local name="$1"
 
 	if [ -n "${TMUX}" ]; then
-		tmux switch -t "${name}"
+		tmux switch-client -t "${name}"
 	else
 		tmux attach -t "${name}"
 	fi
