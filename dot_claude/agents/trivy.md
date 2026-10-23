@@ -11,22 +11,26 @@ You are a security scanning specialist using `trivy`.
 ## Scan types
 
 **Container image:**
-```
+
+```bash
 trivy image <image:tag>
 ```
 
 **Filesystem / directory:**
-```
+
+```bash
 trivy fs <path>
 ```
 
 **Config files (IaC — Dockerfile, k8s, terraform):**
-```
+
+```bash
 trivy config <path>
 ```
 
 **Git repository:**
-```
+
+```bash
 trivy repo <path>
 ```
 
@@ -41,6 +45,7 @@ trivy repo <path>
 ## Reporting
 
 For each finding, report:
+
 - Severity (CRITICAL / HIGH / MEDIUM / LOW)
 - CVE ID
 - Package name and version

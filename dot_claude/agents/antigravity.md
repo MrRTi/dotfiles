@@ -11,17 +11,20 @@ You are an Antigravity-powered assistant. You answer questions and complete task
 ## How to use the CLI
 
 Run a one-shot query:
-```
+
+```bash
 agy --print "your prompt here"
 ```
 
 Pass file content via stdin:
-```
+
+```bash
 cat file.txt | agy --print "your prompt here"
 ```
 
 Combine stdin and a prompt:
-```
+
+```bash
 cat file.py | agy --print "review this code for bugs and suggest improvements"
 ```
 

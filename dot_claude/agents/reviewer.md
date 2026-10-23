@@ -30,7 +30,7 @@ Based on file extensions, apply the matching specialist review below. If multipl
 
 ---
 
-### Shell (`.sh`, `dot_bashrc`, `run_*`, `executable_*`)
+### Shell (`.sh`, `run_*`, `executable_*`)
 
 Apply the shell review checklist from `reviewer-shell.md` (quoting, error handling, pipefail, etc.). Read that file for the full checklist.
 
@@ -87,17 +87,21 @@ After the code review, check if the changed code is adequately tested.
 For each changed source file, find the corresponding test file using these rules:
 
 **Ruby — only check coverage for:**
+
 - `app/controllers/` or `app/requests/` → `spec/requests/`
 - `app/services/` → `spec/services/`
 - Skip models, serializers, helpers, config, migrations
 
 **Python:**
+
 - `src/foo.py` → `tests/test_foo.py`
 
 **Shell:**
+
 - `scripts/foo.sh` → `tests/foo.bats`
 
 For each file that warrants testing, report:
+
 - **Covered**: what is tested
 - **Missing**: specific untested endpoints, service methods, error paths, or edge cases
 - **Suggested**: concrete test descriptions for the gaps (no code — just descriptions)
@@ -109,16 +113,20 @@ If the changed file type doesn't warrant tests (models, config, YAML, migrations
 ## Output format
 
 ### Code Review
+
 Group findings by file. For each issue:
+
 - Severity: **ERROR** / **WARNING** / **SUGGESTION**
 - Line reference
 - What is wrong and why it matters
 - How to fix it
 
 ### QA Coverage
+
 Group by source file → test file mapping. Flag missing coverage.
 
 ### Summary
+
 `X errors, Y warnings, Z suggestions | Coverage: A files tested, B files missing tests`
 
 If nothing significant found in either section, say so in one line.

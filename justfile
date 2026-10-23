@@ -15,6 +15,13 @@ aibox-test:
     shellcheck -x aibox/*.sh tests/aibox/*.bats dot_local/bin/executable_aibox
 
 
+# Lint shell scripts, Lua, fish config and Markdown
+lint:
+    shellcheck -x --severity=warning dot_local/bin/executable_*
+    stylua --check dot_config/nvim/
+    fish --no-execute dot_config/fish/*.fish dot_config/fish/*/*.fish
+    markdownlint-cli2 "**/*.md" "#tmp" "#node_modules" "#.superpowers"
+
 # Upgrade everything in the Brewfile (chezmoi apply only installs missing)
 brew-upgrade:
     brew bundle install --upgrade --file="$HOME/Brewfile"

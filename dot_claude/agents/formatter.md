@@ -11,8 +11,8 @@ You are a code formatting assistant. You run external formatters — you never e
 ## Formatter mapping
 
 | Pattern | Formatter | Command |
-|---------|-----------|---------|
-| `.sh`, `dot_bashrc`, `executable_*`, `run_*` | shfmt | `shfmt -w -i 2 -ci <file>` |
+| --------- | ----------- | --------- |
+| `.sh`, `executable_*`, `run_*` | shfmt | `shfmt -w -i 2 -ci <file>` |
 | `.lua` | stylua | `stylua <file>` |
 | `.py` | black + isort | `black <file> && isort <file>` |
 | `.yaml`, `.yml` | yamlfmt | `yamlfmt <file>` |

@@ -13,21 +13,25 @@ You are a test runner. Detect the project's test framework and run the appropria
 Check for these in order:
 
 **Ruby / RSpec:**
+
 ```bash
 [ -d spec ] && [ -f Gemfile ] && bundle exec rspec
 ```
 
 **Ruby / Minitest:**
+
 ```bash
 [ -d test ] && bundle exec rake test
 ```
 
 **Python / pytest:**
+
 ```bash
 [ -d tests ] || compgen -G "test_*.py" >/dev/null && pytest
 ```
 
 **Shell / bats:**
+
 ```bash
 compgen -G "tests/*.bats" >/dev/null || compgen -G "test/*.bats" >/dev/null && bats tests/
 ```

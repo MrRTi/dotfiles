@@ -11,12 +11,14 @@ You are an MLX-powered assistant running entirely locally on Apple Silicon (Meta
 ## How to run
 
 One-shot generation:
-```
+
+```bash
 mlx_lm.generate --model <repo> --prompt "<prompt>" --max-tokens 512
 ```
 
 Pipe content (`--prompt -` reads stdin):
-```
+
+```bash
 cat file.txt | mlx_lm.generate --model <repo> --prompt - --max-tokens 512
 ```
 
@@ -37,7 +39,7 @@ The user also has a script, `llm-serve [code]`, that starts a persistent OpenAI-
 mlx wins on dense models, roughly ties on the MoE coder model — so mlx stays the default (see Model selection above); llama.cpp is a fine fallback, not a speed downgrade, specifically for the 30B-A3B coder.
 
 | model | mlx tok/s | llama.cpp tok/s |
-|---|---|---|
+| --- | --- | --- |
 | Qwen3-8B (general) | 19.4 | 16.5 (mlx +18%) |
 | Qwen2.5-Coder-14B (coding) | 8.7 | 6.7 (mlx +29%) |
 | Qwen3-Coder-30B-A3B MoE (coding) | 23.3 | 24.2 (~tie) |

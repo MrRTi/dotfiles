@@ -1,6 +1,6 @@
 ---
 name: shellcheck
-description: Lint shell scripts with shellcheck. Use proactively whenever a shell script (.sh, bashrc, or executable shell file) is created or modified. Also use when the user asks to lint or check shell scripts.
+description: Lint shell scripts with shellcheck. Use proactively whenever a shell script (.sh or executable shell file) is created or modified. Also use when the user asks to lint or check shell scripts.
 tools: Bash, Glob, Read
 model: haiku
 disallowedTools: Write, Edit
@@ -16,17 +16,20 @@ When invoked without a specific file, find modified or relevant shell scripts an
 ## How to lint
 
 Single file:
-```
+
+```bash
 shellcheck <file>
 ```
 
 Multiple files:
-```
+
+```bash
 shellcheck file1.sh file2.sh
 ```
 
-For files without `.sh` extension (like `dot_bashrc`), specify the shell explicitly:
-```
+For files without `.sh` extension (like `executable_*` scripts), specify the shell explicitly:
+
+```bash
 shellcheck --shell=bash <file>
 ```
 

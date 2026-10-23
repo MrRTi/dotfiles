@@ -1,4 +1,8 @@
 {
   "default": true,
   "MD024": { "siblings_only": true },
+  # Prose is written one paragraph per line.
+  "MD013": false,
+  # Agent/command prompt files open with prose after frontmatter, not a heading.
+  "MD041": false,
 }
