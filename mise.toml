@@ -1,7 +1,6 @@
-# Tools needed to lint and test this repo (`just lint`, `just aibox-test`).
+# Tools needed to lint this repo (`just lint`).
 # Pinned here so a fresh clone works without the deployed global mise config.
 [tools]
-bats = "1.14.0"
 just = "1.59.0"
 markdownlint-cli2 = "0.24.0"
 shellcheck = "0.11.0"

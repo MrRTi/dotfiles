@@ -20,8 +20,6 @@ brew "avrdude"
 brew "readline"
 # Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
-# Programmable completion for Bash 4.2+
-brew "bash-completion@2"
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3", link: true
 # Clone of cat(1) with syntax highlighting and Git integration
