@@ -87,11 +87,15 @@ if [ "$MODE" = "encrypt" ]; then
 
 	trap 'stty echo; rm -f "$DECRYPTED_TEMP" "$FILE_WITH_ORIGINAL_HASH" "$FILE_WITH_DECRYPTED_HASH" "$OUTPUT_FILE"' EXIT
 
+	# NOTE: -md and -iter pin OpenSSL's current defaults (sha256, 10000) so a
+	# future default change can't make existing .enc files undecryptable --
+	# OpenSSL 1.1.0 already did that once, moving -md from md5 to sha256.
+	# Changing either value breaks every file encrypted before the change.
 	echo "Encrypting..."
-	printf '%s\n' "$PASSWORD" | openssl enc -aes-256-cbc -pbkdf2 -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass stdin
+	printf '%s\n' "$PASSWORD" | openssl enc -aes-256-cbc -pbkdf2 -md sha256 -iter 10000 -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass stdin
 
 	echo "Verifying..."
-	printf '%s\n' "$PASSWORD" | openssl enc -d -aes-256-cbc -pbkdf2 -in "$OUTPUT_FILE" -out "$DECRYPTED_TEMP" -pass stdin
+	printf '%s\n' "$PASSWORD" | openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 -iter 10000 -in "$OUTPUT_FILE" -out "$DECRYPTED_TEMP" -pass stdin
 
 	sha256 "$INPUT_FILE" >"$FILE_WITH_ORIGINAL_HASH"
 	sha256 "$DECRYPTED_TEMP" >"$FILE_WITH_DECRYPTED_HASH"
@@ -110,7 +114,7 @@ else
 	trap 'stty echo; rm -f "$OUTPUT_FILE"' EXIT
 
 	echo "Decrypting..."
-	printf '%s\n' "$PASSWORD" | openssl enc -d -aes-256-cbc -pbkdf2 -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass stdin
+	printf '%s\n' "$PASSWORD" | openssl enc -d -aes-256-cbc -pbkdf2 -md sha256 -iter 10000 -in "$INPUT_FILE" -out "$OUTPUT_FILE" -pass stdin
 
 	RESULT="$OUTPUT_FILE"
 	OUTPUT_FILE=""
