@@ -1,4 +1,5 @@
 {
   "runtime": { "version": "LuaJIT" },
-  "diagnostics": { "globals": ["MiniStatusline"] }
+  "workspace": { "library": ["$VIMRUNTIME"], "checkThirdParty": false },
+  "diagnostics": { "globals": ["vim", "MiniStatusline"] }
 }
