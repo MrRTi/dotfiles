@@ -14,7 +14,6 @@ show_tools = true
 black = "26.1.0"
 bun = "1.4.3"
 go = "1.25.7"
-jq = "1.8.1"
 lua-language-server = "3.17.1"
 marksman = "2026-02-08"
 node = "22.22.0"

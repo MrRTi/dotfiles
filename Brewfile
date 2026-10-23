@@ -118,10 +118,6 @@ brew "rclone"
 brew "rsync"
 # Safe, concurrent, practical language
 brew "rust"
-# Static analysis and lint tool, for (ba)sh scripts
-brew "shellcheck"
-# Autoformat shell script source code
-brew "shfmt"
 # Very fast implementation of tldr in Rust
 brew "tealdeer"
 # Terminal multiplexer
@@ -138,8 +134,6 @@ brew "trivy"
 brew "velero"
 # Internet file retriever
 brew "wget"
-# Extensible command-line tool to format YAML files
-brew "yamlfmt"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
 # GNU Emacs text editor
