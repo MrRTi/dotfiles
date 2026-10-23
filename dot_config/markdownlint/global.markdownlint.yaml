@@ -1,0 +1,8 @@
+# Base rules for markdownlint-cli2 in nvim (passed via --config by nvim-lint).
+# A repo's own .markdownlint.* config overrides these per rule.
+default: true
+# Long prose lines are normal in READMEs and notes; wrapping is an editor concern.
+MD013: false
+# Repeated headings are fine under different parents (e.g. changelog sections).
+MD024:
+  siblings_only: true

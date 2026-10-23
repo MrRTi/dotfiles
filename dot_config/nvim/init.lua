@@ -230,7 +230,8 @@ require("lazy").setup({
 		-- directory before netrw does.
 		init = function()
 			for i = 0, vim.fn.argc(-1) - 1 do
-				if vim.fn.isdirectory(vim.fn.argv(i)) == 1 then
+				local arg = vim.fn.argv(i) --[[@as string]]
+				if vim.fn.isdirectory(arg) == 1 then
 					require("lazy").load({ plugins = { "oil.nvim" } })
 					return
 				end
@@ -424,6 +425,15 @@ require("lazy").setup({
 				ruby = { "rubocop" },
 				sh = { "shellcheck" },
 				bash = { "shellcheck" },
+				markdown = { "markdownlint-cli2" },
+				dockerfile = { "hadolint" },
+			}
+			-- Base rules for repos with no markdownlint config of their own; a
+			-- repo's .markdownlint.* still overrides them per rule.
+			lint.linters["markdownlint-cli2"].args = {
+				"--config",
+				vim.fn.expand("~/.config/markdownlint/global.markdownlint.yaml"),
+				"-",
 			}
 			vim.api.nvim_create_autocmd({ "BufReadPost", "BufWritePost", "InsertLeave" }, {
 				group = vim.api.nvim_create_augroup("NvimLint", { clear = true }),
