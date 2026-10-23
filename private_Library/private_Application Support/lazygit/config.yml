@@ -1,7 +1,16 @@
-# NOTE: lazygit 0.65 renders diffs with its own built-in renderer
-# (`git.diffRenderers` is empty by default), so it ignores `core.pager = delta`
-# from ~/.config/git/config. Hunk colours are git's ANSI red/green drawn over
-# whatever `selectedLineBgColor` puts underneath them.
+# NOTE: lazygit ignores `core.pager = delta` from ~/.config/git/config and only
+# pipes through delta when listed in `git.diffRenderers`. Its built-in renderer
+# is plain line red/green with no word-level or syntax highlighting. Two delta
+# renderers are listed; `|` cycles between them.
+# Inline is first because side-by-side halves an already narrow panel. delta
+# reads the [delta] section of the git config, where `side-by-side = true`
+# can't be undone by a CLI flag (`--features` doesn't override it), so the
+# inline renderer skips the git config with `--no-gitconfig` and passes
+# `--line-numbers` itself; the side-by-side one just uses the git config.
+# `{{colorScheme}}` makes lazygit pass dark/light, following macOS appearance.
+#
+# `sidePanelWidth` shrinks the left column (default 0.3333) so the diff panel
+# gets more room; `+` still toggles half/full screen when that's not enough.
 #
 # NOTE: only one key is overridden here on purpose. lazygit's other theme
 # defaults are ANSI colour *names*, so they follow whichever palette Ghostty
@@ -20,3 +29,10 @@ gui:
   theme:
     selectedLineBgColor:
       - reverse
+  sidePanelWidth: 0.25
+git:
+  diffRenderers:
+    - name: delta
+      command: delta --no-gitconfig --{{colorScheme}} --paging=never --line-numbers
+    - name: delta side-by-side
+      command: delta --{{colorScheme}} --paging=never --width={{width}}
