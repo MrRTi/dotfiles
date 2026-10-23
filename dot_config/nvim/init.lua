@@ -437,7 +437,23 @@ require("lazy").setup({
 	-- Editing helpers that only act on buffer contents. InsertEnter is in the list
 	-- so they also come up in a scratch buffer typed into straight from the intro
 	-- screen, which fires neither BufReadPre nor BufNewFile.
-	{ "echasnovski/mini.ai", event = { "BufReadPre", "BufNewFile", "InsertEnter" }, opts = {} },
+	-- NOTE: nvim-treesitter-textobjects is here only for its queries (@function.*,
+	-- @class.*), which Nvim doesn't ship; mini.ai does the selecting, so the
+	-- plugin gets no setup and no keymaps. `F` not `f`: mini.ai's `f` is a call.
+	{
+		"echasnovski/mini.ai",
+		event = { "BufReadPre", "BufNewFile", "InsertEnter" },
+		dependencies = { { "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" } },
+		opts = function()
+			local ts = require("mini.ai").gen_spec.treesitter
+			return {
+				custom_textobjects = {
+					F = ts({ a = "@function.outer", i = "@function.inner" }),
+					c = ts({ a = "@class.outer", i = "@class.inner" }),
+				},
+			}
+		end,
+	},
 	{ "echasnovski/mini.splitjoin", event = { "BufReadPre", "BufNewFile", "InsertEnter" }, opts = {} },
 	{ "echasnovski/mini.indentscope", event = { "BufReadPre", "BufNewFile", "InsertEnter" }, opts = {} },
 }, {
