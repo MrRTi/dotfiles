@@ -28,6 +28,8 @@ brew "openssl@3", link: true
 brew "bat"
 # Bash Automated Testing System
 brew "bats-core"
+# Resource monitor. C++ version and continuation of bashtop and bpytop
+brew "btop"
 # Manage your dotfiles across multiple diverse machines, securely
 brew "chezmoi"
 # Cross-platform make
@@ -70,8 +72,6 @@ brew "helmfile"
 brew "libyaml"
 # Easy plain text accounting with command-line, terminal and web UIs
 brew "hledger"
-# Improved top (interactive process viewer)
-brew "htop"
 # User-friendly cURL replacement (command-line HTTP client)
 brew "httpie"
 # Interactive JSON filter using jq
