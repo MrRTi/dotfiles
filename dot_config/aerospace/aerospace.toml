@@ -162,6 +162,13 @@ run = 'layout floating'
 if = 'test %{app-bundle-id} = com.1password.1password'
 run = 'layout floating'
 
+[[on-window-detected]]
+# macOS Touch ID prompt (app name "coreautha"), e.g. the one 1Password raises
+# for SSH/CLI approval. Unmatched, the catch-all below sent it to workspace 1
+# and focus followed it there -- that was the "jump after 1Password approval".
+if = 'test %{app-bundle-id} = com.apple.LocalAuthentication.UIAgent'
+run = 'layout floating'
+
 # Catch-all: anything not matched above lands on workspace 1.
 # Must stay last — rules are evaluated top-down, first match wins.
 [[on-window-detected]]
