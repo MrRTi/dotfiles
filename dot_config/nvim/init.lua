@@ -212,8 +212,8 @@ require("lazy").setup({
 	-- Supplies the lsp/*.lua server definitions vim.lsp.enable() reads, so it only
 	-- has to be on the runtimepath -- nothing requires it.
 	{ "neovim/nvim-lspconfig", lazy = false },
-	-- On `main` this only installs parsers; highlighting is native. Needed just for
-	-- :TSInstallParsers below.
+	-- On `main` this only installs parsers and queries; the TreesitterStart
+	-- autocmd in the Treesitter section starts highlighting. See the NOTE there.
 	{ "nvim-treesitter/nvim-treesitter", branch = "main", lazy = false },
 
 	-- Deferred until a key is pressed.
@@ -413,7 +413,25 @@ require("lazy").setup({
 			-- its own LspAttach hook below; letting conform fall back to LSP here
 			-- would run both and format the buffer twice. The <leader>lf map above
 			-- does fall back to LSP, which is what formats go/python on demand.
-			format_on_save = { timeout_ms = 3000, lsp_format = "never" },
+			--
+			-- NOTE: YAML and JSON format on save only where the project opts in.
+			-- Unconditionally, saving any file in netology-rails rewrote it whole:
+			-- yamlfmt would change 69 of its 91 YAML files (adds `---`, re-indents
+			-- lists), jq 12 of 32 JSON files. YAML opts in with a yamlfmt config
+			-- file (the names yamlfmt itself searches up the tree for); jq has no
+			-- project config, so JSON never formats on save. <leader>lf always
+			-- formats regardless.
+			format_on_save = function(bufnr)
+				local opt_in = {
+					yaml = { ".yamlfmt", "yamlfmt.yml", "yamlfmt.yaml", ".yamlfmt.yaml", ".yamlfmt.yml" },
+					json = false,
+				}
+				local markers = opt_in[vim.bo[bufnr].filetype]
+				if markers == false or (markers and not vim.fs.root(bufnr, markers)) then
+					return
+				end
+				return { timeout_ms = 3000, lsp_format = "never" }
+			end,
 		},
 	},
 	{

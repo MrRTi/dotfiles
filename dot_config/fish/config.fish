@@ -11,13 +11,10 @@ set -gx EDITOR nvim
 set -gx VISUAL nvim
 
 # Tool integrations
-if command -q mise
-    mise activate fish | source
-end
-
-if command -q direnv
-    direnv hook fish | source
-end
+# NOTE: no `mise activate` / `direnv hook` here. Homebrew's mise and direnv ship
+# vendor_conf.d/{mise-activate,direnv}.fish, which fish sources before this file
+# in every shell; repeating them here ran each twice (mise's status line printed
+# twice, ~17 ms of a ~140 ms startup).
 
 # Vi mode and cursor shapes
 # fish_vi_key_bindings

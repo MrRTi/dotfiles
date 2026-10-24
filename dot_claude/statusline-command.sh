@@ -5,13 +5,20 @@
 input=$(cat)
 
 
-cwd=$(echo "$input" | jq -r '.workspace.current_dir // .cwd // ""')
-model=$(echo "$input" | jq -r '.model.display_name // ""')
-used_pct=$(echo "$input" | jq -r '.context_window.used_percentage // empty')
-rate_5h=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
-rate_7d=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
-rate_5h_resets=$(echo "$input" | jq -r '.rate_limits.five_hour.resets_at // empty')
-rate_7d_resets=$(echo "$input" | jq -r '.rate_limits.seven_day.resets_at // empty')
+# One jq call for every field (this runs on each status line refresh). Fields
+# are joined with the ASCII unit separator, not a tab: tab is IFS whitespace,
+# so `read` would collapse the empty fields between consecutive tabs.
+IFS=$'\x1f' read -r cwd model used_pct rate_5h rate_7d rate_5h_resets rate_7d_resets < <(
+	echo "$input" | jq -r '[
+		.workspace.current_dir // .cwd,
+		.model.display_name,
+		.context_window.used_percentage,
+		.rate_limits.five_hour.used_percentage,
+		.rate_limits.seven_day.used_percentage,
+		.rate_limits.five_hour.resets_at,
+		.rate_limits.seven_day.resets_at
+	] | map(. // "" | tostring) | join("\u001f")'
+)
 
 # Shorten path: replace $HOME with ~, keep last 2 segments
 home="$HOME"

@@ -21,13 +21,6 @@
             "context": 32768,
             "output": 4096
           }
-        },
-        "mlx-community/Qwen2.5-Coder-14B-Instruct-4bit": {
-          "name": "Qwen2.5-Coder 14B (local, mlx)",
-          "limit": {
-            "context": 32768,
-            "output": 4096
-          }
         }
       }
     }
