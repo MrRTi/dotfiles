@@ -152,8 +152,6 @@ brew "xo/xo/usql", trusted: true
 cask "1password-cli"
 # AeroSpace is an i3-like tiling window manager for macOS
 cask "nikitabobko/tap/aerospace", trusted: true
-# Terminal interface for Antigravity agents
-cask "antigravity-cli"
 # Web browser focusing on privacy
 cask "brave-browser"
 # E-books management software
