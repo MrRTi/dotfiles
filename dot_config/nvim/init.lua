@@ -532,9 +532,10 @@ vim.keymap.set("n", "<leader>fp", '<cmd>let @+ = fnamemodify(expand("%:p"), ":~:
 -- NOTE: nvim-treesitter main branch (Neovim 0.12+) only installs parsers and
 -- queries; it starts nothing. Nvim itself only auto-starts treesitter
 -- highlighting for the filetypes whose bundled ftplugin calls
--- vim.treesitter.start() (lua, markdown, help, query) -- everything else
--- (ruby, python, yaml, ...) stays on Vim regex syntax unless <leader>uT starts
--- it. Folds (foldexpr above) and mini.ai's F/c objects do use these parsers.
+-- vim.treesitter.start() (lua, markdown, help, query), so the FileType autocmd
+-- below starts it for everything else that has a parser. Without it ruby,
+-- python, yaml, ... silently stayed on Vim regex syntax for months.
+-- Folds (foldexpr above) and mini.ai's F/c objects use these parsers too.
 --
 -- Queries are symlinked into stdpath("data")/site/queries, pointing into the
 -- plugin's install dir. The vim.pack -> lazy.nvim move deleted that dir, which
@@ -561,6 +562,16 @@ local ts_parsers = {
 vim.api.nvim_create_user_command("TSInstallParsers", function()
 	require("nvim-treesitter").install(ts_parsers)
 end, { desc = "Install the treesitter parsers this config expects" })
+
+-- pcall: start() errors when no parser exists for the language, which is the
+-- normal case for most filetypes; those keep Vim syntax. <leader>uT still
+-- toggles per buffer.
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("TreesitterStart", { clear = true }),
+	callback = function(ev)
+		pcall(vim.treesitter.start, ev.buf)
+	end,
+})
 
 -- LSP
 
