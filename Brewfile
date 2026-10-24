@@ -1,6 +1,7 @@
 tap "abue-ammar/tinycast", trusted: true
 tap "anomalyco/tap", trusted: { formulae: ["opencode"] }
 tap "d12frosted/emacs-plus", trusted: true
+tap "docker/tap", trusted: true
 tap "hashicorp/tap"
 tap "netbirdio/tap"
 tap "nikitabobko/tap"
@@ -18,8 +19,12 @@ brew "zstd"
 brew "avrdude"
 # Library for command-line editing
 brew "readline"
+# B2 Cloud Storage Command-Line Tools
+brew "b2-tools"
 # Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
+# Programmable completion for Bash 4.2+
+brew "bash-completion@2"
 # Cryptography and SSL/TLS Toolkit
 brew "openssl@3", link: true
 # Clone of cat(1) with syntax highlighting and Git integration
@@ -32,6 +37,8 @@ brew "btop"
 brew "chezmoi"
 # Cross-platform make
 brew "cmake"
+# Create and run Linux containers using lightweight virtual machines
+brew "container"
 # GNU multiple precision arithmetic library
 brew "gmp"
 # GNU File, Shell, and Text utilities
@@ -66,6 +73,8 @@ brew "gnupg"
 brew "helm"
 # Deploy Kubernetes Helm Charts
 brew "helmfile"
+# Agent multiplexer that lives in your terminal
+brew "herdr"
 # YAML Parser
 brew "libyaml"
 # Easy plain text accounting with command-line, terminal and web UIs
@@ -171,6 +180,8 @@ cask "netbirdio/tap/netbird-ui", trusted: true
 cask "obsidian"
 # Replacement for Docker Desktop
 cask "orbstack"
+# Build, run, and govern agents across the software development lifecycle
+cask "docker/tap/sbx", trusted: true
 # System monitor for the menu bar
 cask "stats"
 mas "1Password for Safari", id: 1569813296

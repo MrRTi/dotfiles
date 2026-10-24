@@ -2,9 +2,11 @@
   "trustedtaps": [
     "abue-ammar/tinycast",
     "d12frosted/emacs-plus",
+    "docker/tap",
     "osx-cross/avr"
   ],
   "trustedcasks": [
+    "docker/tap/sbx",
     "netbirdio/tap/netbird-ui",
     "nikitabobko/tap/aerospace"
   ],
