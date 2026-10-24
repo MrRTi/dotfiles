@@ -141,7 +141,7 @@ vim.keymap.set("n", "<leader>pu", "<cmd>Lazy update<CR>", { desc = "Update plugi
 -- config() (eager, runs during this require("lazy").setup() call) needs it
 -- to know which server names to expect per filetype, and Lua closures can't
 -- see a local declared later in the file.
-local lsp_servers = { "lua_ls", "ruby_lsp", "pyright", "ruff", "yamlls", "marksman", "gopls" }
+local lsp_servers = { "lua_ls", "ruby_lsp", "pyright", "ruff", "yamlls", "marksman", "gopls", "taplo" }
 
 require("lazy").setup({
 	-- Eager. Each of these is needed before the first redraw, so there is nothing
@@ -466,6 +466,26 @@ require("lazy").setup({
 	},
 	{ "echasnovski/mini.splitjoin", event = { "BufReadPre", "BufNewFile", "InsertEnter" }, opts = {} },
 	{ "echasnovski/mini.indentscope", event = { "BufReadPre", "BufNewFile", "InsertEnter" }, opts = {} },
+
+	-- Pins the enclosing scopes (class/def/describe/context) at the top of the
+	-- window. max_lines caps it so deep RSpec nesting can't eat the screen, and
+	-- multiline_threshold = 1 keeps each scope to its first line. `[x` not the
+	-- README's `[c`, which is Vim's built-in previous-change motion in diff mode.
+	{
+		"nvim-treesitter/nvim-treesitter-context",
+		event = { "BufReadPre", "BufNewFile" },
+		opts = { max_lines = 3, multiline_threshold = 1 },
+		keys = {
+			{
+				"[x",
+				function()
+					require("treesitter-context").go_to_context(vim.v.count1)
+				end,
+				desc = "Go to context",
+			},
+			{ "<leader>uc", "<cmd>TSContext toggle<CR>", desc = "Toggle treesitter context" },
+		},
+	},
 }, {
 	-- Lives next to init.lua so chezmoi manages it, replacing nvim-pack-lock.json.
 	lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json",
@@ -495,8 +515,12 @@ vim.keymap.set("n", "<leader>uT", function()
 	local buf = vim.api.nvim_get_current_buf()
 	if vim.treesitter.highlighter.active[buf] then
 		vim.treesitter.stop()
+		vim.notify("Treesitter highlighting off (Vim syntax)")
+	elseif pcall(vim.treesitter.start) then
+		vim.notify("Treesitter highlighting on")
 	else
-		vim.treesitter.start()
+		local ft = vim.bo.filetype ~= "" and vim.bo.filetype or "this buffer"
+		vim.notify("No treesitter parser for " .. ft, vim.log.levels.WARN)
 	end
 end, { desc = "Toggle treesitter highlight" })
 
@@ -505,8 +529,18 @@ end, { desc = "Toggle treesitter highlight" })
 vim.keymap.set("n", "<leader>fp", '<cmd>let @+ = fnamemodify(expand("%:p"), ":~:.")<CR>', { desc = "Copy path" })
 
 -- Treesitter
--- NOTE: nvim-treesitter main branch (Neovim 0.12+) only manages parser installation.
--- Highlighting is handled natively by Neovim.
+-- NOTE: nvim-treesitter main branch (Neovim 0.12+) only installs parsers and
+-- queries; it starts nothing. Nvim itself only auto-starts treesitter
+-- highlighting for the filetypes whose bundled ftplugin calls
+-- vim.treesitter.start() (lua, markdown, help, query) -- everything else
+-- (ruby, python, yaml, ...) stays on Vim regex syntax unless <leader>uT starts
+-- it. Folds (foldexpr above) and mini.ai's F/c objects do use these parsers.
+--
+-- Queries are symlinked into stdpath("data")/site/queries, pointing into the
+-- plugin's install dir. The vim.pack -> lazy.nvim move deleted that dir, which
+-- left every link dangling and silently broke non-Lua folds until
+-- `install(..., { force = true })` re-linked them -- if folds or `aF` stop
+-- working after moving the plugin again, check those links first.
 
 -- NOTE: install() re-checks every parser against the registry, which cost 2.6 ms
 -- on *every* startup to confirm parsers that were already on disk. Parsers only
@@ -635,6 +669,33 @@ for _, dir in ipairs({ "h", "j", "k", "l" }) do
 		tmux_navigate(dir)
 	end, { desc = "Navigate " .. dir })
 end
+
+-- <C-\> = back to the previous pane, matching tmux's `select-pane -l` binding
+-- (which forwards the key here when this pane runs nvim). "Previous" is
+-- whichever move happened last: arriving in this nvim from another tmux pane
+-- (FocusGained, needs tmux `focus-events on`) means go back out to tmux;
+-- moving between nvim splits since then (WinEnter) means `wincmd p`.
+local came_from_tmux = false
+local nav_group = vim.api.nvim_create_augroup("TmuxNavigatePrevious", { clear = true })
+vim.api.nvim_create_autocmd("FocusGained", {
+	group = nav_group,
+	callback = function()
+		came_from_tmux = true
+	end,
+})
+vim.api.nvim_create_autocmd("WinEnter", {
+	group = nav_group,
+	callback = function()
+		came_from_tmux = false
+	end,
+})
+vim.keymap.set("n", "<C-\\>", function()
+	if vim.env.TMUX and (came_from_tmux or vim.fn.winnr("#") == 0) then
+		vim.fn.system("tmux select-pane -l")
+	else
+		vim.cmd("wincmd p")
+	end
+end, { desc = "Navigate to previous pane" })
 
 -- Git
 
