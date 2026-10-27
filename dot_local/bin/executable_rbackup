@@ -1,0 +1,254 @@
+#!/bin/sh
+# Encrypted, incremental backups with restic: one repository per source folder.
+# NOTE: each source gets its own repo at <target>/<folder name>, so a target can be a
+# local dir (/Volumes/B/restic) or a bucket prefix (s3:https://host/bucket) with no changes.
+set -eu
+
+# NOTE: snapshots are cheap (unchanged files are stored once); retention only decides
+# how long deleted/changed files linger. Keep last 10 runs, 12 monthly, every yearly.
+KEEP="--keep-last 10 --keep-monthly 12 --keep-yearly unlimited"
+
+usage() {
+	cat <<'EOF'
+Usage:
+  rbackup init      <target> <source>...                 create a repo per source
+  rbackup backup    <target> <source>...                 back up each source, then thin old snapshots
+  rbackup snapshots <repo>                               list snapshots
+  rbackup restore   <repo> <dest> [snapshot] [flags...]  restore into new/empty <dest> (default: latest)
+  rbackup check     <repo>...                            verify repo integrity
+
+<target>  local dir (/Volumes/B/restic) or restic URL (s3:https://host/bucket)
+<repo>    <target>/<source folder name>
+[flags]   extra restic restore flags, e.g. --include /2024/IMG_0001.HEIC
+
+Environment:
+  RESTIC_PASSWORD_<NAME>    password for repo <NAME> (folder name uppercased, non-alnum -> _),
+                            e.g. folder-a -> RESTIC_PASSWORD_FOLDER_A
+  RESTIC_PASSWORD           fallback for repos without their own variable
+                            (or RESTIC_PASSWORD_FILE / RESTIC_PASSWORD_COMMAND)
+  AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY  for s3: targets
+
+Secrets from 1Password: op run --env-file=.env -- rbackup ...
+  .env: RESTIC_PASSWORD_FOLDER_A="op://Vault/Item/password"
+
+Examples (run from the folder that holds the sources):
+  # once: create repos on the backup drive
+  op run --env-file=.env -- rbackup init /Volumes/B/restic folder-a folder-b shared
+
+  # back up all three (only changed data is written)
+  op run --env-file=.env -- rbackup backup /Volumes/B/restic folder-a folder-b shared
+
+  # same to S3 (repos at bucket/folder-a, bucket/folder-b, bucket/shared)
+  op run --env-file=.env -- rbackup init   s3:https://s3.example.com/bucket folder-a folder-b shared
+  op run --env-file=.env -- rbackup backup s3:https://s3.example.com/bucket folder-a folder-b shared
+
+  # list snapshots, then restore the latest or a specific one
+  op run --env-file=.env -- rbackup snapshots /Volumes/B/restic/folder-a
+  op run --env-file=.env -- rbackup restore /Volumes/B/restic/folder-a ~/restore
+  op run --env-file=.env -- rbackup restore /Volumes/B/restic/folder-a ~/restore 4c17b675
+
+  # restore one file or subfolder
+  op run --env-file=.env -- rbackup restore /Volumes/B/restic/folder-a ~/restore --include /2024/IMG_0001.HEIC
+
+  # verify all repos
+  op run --env-file=.env -- rbackup check /Volumes/B/restic/folder-a /Volumes/B/restic/folder-b /Volumes/B/restic/shared
+EOF
+	exit "${1:-0}"
+}
+
+die() {
+	echo "rbackup: $*" >&2
+	exit 1
+}
+
+password_var() {
+	printf 'RESTIC_PASSWORD_%s\n' "$(basename "$1" | tr '[:lower:]' '[:upper:]' | tr -c 'A-Z0-9\n' '_')"
+}
+
+require_password() {
+	var=$(password_var "$1")
+	eval "own=\${$var:-}"
+	[ -n "$own${RESTIC_PASSWORD:-}${RESTIC_PASSWORD_FILE:-}${RESTIC_PASSWORD_COMMAND:-}" ] ||
+		die "no password for $(basename "$1"): set $var or RESTIC_PASSWORD"
+}
+
+# NOTE: folder-a, folder_a and folder.a map to the same variable (and same-named folders
+# to the same repo), so they would silently share a password; refuse instead.
+require_distinct() {
+	seen=
+	for src in "$@"; do
+		var=$(password_var "$src")
+		other=$(printf '%s\n' "$seen" | sed -n "s/^$var //p")
+		[ -z "$other" ] || die "$other and $src both map to $var; rename one"
+		seen="$seen
+$var $src"
+	done
+}
+
+# NOTE: a repo's own RESTIC_PASSWORD_<NAME> wins; FILE/COMMAND are dropped for it because
+# restic prefers them over RESTIC_PASSWORD.
+repo_restic() {
+	repo=$1
+	shift
+	var=$(password_var "$repo")
+	eval "own=\${$var:-}"
+	if [ -n "$own" ]; then
+		(
+			unset RESTIC_PASSWORD_FILE RESTIC_PASSWORD_COMMAND
+			RESTIC_PASSWORD=$own exec restic -r "$repo" "$@"
+		)
+	else
+		restic -r "$repo" "$@"
+	fi
+}
+
+is_remote() {
+	case "$1" in
+	*:*) return 0 ;;
+	*) return 1 ;;
+	esac
+}
+
+# NOTE: a missing local target usually means the backup drive is not mounted; fail
+# instead of silently writing into /Volumes on the system disk.
+require_target() {
+	is_remote "$1" || [ -d "$1" ] || die "target not found: $1 (drive not mounted?)"
+}
+
+require_source() {
+	[ -d "$1" ] || die "source not found: $1 (drive not mounted?)"
+}
+
+repo_for() {
+	printf '%s/%s\n' "${1%/}" "$(basename "$2")"
+}
+
+cmd_init() {
+	[ $# -ge 2 ] || usage 1
+	target=$1
+	shift
+	require_distinct "$@"
+	is_remote "$target" || [ -d "$target" ] || {
+		[ -d "$(dirname "$target")" ] || die "target parent not found: $(dirname "$target") (drive not mounted?)"
+		mkdir "$target"
+	}
+	for src in "$@"; do
+		require_source "$src"
+		require_password "$src"
+	done
+	for src in "$@"; do
+		repo=$(repo_for "$target" "$src")
+		echo "==> init $repo"
+		repo_restic "$repo" init
+	done
+}
+
+report_failed() {
+	[ -n "$failed" ] || return 0
+	echo "==> $1 failed for:" >&2
+	printf '%s\n' "$failed" | sed '/^$/d; s/^/    /' >&2
+	exit 1
+}
+
+cmd_backup() {
+	[ $# -ge 2 ] || usage 1
+	target=$1
+	shift
+	require_target "$target"
+	require_distinct "$@"
+	for src in "$@"; do
+		require_source "$src"
+		require_password "$src"
+	done
+	# NOTE: restic draws its progress bar only on a terminal; when piped (tee, log file)
+	# it prints nothing until the end, so ask for a status line every 5s instead.
+	[ -t 1 ] || export RESTIC_PROGRESS_FPS="${RESTIC_PROGRESS_FPS:-0.2}"
+	failed=
+	for src in "$@"; do
+		repo=$(repo_for "$target" "$src")
+		# NOTE: restic refuses an empty snapshot as fatal; skip so later sources still run.
+		if [ -z "$(find "$src" -type f ! -name '._*' ! -name .DS_Store -print -quit)" ]; then
+			echo "==> skip $src: no files" >&2
+			continue
+		fi
+		echo "==> backup $src -> $repo"
+		# NOTE: ._* are AppleDouble files macOS writes on exFAT/FAT to hold xattrs; restic gets
+		# those xattrs through the real file, and listing xattrs on ._* fails with EPERM.
+		# NOTE: backing up "." from inside the source stores files at the snapshot root,
+		# so restores land directly in <dest> instead of <dest>/Volumes/<drive>/<folder>.
+		# NOTE: one failing source must not stop the rest; failures are reported at the end.
+		# A failed backup skips forget, so retention never runs on an incomplete snapshot.
+		if ! (cd "$src" && repo_restic "$repo" backup . \
+			--exclude .DS_Store \
+			--exclude .Spotlight-V100 \
+			--exclude .Trashes \
+			--exclude .fseventsd \
+			--exclude .TemporaryItems \
+			--exclude '._*'); then
+			failed="$failed
+$src"
+			continue
+		fi
+		echo "==> forget $repo"
+		# shellcheck disable=SC2086 # KEEP is a list of flags
+		repo_restic "$repo" forget $KEEP --prune || failed="$failed
+$src"
+	done
+	report_failed backup
+}
+
+cmd_snapshots() {
+	[ $# -eq 1 ] || usage 1
+	require_target "$1"
+	require_password "$1"
+	repo_restic "$1" snapshots
+}
+
+cmd_restore() {
+	[ $# -ge 2 ] || usage 1
+	repo=$1
+	dest=$2
+	shift 2
+	snapshot=latest
+	case "${1:-}" in
+	"" | -*) ;;
+	*)
+		snapshot=$1
+		shift
+		;;
+	esac
+	require_target "$repo"
+	require_password "$repo"
+	# NOTE: never restore over existing files; restore elsewhere and copy back by hand.
+	if [ -e "$dest" ] && [ -n "$(ls -A "$dest")" ]; then
+		die "destination not empty: $dest"
+	fi
+	repo_restic "$repo" restore "$snapshot" --target "$dest" "$@"
+}
+
+cmd_check() {
+	[ $# -ge 1 ] || usage 1
+	failed=
+	for repo in "$@"; do
+		require_target "$repo"
+		require_password "$repo"
+	done
+	for repo in "$@"; do
+		echo "==> check $repo"
+		repo_restic "$repo" check || failed="$failed
+$repo"
+	done
+	report_failed check
+}
+
+command -v restic >/dev/null 2>&1 || die "restic not installed (brew install restic)"
+
+[ $# -ge 1 ] || usage 1
+cmd=$1
+shift
+case "$cmd" in
+-h | --help | help) usage ;;
+init | backup | snapshots | restore | check) ;;
+*) usage 1 ;;
+esac
+"cmd_$cmd" "$@"

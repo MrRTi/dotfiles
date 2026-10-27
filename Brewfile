@@ -26,7 +26,7 @@ brew "bash"
 # Programmable completion for Bash 4.2+
 brew "bash-completion@2"
 # Cryptography and SSL/TLS Toolkit
-brew "openssl@3", link: true
+brew "openssl@3"
 # Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
 # Bash Automated Testing System
@@ -121,6 +121,8 @@ brew "opentofu"
 brew "pipx"
 # Rsync for cloud storage
 brew "rclone"
+# Fast, efficient and secure backup program
+brew "restic"
 # Utility that provides fast incremental file transfer
 brew "rsync"
 # Safe, concurrent, practical language
