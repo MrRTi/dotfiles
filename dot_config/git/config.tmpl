@@ -1,3 +1,6 @@
+{{- /* NOTE: signing goes through 1Password's op-ssh-sign, which only exists
+on the host; in sbx boxes it would fail every commit. */ -}}
+{{- $profile := get . "profile" | default "host" -}}
 [alias]
 	cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop\\|main' | xargs -n 1 -r git branch -d"
 	current-branch = "rev-parse --abbrev-ref HEAD"
@@ -6,9 +9,11 @@
 [color]
 	ui = true
 
+{{ if eq $profile "host" -}}
 [commit]
 	gpgSign = true
 
+{{ end -}}
 [core]
 	autocrlf = "input"
 	editor = "nvim"
@@ -38,12 +43,13 @@
 	required = true
 	smudge = "git-lfs smudge -- %f"
 
+{{ if eq $profile "host" -}}
 [gpg]
 	format = "ssh"
 
 [gpg "ssh"]
 	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
-
+{{ end }}
 [help]
 	autocorrect = 1
 

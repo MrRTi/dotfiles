@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Installs what the mise config pins. Runs before the brew bundle script,
+# which uninstalls the Homebrew copies of these tools, so nothing goes missing.
+# Re-runs when any of these change:
+# config.toml: {{ include "dot_config/mise/config.toml" | sha256sum }}
+# dev.toml: {{ include "dot_config/mise/conf.d/dev.toml" | sha256sum }}
+# host.toml: {{ include "dot_config/mise/conf.d/host.toml" | sha256sum }}
+# infra.toml: {{ include "dot_config/mise/conf.d/infra.toml" | sha256sum }}
+# mise.lock: {{ include "dot_config/mise/mise.lock" | sha256sum }}
+set -euo pipefail
+
+# mise is standalone, not from Homebrew, so it's the same binary on the host and
+# in boxes; it updates itself (`mise self-update`, run by `just update`). The
+# check is the file, not `command -v`: a Homebrew mise still on PATH is
+# uninstalled by the brew bundle cleanup that runs after this script.
+# mise.run checks the download's sha256 and installs to ~/.local/bin/mise.
+mise="$HOME/.local/bin/mise"
+if [[ ! -x "$mise" ]]; then
+	curl -fsSL https://mise.run | sh
+	# Homebrew's mise shipped fish completions; the standalone one doesn't.
+	"$mise" completion fish --install
+fi
+PATH="$HOME/.local/bin:$PATH"
+mise install

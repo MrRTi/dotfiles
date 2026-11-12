@@ -1,0 +1,85 @@
+{{- $profile := get . "profile" | default "host" -}}
+{{- if eq $profile "host" -}}
+#!/usr/bin/env bash
+# One-time copy of state into the XDG locations conf.d/00-xdg.fish points tools
+# at. Copies only: never overwrites an existing destination, never deletes.
+# Prints the originals at the end; remove them by hand once things work.
+set -euo pipefail
+
+cfg="$HOME/.config" data="$HOME/.local/share" state="$HOME/.local/state"
+lib="$HOME/Library"
+copied=()
+
+copy() {
+	local from="$1" to="$2"
+	[[ -e "$from" ]] || return 0
+	mkdir -p "$(dirname "$to")"
+	if [[ -d "$from" ]]; then
+		# Per file, not `cp -Rn`: that exits 1 when it skips an existing file.
+		local rel skipped=0
+		while IFS= read -r -d '' rel; do
+			rel="${rel#./}"
+			if [[ -e "$to/$rel" ]]; then
+				echo "migrate: skipped $from/$rel, $to/$rel already exists"
+				skipped=1
+			else
+				mkdir -p "$(dirname "$to/$rel")"
+				cp -pP "$from/$rel" "$to/$rel"
+			fi
+		done < <(cd "$from" && find . \( -type f -o -type l \) -print0)
+		if ((skipped)); then
+			echo "migrate: $from -> $to partly; compare the skipped files before removing it"
+			return 0
+		fi
+	elif [[ -e "$to" ]]; then
+		echo "migrate: skipped $from, $to already exists"
+		return 0
+	else
+		cp -p "$from" "$to"
+	fi
+	copied+=("$from")
+	echo "migrate: $from -> $to"
+}
+
+mkdir -p "$state"
+
+# Kubeconfigs (not the discovery/http cache, which KUBECACHEDIR now moves)
+for f in "$HOME"/.kube/config "$HOME"/.kube/*-config; do
+	copy "$f" "$cfg/kube/$(basename "$f")"
+done
+
+# k9s and lazygit; their config.yaml/config.yml come from chezmoi
+copy "$lib/Application Support/k9s/aliases.yaml" "$cfg/k9s/aliases.yaml"
+copy "$lib/Application Support/k9s/clusters" "$data/k9s/clusters"
+copy "$lib/Application Support/lazygit/state.yml" "$cfg/lazygit/state.yml"
+
+# helm repositories and plugins
+copy "$lib/Preferences/helm" "$cfg/helm"
+copy "$lib/helm" "$data/helm"
+
+# Bundler config (may hold gem source credentials)
+copy "$HOME/.bundle/config" "$cfg/bundle/config"
+
+# cargo config and registry credentials (CARGO_HOME moved)
+copy "$HOME/.cargo/config.toml" "$data/cargo/config.toml"
+copy "$HOME/.cargo/credentials.toml" "$data/cargo/credentials.toml"
+
+# Histories
+copy "$HOME/.bash_history" "$state/bash_history"
+copy "$HOME/.irb_history" "$state/irb_history"
+copy "$HOME/.lesshst" "$state/lesshst"
+copy "$HOME/.mysql_history" "$state/mysql_history"
+copy "$HOME/.python_history" "$state/python_history"
+copy "$HOME/.wget-hsts" "$state/wget-hsts"
+
+if ((${#copied[@]})); then
+	echo
+	echo "migrate: copied. Once everything works, remove the originals:"
+	printf '  %s\n' "${copied[@]}"
+fi
+echo
+echo "migrate: caches, safe to delete: ~/.npm, ~/.kube/cache, ~/Library/Caches/{helm,mise}"
+echo "migrate: old tool homes, not copied. Check for binaries you still use before"
+echo "  deleting: ~/.cargo/bin (cargo install), ~/go/bin (go install), ~/.gem (gem"
+echo "  install --user). Reinstall them to land in the new CARGO_HOME / GOPATH."
+{{ end -}}

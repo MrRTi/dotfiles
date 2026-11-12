@@ -2,19 +2,25 @@
 status is-interactive || return
 
 # Environment variables and PATH
-fish_add_path /opt/homebrew/bin $HOME/.local/bin $HOME/.orbstack/bin $HOME/.cargo/bin
+# fish_add_path skips directories that don't exist, so this line also works in
+# sbx boxes (no Homebrew, no OrbStack).
+fish_add_path /opt/homebrew/bin $HOME/.local/bin $HOME/.orbstack/bin $CARGO_HOME/bin
 
-set -gx SSH_AUTH_SOCK $HOME/.1password/agent.sock
-set -gx LDFLAGS "-L/opt/homebrew/opt/libpq/lib"
-set -gx CPPFLAGS "-I/opt/homebrew/opt/libpq/include"
+# 1Password's agent and Homebrew's libpq exist only on the host. Checks the
+# app, not the socket: shells (and the tmux server) restored at login start
+# before 1Password has created the socket, and would keep the macOS agent.
+test -d /Applications/1Password.app; and set -gx SSH_AUTH_SOCK $HOME/.1password/agent.sock
+if test -d /opt/homebrew/opt/libpq
+    set -gx LDFLAGS "-L/opt/homebrew/opt/libpq/lib"
+    set -gx CPPFLAGS "-I/opt/homebrew/opt/libpq/include"
+end
 set -gx EDITOR nvim
 set -gx VISUAL nvim
 
 # Tool integrations
-# NOTE: no `mise activate` / `direnv hook` here. Homebrew's mise and direnv ship
-# vendor_conf.d/{mise-activate,direnv}.fish, which fish sources before this file
-# in every shell; repeating them here ran each twice (mise's status line printed
-# twice, ~17 ms of a ~140 ms startup).
+# NOTE: no `mise activate` here. conf.d/mise-activate.fish runs it before this
+# file in every shell; repeating it here ran it twice (mise's status line
+# printed twice, ~17 ms of a ~140 ms startup).
 
 # Vi mode and cursor shapes
 # fish_vi_key_bindings
@@ -29,8 +35,8 @@ set -g __fish_git_prompt_showupstream auto
 set -g __fish_git_prompt_color yellow
 
 # Aliases (command overrides — wrap same-named commands)
-alias eza='eza --git'
-alias ls='eza'
+alias lsd='lsd --git --icon never'
+alias ls='lsd'
 alias la='ls -a'
 alias lt='ls --tree'
 alias ll='ls -la'
@@ -54,7 +60,6 @@ abbr --add cz chezmoi
 abbr --add cza 'chezmoi apply'
 abbr --add czd 'chezmoi diff'
 abbr --add d docker
-abbr --add da 'direnv allow'
 abbr --add dc 'docker compose'
 abbr --add dcu 'docker compose up'
 abbr --add dcud 'docker compose up -d'

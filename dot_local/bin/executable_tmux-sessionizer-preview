@@ -9,8 +9,8 @@ if [[ "$item" == \$* ]]; then
   tmux capture-pane -t "$session" -p -e 2>/dev/null
 else
   item="${item#[% ]}"
-  if command -v eza &>/dev/null; then
-    eza -la --color=always "${item/\~/$HOME}"
+  if command -v lsd &>/dev/null; then
+    lsd -la --icon never --color=always "${item/\~/$HOME}"
   else
     ls -la "${item/\~/$HOME}"
   fi

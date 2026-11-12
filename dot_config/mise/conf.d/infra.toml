@@ -1,0 +1,10 @@
+# Cluster and infrastructure tools. Host only for now; k9s is used across
+# projects. kubectl comes from OrbStack.
+[tools]
+helm = "4.3.1"
+helmfile = "1.8.3"
+k9s = "0.51.0"
+kubeseal = "0.41.2"
+opentofu = "1.13.9"
+vault = "2.2.1"
+velero = "1.18.4"

@@ -7,3 +7,42 @@ justfile
 */.keep
 stylua.toml
 .luarc.json
+sbx
+
+{{- $profile := get . "profile" | default "host" }}
+{{- $devTools := true }}
+{{- if hasKey . "devTools" }}{{ $devTools = .devTools }}{{ end }}
+{{- if and (eq $profile "host") (not $devTools) }}
+
+# devTools = false: the host drops the dev languages. Ignoring doesn't delete
+# the deployed copy; remove it by hand (README, Profiles).
+.config/mise/conf.d/dev.toml
+{{- end }}
+{{- if eq $profile "box" }}
+
+# sbx boxes: no macOS apps, no host services. Claude's config belongs to sbx.
+Brewfile
+Developer
+.claude
+.config/1Password
+.config/aerospace
+.config/ghostty
+.config/mise/conf.d/host.toml
+.config/mise/conf.d/infra.toml
+.local/bin/aerospace-toggle-float
+.local/bin/barista
+.local/bin/llm-serve
+.local/bin/llm-serve-code
+
+# Host-only tools (infra.toml, host.toml, 1Password, Developer/databases)
+.config/k9s
+.config/fish/completions/db-create.fish
+.config/fish/completions/opr.fish
+.config/fish/functions/op_run_with_env.fish
+.local/bin/_db-lib
+.local/bin/db-connect
+.local/bin/db-create
+.local/bin/enc
+.local/bin/kube-remove-context
+.local/bin/rbackup
+{{- end }}

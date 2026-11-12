@@ -1,5 +1,7 @@
 .DS_Store
 .envrc
+mise.local.toml
+fnox.local.toml
 shell.nix
 #*#
 .#*

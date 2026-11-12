@@ -565,6 +565,9 @@ vim.keymap.set("n", "<leader>fp", '<cmd>let @+ = fnamemodify(expand("%:p"), ":~:
 -- on *every* startup to confirm parsers that were already on disk. Parsers only
 -- need installing when this list changes, so it is a command now. Run
 -- :TSInstallParsers after editing the list (or on a fresh machine).
+-- :TSInstallParsers! blocks until done (5 min max) and exits Nvim non-zero
+-- (:cquit) on a timeout or a failed parser, for headless builds like the sbx
+-- template; without the bang it returns immediately.
 local ts_parsers = {
 	"lua",
 	"ruby",
@@ -577,9 +580,17 @@ local ts_parsers = {
 	"markdown_inline",
 }
 
-vim.api.nvim_create_user_command("TSInstallParsers", function()
-	require("nvim-treesitter").install(ts_parsers)
-end, { desc = "Install the treesitter parsers this config expects" })
+vim.api.nvim_create_user_command("TSInstallParsers", function(opts)
+	local task = require("nvim-treesitter").install(ts_parsers)
+	if opts.bang then
+		-- wait() errors on timeout and returns false when any parser failed
+		-- (tested: tree-sitter missing from PATH gives false).
+		local ok, all_installed = pcall(task.wait, task, 300000)
+		if not (ok and all_installed) then
+			vim.cmd.cquit()
+		end
+	end
+end, { bang = true, desc = "Install the treesitter parsers this config expects" })
 
 -- pcall: start() errors when no parser exists for the language, which is the
 -- normal case for most filetypes; those keep Vim syntax. <leader>uT still
