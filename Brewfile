@@ -3,7 +3,6 @@ tap "anomalyco/tap", trusted: { formulae: ["opencode"] }
 tap "d12frosted/emacs-plus", trusted: true
 tap "docker/tap", trusted: true
 tap "hashicorp/tap"
-tap "netbirdio/tap"
 tap "nikitabobko/tap"
 tap "osx-cross/avr", trusted: true
 tap "rhettbull/osxphotos", "https://github.com/RhetTbull/homebrew-osxphotos"
@@ -149,8 +148,6 @@ brew "yq"
 brew "d12frosted/emacs-plus/emacs-plus@30"
 # Vault
 brew "hashicorp/tap/vault", trusted: true
-# Netbird project.
-brew "netbirdio/tap/netbird", trusted: true
 # GNU compiler collection for AVR 8-bit and 32-bit Microcontrollers
 brew "osx-cross/avr/avr-gcc@9", trusted: true
 # Export photos from Apple Photos app and query the Photos database
@@ -174,10 +171,6 @@ cask "claude-code"
 cask "font-jetbrains-mono-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
-# Speech to text application
-cask "handy"
-# Netbird UI Client
-cask "netbirdio/tap/netbird-ui", trusted: true
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
 # Replacement for Docker Desktop
@@ -190,7 +183,6 @@ mas "1Password for Safari", id: 1569813296
 mas "Color Picker", id: 1545870783
 mas "Keynote", id: 409183694
 mas "Little Snitch Mini", id: 1629008763
-mas "Mattermost", id: 1614666244
 mas "Noir", id: 1592917505
 mas "Numbers", id: 409203825
 mas "OpenIn", id: 1643649331
@@ -203,9 +195,5 @@ mas "Telegram", id: 747648890
 mas "Windows App", id: 1295203466
 mas "Wipr", id: 1662217862
 mas "Yubico Authenticator", id: 1497506650
-go "github.com/bootdotdev/bootdev"
 go "cmd/go"
 go "cmd/gofmt"
-go "golang.org/x/tools/gopls"
-go "github.com/golang-migrate/migrate/v4/cmd/migrate"
-npm "corepack"

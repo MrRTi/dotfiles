@@ -7,13 +7,11 @@
   ],
   "trustedcasks": [
     "docker/tap/sbx",
-    "netbirdio/tap/netbird-ui",
     "nikitabobko/tap/aerospace"
   ],
   "trustedformulae": [
     "anomalyco/tap/opencode",
     "hashicorp/tap/vault",
-    "netbirdio/tap/netbird",
     "osx-cross/avr/avr-gcc@9",
     "rhettbull/osxphotos/osxphotos",
     "vmware/pinniped/pinniped-cli",
