@@ -2,7 +2,11 @@
 #!/usr/bin/env bash
 # set -e: a failed install must not go on to `brew bundle cleanup`.
 set -euo pipefail
-# A fresh Mac has brew installed by now, but not on PATH yet.
+# Installs Homebrew on a fresh Mac. mise is standalone and installs before this
+# (run_onchange_after_10), so this is the only script that needs brew.
+if [[ ! -x /opt/homebrew/bin/brew ]]; then
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
 PATH="/opt/homebrew/bin:$PATH"
 
 {{ $brewfile := joinPath .chezmoi.sourceDir "Brewfile" -}}

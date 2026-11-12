@@ -8,7 +8,7 @@ macOS dotfiles managed by [chezmoi](https://www.chezmoi.io/), also applied insid
 sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply MrRTi
 ```
 
-Installs chezmoi, clones this repo to `~/.local/share/chezmoi`, and applies it: writes the dotfiles to `~`, installs Homebrew, installs mise standalone to `~/.local/bin` and runs `mise install`, then `brew bundle`. On the first apply a one-time script copies old state (`~/.kube`, k9s, lazygit, helm, bundler config, shell histories) to its XDG location and lists the originals to delete.
+Installs chezmoi, clones this repo to `~/.local/share/chezmoi`, and applies it: writes the dotfiles to `~`, installs mise standalone to `~/.local/bin` and runs `mise install`, then installs Homebrew and runs `brew bundle`.
 
 Then run `:TSInstallParsers` in Neovim once.
 
@@ -23,6 +23,7 @@ just brew-update    # Dump installed Homebrew state into the Brewfile
 just brew-upgrade   # Upgrade everything in the Brewfile
 just update         # brew upgrade + mise self-update + bump every mise pin + refresh the Brewfile
 just home-check     # List unexpected dotfiles in ~
+just git-dev-folders "personal:a@x.com;work:b@y.com"  # Per-folder git email and signing key under ~/Developer
 just sbx-template   # Build the sbx box template from GitHub and load it
 ```
 

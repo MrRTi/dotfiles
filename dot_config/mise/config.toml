@@ -18,9 +18,6 @@ lockfile_platforms = ["macos-arm64", "linux-arm64", "linux-x64"]
 # by hand, or empty mise.lock and run `mise lock -g` on the host.
 lockfile_auto_prune = false
 
-[settings.ruby]
-default_packages_file = "~/.config/mise/default-gems"
-
 [settings.status]
 missing_tools = "always"
 show_env = true
@@ -29,6 +26,18 @@ show_tools = true
 [task_config]
 # Global rails:* tasks; ~ paths work here (tested).
 includes = ["~/.config/mise/rails-tasks.toml"]
+
+[hooks]
+# Installs default-gems into every newly installed ruby, global or from a
+# project's .ruby-version (tested: the global hook fires for both). Replaces
+# the deprecated ruby.default_packages_file (removed in mise 2027.11).
+postinstall = '''
+printf '%s' "$MISE_INSTALLED_TOOLS" | grep -o '"name":"ruby"[^}]*' |
+	sed -n 's/.*"install_path":"\([^"]*\)".*/\1/p' |
+	while IFS= read -r ruby; do
+		"$ruby/bin/gem" install --no-document $(grep -v '^#' "$HOME/.config/mise/default-gems")
+	done
+'''
 
 # NOTE: lsd and bottom replace eza and btop, which have no macOS release for
 # mise to install. neovim is pinned to stable: "nightly" works, but the lock
