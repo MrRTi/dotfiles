@@ -22,26 +22,13 @@ brew-upgrade:
 
 # Upgrade Homebrew and mise itself, bump every mise pin to its newest release,
 # refresh the Brewfile.
-# re-add pulls the bumped mise config and lock back into this repo. The npm/pipx
-# dependency locks get new per-version dirs; `chezmoi add` alone keeps the old
-# ones mise deleted, so the source copy is replaced whole. It's moved aside
-# first and put back if the add fails, or boxes lose locks they need.
+# re-add pulls the bumped mise pins back into this repo.
 update:
-    #!/usr/bin/env bash
-    set -euo pipefail
     brew update
     brew upgrade
     mise self-update -y
     mise upgrade --bump
     chezmoi re-add ~/.config/mise
-    old=$(mktemp -d)
-    mv dot_config/mise/locks "$old/"
-    if ! chezmoi add ~/.config/mise/locks; then
-        mv "$old/locks" dot_config/mise/
-        echo "update: kept the old dot_config/mise/locks" >&2
-        exit 1
-    fi
-    rm -rf "$old"
     just brew-update
 
 # List dotfiles in ~ that aren't expected: new clutter, or leftovers to delete

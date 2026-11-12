@@ -10,13 +10,12 @@
 [settings]
 auto_install = true
 idiomatic_version_file_enable_tools = ["ruby"]
-# One mise.lock pins checksums for the host and for sbx boxes.
-lockfile_platforms = ["macos-arm64", "linux-arm64", "linux-x64"]
-# NOTE: off because host and boxes load different conf.d files: auto-prune made
-# a box drop the host-only pins from the shared lock (tested). Removing a tool
-# leaves its entry behind, even after `mise lock -g` (tested); delete the block
-# by hand, or empty mise.lock and run `mise lock -g` on the host.
-lockfile_auto_prune = false
+# NOTE: no mise.lock. The exact pins below already give host and boxes the same
+# versions, and downloads are still verified without a lock (GitHub digests,
+# plus attestations/cosign where published; tested). The lock only added pinned
+# checksums and npm/pipx dependency graphs, at the cost of sidecar files and
+# hand pruning.
+lockfile = false
 
 [settings.status]
 missing_tools = "always"
@@ -40,8 +39,8 @@ printf '%s' "$MISE_INSTALLED_TOOLS" | grep -o '"name":"ruby"[^}]*' |
 '''
 
 # NOTE: lsd and bottom replace eza and btop, which have no macOS release for
-# mise to install. neovim is pinned to stable: "nightly" works, but the lock
-# pins one day's tarball checksum, and the next nightly replaces that tarball.
+# mise to install. neovim is pinned to stable so host and boxes run the same
+# build; "nightly" works but changes daily.
 # aqua, not the registry default vfox:jdx/vfox-neovim: same neovim/neovim
 # release tarballs, without cloning and running a plugin.
 [tools]

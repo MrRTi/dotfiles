@@ -6,7 +6,6 @@
 # dev.toml: {{ include "dot_config/mise/conf.d/dev.toml" | sha256sum }}
 # host.toml: {{ include "dot_config/mise/conf.d/host.toml" | sha256sum }}
 # infra.toml: {{ include "dot_config/mise/conf.d/infra.toml" | sha256sum }}
-# mise.lock: {{ include "dot_config/mise/mise.lock" | sha256sum }}
 set -euo pipefail
 
 # mise is standalone, not from Homebrew, so it's the same binary on the host and

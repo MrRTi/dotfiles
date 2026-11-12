@@ -46,7 +46,6 @@ Lint tools are pinned in `mise.toml`.
   - `conf.d/dev.toml`: languages, language servers, linters, formatters
   - `conf.d/host.toml`: host only (fnox/age secrets, backups, hledger)
   - `conf.d/infra.toml`: k8s, vault, tofu; host only for now
-  - `mise.lock`: checksums for macOS and Linux, plus `locks/` with npm/pipx tools' dependency graphs (uv/aube lockfiles); a fresh `mise install` fails without them
 - `dot_config/mise/rails-tasks.toml`: global `rails:*` tasks (`mise run rails:lint`) for any Ruby repo.
 
 ## Shell
@@ -94,7 +93,7 @@ Lint tools are pinned in `mise.toml`.
 
 ## Files apps rewrite
 
-Some deployed files are edited by their app: the mise config, `conf.d/*.toml` and `mise.lock` (`mise use -g`, `mise upgrade --bump`); `nvim/lazy-lock.json` (`:Lazy update`); `~/.claude/settings.json` (`/config`, plugin installs). They're plain copies, so pull the edits back with `chezmoi re-add <file or dir>`. `just update` does that for `~/.config/mise`. `chezmoi apply` asks before overwriting a file changed since its last write; check `chezmoi diff` first.
+Some deployed files are edited by their app: the mise config and `conf.d/*.toml` (`mise use -g`, `mise upgrade --bump`); `nvim/lazy-lock.json` (`:Lazy update`); `~/.claude/settings.json` (`/config`, plugin installs). They're plain copies, so pull the edits back with `chezmoi re-add <file or dir>`. `just update` does that for `~/.config/mise`. `chezmoi apply` asks before overwriting a file changed since its last write; check `chezmoi diff` first.
 
 ## Profiles
 
