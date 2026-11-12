@@ -13,15 +13,16 @@ PATH="/opt/homebrew/bin:$PATH"
 {{ if stat $brewfile -}}
 # Brewfile checksum: {{ include "Brewfile" | sha256sum }}
 
-# Install missing entries only; upgrades are explicit: `just brew-upgrade`
-brew bundle install --no-upgrade --file="{{ .chezmoi.homeDir }}/Brewfile"
+# Install missing entries only; upgrades are explicit: `just update`. Reads the
+# Brewfile from this repo; it isn't deployed to ~.
+brew bundle install --no-upgrade --file="{{ $brewfile }}"
 
 # NOTE: the Brewfile is authoritative. Anything installed but not listed is
 # uninstalled (taps, formulae, casks; not Mac App Store apps), so removing a
-# line and applying removes the package. `just brew-update` before editing the
+# line and applying removes the package. `just brew-dump` before editing the
 # Brewfile keeps ad-hoc installs from being dropped. Runs after the mise install
 # script, so tools that moved to mise exist before brew removes its copies.
-brew bundle cleanup --force --file="{{ .chezmoi.homeDir }}/Brewfile"
+brew bundle cleanup --force --file="{{ $brewfile }}"
 
 # Register fish as a valid login shell
 FISH_PATH="$(brew --prefix)/bin/fish"
@@ -29,7 +30,7 @@ if ! grep -qF "$FISH_PATH" /etc/shells; then
 	echo "$FISH_PATH" | sudo tee -a /etc/shells
 fi
 {{ else -}}
-echo "Brewfile not found in chezmoi source — run 'just brew-dump && just brew-sync' first"
+echo "Brewfile not found in chezmoi source — run 'just brew-dump' first"
 {{ end -}}
 # vim: set ft=sh :
 {{ end -}}

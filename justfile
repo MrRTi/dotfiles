@@ -1,13 +1,6 @@
-# Dump current Homebrew state into ~/Brewfile
+# Write installed Homebrew state into this repo's Brewfile (mise owns Go, Cargo and uv tools)
 brew-dump:
-    barista receipt
-
-# Pull ~/Brewfile changes back into chezmoi source
-brew-sync:
-    barista sync
-
-# Dump brew state to ~/Brewfile, then sync it into chezmoi
-brew-update: brew-dump brew-sync
+    brew bundle dump --file=Brewfile --force --no-go --no-cargo --no-uv
 
 # Lint shell scripts, Lua, fish config and Markdown
 lint:
@@ -16,20 +9,14 @@ lint:
     fish --no-execute dot_config/fish/*.fish dot_config/fish/*/*.fish
     markdownlint-cli2 "**/*.md" "#tmp" "#node_modules" "#.superpowers"
 
-# Upgrade everything in the Brewfile (chezmoi apply only installs missing)
-brew-upgrade:
-    brew bundle install --upgrade --file="$HOME/Brewfile"
-
-# Upgrade Homebrew and mise itself, bump every mise pin to its newest release,
-# refresh the Brewfile.
-# re-add pulls the bumped mise pins back into this repo.
+# Upgrade Homebrew, mise and every mise pin; pull the new pins and Brewfile into this repo
 update:
     brew update
     brew upgrade
     mise self-update -y
     mise upgrade --bump
     chezmoi re-add ~/.config/mise
-    just brew-update
+    just brew-dump
 
 # List dotfiles in ~ that aren't expected: new clutter, or leftovers to delete
 home-check:

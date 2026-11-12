@@ -23,6 +23,5 @@
     }
   },
   "feedbackDrafts": "off",
-  "theme": "light-daltonized",
-  "hooks": {"SessionStart":[{"matcher":"^(startup|resume|clear|compact|fork)$","hooks":[{"type":"command","command":"bash '/Users/rti/.claude/hooks/herdr-agent-state.sh' session","timeout":10}]}]}
+  "theme": "light-daltonized"
 }

@@ -1,40 +1,19 @@
-tap "abue-ammar/tinycast", trusted: true
-tap "d12frosted/emacs-plus", trusted: true
 tap "docker/tap", trusted: true
 tap "nikitabobko/tap"
 tap "osx-cross/avr", trusted: true
-tap "rhettbull/osxphotos", "https://github.com/RhetTbull/homebrew-osxphotos"
 tap "vmware/pinniped"
-# Search tool like grep, but optimized for programmers
-brew "ack"
-# Automatic configure script builder
-brew "autoconf"
 # Zstandard is a real-time compression algorithm
 brew "zstd"
 # Atmel AVR MCU programmer
 brew "avrdude"
 # Library for command-line editing
 brew "readline"
-# B2 Cloud Storage Command-Line Tools
-brew "b2-tools"
 # Bourne-Again SHell, a UNIX command interpreter
 brew "bash"
-# Programmable completion for Bash 4.2+
-brew "bash-completion@2"
-# Cryptography and SSL/TLS Toolkit
-brew "openssl@3"
-# Bash Automated Testing System
-brew "bats-core"
 # Manage your dotfiles across multiple diverse machines, securely
 brew "chezmoi"
-# Cross-platform make
-brew "cmake"
-# Create and run Linux containers using lightweight virtual machines
-brew "container"
 # GNU multiple precision arithmetic library
 brew "gmp"
-# GNU File, Shell, and Text utilities
-brew "coreutils"
 # Perl lib for reading and writing EXIF metadata
 brew "exiftool"
 # User-friendly command-line shell for UNIX-like operating systems
@@ -45,42 +24,24 @@ brew "libtiff"
 brew "git"
 # GNU Privacy Guard (OpenPGP)
 brew "gnupg"
-# Agent multiplexer that lives in your terminal
-brew "herdr"
-# YAML Parser
-brew "libyaml"
-# User-friendly cURL replacement (command-line HTTP client)
-brew "httpie"
 # Postgres C API library
 brew "libpq"
+# YAML Parser
+brew "libyaml"
 # Mac App Store command-line interface
 brew "mas"
-# Run LLMs with MLX
-brew "mlx-lm"
-# MongoDB CLI enables you to manage your MongoDB in the Cloud
-brew "mongocli"
 # Open source relational database management system
 brew "mysql"
-# Open source relational database management system
-brew "mysql@8.4"
-# Execute binaries from Python packages in isolated environments
-brew "pipx"
+# Cryptography and SSL/TLS Toolkit
+brew "openssl@4"
 # Utility that provides fast incremental file transfer
 brew "rsync"
-# Safe, concurrent, practical language
-brew "rust"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
-# Incremental parsing library
-brew "tree-sitter"
 # Internet file retriever
 brew "wget"
-# GNU Emacs text editor
-brew "d12frosted/emacs-plus/emacs-plus@30"
 # GNU compiler collection for AVR 8-bit and 32-bit Microcontrollers
 brew "osx-cross/avr/avr-gcc@9", trusted: true
-# Export photos from Apple Photos app and query the Photos database
-brew "rhettbull/osxphotos/osxphotos", trusted: true
 # Pinniped CLI for Kubernetes cluster authentication
 brew "vmware/pinniped/pinniped-cli", trusted: true
 # Command-line interface for 1Password
@@ -95,6 +56,8 @@ cask "calibre"
 cask "chatgpt"
 # Terminal-based AI coding assistant
 cask "claude-code"
+# GNU Emacs text editor
+cask "emacs-app"
 cask "font-jetbrains-mono-nerd-font"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
@@ -122,5 +85,3 @@ mas "Telegram", id: 747648890
 mas "Windows App", id: 1295203466
 mas "Wipr", id: 1662217862
 mas "Yubico Authenticator", id: 1497506650
-go "cmd/go"
-go "cmd/gofmt"

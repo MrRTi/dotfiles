@@ -44,6 +44,10 @@ alias less='bat -p'
 alias lessl='bat -pl'
 alias cat='bat -pp'
 alias reload='exec fish'
+# Local OpenAI-compatible server: mlx --model mlx-community/Qwen3-8B-4bit
+# NOTE: --max-tokens defaults to 512, which Qwen3 can spend thinking before it
+# answers; pass --max-tokens 4096 for those models.
+alias mlx='mlx_lm.server'
 
 alias opr=op_run_with_env
 

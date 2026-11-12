@@ -19,8 +19,7 @@ chezmoi diff        # Preview changes
 chezmoi apply       # Apply source to ~
 chezmoi add <file>  # Start managing a file
 just lint           # shellcheck, stylua, fish syntax, markdownlint
-just brew-update    # Dump installed Homebrew state into the Brewfile
-just brew-upgrade   # Upgrade everything in the Brewfile
+just brew-dump      # Write installed Homebrew state into the Brewfile
 just update         # brew upgrade + mise self-update + bump every mise pin + refresh the Brewfile
 just home-check     # List unexpected dotfiles in ~
 just git-dev-folders "personal:a@x.com;work:b@y.com"  # Per-folder git email and signing key under ~/Developer
@@ -40,11 +39,11 @@ Lint tools are pinned in `mise.toml`.
 
 ## Packages
 
-- `Brewfile`: bootstrap tools (chezmoi, fish, git), things mise can't build, macOS-only tools, casks, Mac App Store apps. A change re-runs `brew bundle` on apply. Apply installs missing entries only (`just brew-upgrade` upgrades) and uninstalls what isn't listed, so deleting a line removes the package. Run `just brew-update` first if you installed something by hand.
+- `Brewfile`: bootstrap tools (chezmoi, fish, git), things mise can't build, macOS-only tools, casks, Mac App Store apps. A change re-runs `brew bundle` on apply. Apply installs missing entries only (`just update` upgrades) and uninstalls what isn't listed, so deleting a line removes the package. Run `just brew-dump` first if you installed something by hand. It stays in the repo; nothing deploys it to `~`.
 - `dot_config/mise/`: CLI and dev tool versions, split by where they're needed:
   - `config.toml`: CLIs used everywhere (host and boxes)
   - `conf.d/dev.toml`: languages, language servers, linters, formatters
-  - `conf.d/host.toml`: host only (fnox/age secrets, backups, hledger)
+  - `conf.d/host.toml`: host only (fnox/age secrets, backups, hledger, httpie, osxphotos, mlx-lm)
   - `conf.d/infra.toml`: k8s, vault, tofu; host only for now
 - `dot_config/mise/rails-tasks.toml`: global `rails:*` tasks (`mise run rails:lint`) for any Ruby repo.
 
@@ -64,9 +63,7 @@ Lint tools are pinned in `mise.toml`.
 - `tmux-popup`: tool in a persistent tmux popup
 - `notes-switcher`: fzf note picker and creator
 - `db-create`, `db-connect`: databases in the local stack via usql
-- `barista`: Brewfile dump, sync, cleanup
 - `enc`: password-based file encryption (OpenSSL)
-- `llm-serve`: local MLX OpenAI-compatible server
 
 ## Neovim
 

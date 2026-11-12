@@ -63,4 +63,6 @@ tealdeer = "1.9.1"
 tmux = "3.8"
 tree-sitter = "0.27.2"
 usql = "0.21.6"
+# pipx:* tools in every conf.d file install through uv; pipx is not installed.
+uv = "0.13.7"
 yq = "4.54.3"

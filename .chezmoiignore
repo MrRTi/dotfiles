@@ -1,4 +1,5 @@
 README.md
+Brewfile
 mise.toml
 .markdownlint.yaml
 CLAUDE.md
@@ -20,7 +21,6 @@ sbx
 {{- if eq $profile "box" }}
 
 # sbx boxes: no macOS apps, no host services. Claude's config belongs to sbx.
-Brewfile
 Developer
 .claude
 .config/1Password
@@ -29,9 +29,6 @@ Developer
 .config/mise/conf.d/host.toml
 .config/mise/conf.d/infra.toml
 .local/bin/aerospace-toggle-float
-.local/bin/barista
-.local/bin/llm-serve
-.local/bin/llm-serve-code
 
 # Host-only tools (infra.toml, host.toml, 1Password, Developer/databases)
 .config/k9s
