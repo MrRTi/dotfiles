@@ -38,6 +38,7 @@ Lint tools are pinned in `mise.toml`.
 
 - `Brewfile`: taps, formulae, casks, Mac App Store apps. A change re-runs `brew bundle` on apply. Apply installs missing entries only; `just brew-upgrade` upgrades.
 - `dot_config/mise/config.toml`: dev tool versions (languages, linters, formatters, language servers).
+- `dot_config/mise/rails-tasks.toml`: global `rails:*` tasks (`mise run rails:lint`) for any Ruby repo.
 
 ## Shell
 
@@ -74,7 +75,7 @@ Lint tools are pinned in `mise.toml`.
 ## Local databases
 
 - `Developer/databases/`: Postgres, MySQL, MongoDB, Redis in Docker
-- Credentials: 1Password `op://` references in `dot_env`, resolved by `op run`
+- Credentials: 1Password `op://` references in `fnox.toml`, resolved by `fnox exec`
 
 ## Claude Code
 

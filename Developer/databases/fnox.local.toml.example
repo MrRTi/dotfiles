@@ -1,0 +1,8 @@
+# Copy to fnox.local.toml, then store the token (prompts with hidden input):
+#   fnox -c fnox.local.toml set OP_SERVICE_ACCOUNT_TOKEN --provider age
+# The age provider and its recipient come from fnox.toml.
+
+# `env = false` keeps the token out of the command's environment.
+[secrets.OP_SERVICE_ACCOUNT_TOKEN]
+provider = "age"
+env = false

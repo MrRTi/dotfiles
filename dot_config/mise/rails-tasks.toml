@@ -1,0 +1,124 @@
+# Global Rails tasks, loaded by [task_config] includes in config.toml.
+# Tasks run in the current directory, so they work in any worktree (main/,
+# feature/*, ...).
+# Extra args are appended. Example: `mise run rails:test spec/models/user_spec.rb:42`
+#
+# NOTE: included task files use top-level names (["rails:lint"]), not
+# [tasks."rails:lint"].
+
+# --- dev ---
+
+["rails:server"]
+description = "Rails server on 0.0.0.0"
+alias = "rs"
+dir = "{{cwd}}"
+run = "fnox run -- bundle exec rails s -b 0.0.0.0"
+
+["rails:console"]
+description = "Rails console"
+alias = "rc"
+dir = "{{cwd}}"
+env = { SQL_LOG = "false" }
+run = "fnox run -- bundle exec rails c"
+
+["rails:sidekiq"]
+description = "Sidekiq worker"
+dir = "{{cwd}}"
+run = "fnox run -- bundle exec sidekiq"
+
+["rails:karafka"]
+description = "Karafka consumer server"
+dir = "{{cwd}}"
+run = "fnox run -- bundle exec karafka server"
+
+["rails:rails"]
+description = "Any rails command"
+dir = "{{cwd}}"
+run = "fnox run -- bundle exec rails"
+
+["rails:rake"]
+description = "Any rake task"
+dir = "{{cwd}}"
+run = "fnox run -- bundle exec rake"
+
+["rails:routes"]
+description = "Rails routes (e.g. -g user)"
+dir = "{{cwd}}"
+run = "bundle exec rails routes"
+
+["rails:install"]
+description = "Bundle install"
+dir = "{{cwd}}"
+run = "bundle install"
+
+# --- db ---
+
+["rails:db:migrate"]
+description = "Migrate dev db and prepare test db"
+dir = "{{cwd}}"
+run = [
+  "fnox run -- bundle exec rails db:migrate",
+  "fnox run -- env RAILS_ENV=test bundle exec rails db:test:prepare",
+]
+
+["rails:db:rollback"]
+description = "Rollback last migration (e.g. STEP=2)"
+dir = "{{cwd}}"
+run = "fnox run -- bundle exec rails db:rollback"
+
+["rails:db:prepare"]
+description = "Create/migrate/seed db"
+dir = "{{cwd}}"
+run = "fnox run -- bundle exec rails db:prepare"
+
+["rails:db:status"]
+description = "Migration status"
+dir = "{{cwd}}"
+run = "fnox run -- bundle exec rails db:migrate:status"
+
+# --- test ---
+
+["rails:test"]
+description = "RSpec"
+alias = "rt"
+dir = "{{cwd}}"
+run = "fnox run -- bundle exec rspec"
+
+# --- lint ---
+
+["rails:lint"]
+description = "RuboCop"
+alias = "rl"
+dir = "{{cwd}}"
+run = "bundle exec rubocop -c .rubocop.yml"
+
+["rails:lint:fix"]
+description = "RuboCop safe autocorrect"
+dir = "{{cwd}}"
+run = "bundle exec rubocop -c .rubocop.yml -a"
+
+["rails:lint:fix-unsafe"]
+description = "RuboCop unsafe autocorrect"
+dir = "{{cwd}}"
+run = "bundle exec rubocop -c .rubocop.yml -A"
+
+["rails:lint:slim"]
+description = "Slim templates lint"
+dir = "{{cwd}}"
+run = "bundle exec slim-lint app/views"
+
+["rails:lint:all"]
+description = "RuboCop + slim-lint"
+depends = ["rails:lint", "rails:lint:slim"]
+
+# --- security ---
+
+["rails:brakeman"]
+description = "Brakeman static security scan"
+dir = "{{cwd}}"
+run = "bundle exec brakeman"
+
+["rails:audit"]
+description = "bundler-audit gem CVE check"
+dir = "{{cwd}}"
+run = "bundle exec bundle-audit check --update"

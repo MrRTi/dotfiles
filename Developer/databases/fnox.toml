@@ -1,0 +1,53 @@
+# NOTE: secret values below are 1Password references, not secrets. They resolve
+# through a 1Password service account limited to read-only on the `env` vault,
+# so a run can't reach the rest of the account and needs no 1Password popup.
+# The service account token is age-encrypted to a Secure Enclave key
+# (age-plugin-se, ~/.config/fnox/age.txt): every run asks for Touch ID, and
+# nothing caches the approval for other processes.
+
+# NOTE: fnox's default runs the command even when a secret fails to resolve,
+# leaving the variables unset; containers would then init with blank
+# credentials (mongo without auth). `error` stops before the command, so a
+# cancelled Touch ID prompt aborts the run.
+if_missing = "error"
+
+[providers.age]
+type = "age"
+recipients = ["age1se1qtxxsjmwyz8ramham80xv3l53ytdf8u640xjzgsv35vzejgagla95rzkmt3"]
+
+[providers.op]
+type = "1password"
+vault = "env"
+token = { secret = "OP_SERVICE_ACCOUNT_TOKEN" }
+
+# NOTE: OP_SERVICE_ACCOUNT_TOKEN lives in fnox.local.toml, which fnox merges
+# over this file and chezmoi doesn't manage, so the ciphertext stays out of the
+# repo. Start it from fnox.local.toml.example.
+
+[secrets.MYSQL_ROOT_PASSWORD]
+provider = "op"
+value = "mysql-root/password"
+
+[secrets.MYSQL_USER]
+provider = "op"
+value = "mysql/username"
+
+[secrets.MYSQL_PASSWORD]
+provider = "op"
+value = "mysql/password"
+
+[secrets.POSTGRES_USER]
+provider = "op"
+value = "postgres/username"
+
+[secrets.POSTGRES_PASSWORD]
+provider = "op"
+value = "postgres/password"
+
+[secrets.MONGO_ROOT_USER]
+provider = "op"
+value = "mongo/username"
+
+[secrets.MONGO_ROOT_PASSWORD]
+provider = "op"
+value = "mongo/password"

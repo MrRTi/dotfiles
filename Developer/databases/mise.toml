@@ -1,0 +1,11 @@
+[tasks.run]
+usage = 'arg "[service]"'
+run = 'fnox exec -- docker compose up ${usage_service}'
+
+[tasks.run_d]
+usage = 'arg "[service]"'
+run = 'fnox exec -- docker compose up -d ${usage_service}'
+
+[tasks.stop]
+usage = 'arg "[service]"'
+run = 'docker compose stop ${usage_service}'

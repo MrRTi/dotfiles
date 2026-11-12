@@ -62,6 +62,8 @@ abbr --add dcr 'docker compose run --rm --use-aliases'
 abbr --add dcrs 'docker compose run --rm --use-aliases --service-ports'
 abbr --add db 'docker_build'
 abbr --add dr 'docker_run'
+abbr --add fxa 'fnox activate fish | source'
+abbr --add fxd 'fnox deactivate'
 abbr --add g git
 abbr --add ga 'git add'
 abbr --add gb 'git branch'
