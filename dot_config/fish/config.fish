@@ -4,7 +4,7 @@ status is-interactive || return
 # Environment variables and PATH
 # fish_add_path skips directories that don't exist, so this line also works in
 # sbx boxes (no Homebrew, no OrbStack).
-fish_add_path /opt/homebrew/bin $HOME/.local/bin $HOME/.orbstack/bin $CARGO_HOME/bin
+fish_add_path /opt/homebrew/bin /opt/homebrew/sbin $HOME/.local/bin $HOME/.orbstack/bin $CARGO_HOME/bin
 
 # 1Password's agent and Homebrew's libpq exist only on the host. Checks the
 # app, not the socket: shells (and the tmux server) restored at login start
